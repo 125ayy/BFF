@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#000000">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="32dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Settings"
+            android:textSize="28sp"
+            android:textStyle="bold"
+            android:textColor="#00C853"
+            android:layout_marginBottom="24dp" />
+
+        <!-- Change Password -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Change Password"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:textColor="#FFFFFF"
+            android:layout_marginBottom="8dp" />
+
+        <EditText
+            android:id="@+id/etNewPassword"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="New password"
+            android:textColor="#FFFFFF"
+            android:textColorHint="#666666"
+            android:background="@drawable/edit_text_bg"
+            android:padding="12dp"
+            android:inputType="textPassword"
+            android:layout_marginBottom="8dp" />
+
+        <EditText
+            android:id="@+id/etConfirmNewPassword"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Confirm new password"
+            android:textColor="#FFFFFF"
+            android:textColorHint="#666666"
+            android:background="@drawable/edit_text_bg"
+            android:padding="12dp"
+            android:inputType="textPassword"
+            android:layout_marginBottom="8dp" />
+
+        <Button
+            android:id="@+id/btnSavePassword"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:text="SAVE PASSWORD"
+            android:textColor="#000000"
+            android:backgroundTint="#00C853"
+            android:layout_marginBottom="24dp" />
+
+        <!-- Siren Duration -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Siren Duration"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:textColor="#FFFFFF"
+            android:layout_marginBottom="8dp" />
+
+        <RadioGroup
+            android:id="@+id/rgSirenDuration"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginBottom="24dp">
+
+            <RadioButton
+                android:id="@+id/radio15"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="15s"
+                android:textColor="#FFFFFF"
+                android:buttonTint="#00C853" />
+
+            <RadioButton
+                android:id="@+id/radio30"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="30s"
+                android:textColor="#FFFFFF"
+                android:buttonTint="#00C853"
+                android:checked="true" />
+
+            <RadioButton
+                android:id="@+id/radio60"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="60s"
+                android:textColor="#FFFFFF"
+                android:buttonTint="#00C853" />
+
+        </RadioGroup>
+
+        <!-- Blacklist -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="SMS Blacklist"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:textColor="#FFFFFF"
+            android:layout_marginBottom="4dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Numbers that cannot trigger the alarm. Long-press to remove."
+            android:textColor="#AAAAAA"
+            android:textSize="12sp"
+            android:layout_marginBottom="8dp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginBottom="8dp">
+
+            <EditText
+                android:id="@+id/etAddBlacklist"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:hint="+1234567890"
+                android:textColor="#FFFFFF"
+                android:textColorHint="#666666"
+                android:background="@drawable/edit_text_bg"
+                android:padding="12dp"
+                android:inputType="phone"
+                android:layout_marginEnd="8dp" />
+
+            <Button
+                android:id="@+id/btnAddBlacklist"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="ADD"
+                android:textColor="#000000"
+                android:backgroundTint="#00C853" />
+
+        </LinearLayout>
+
+        <ListView
+            android:id="@+id/lvBlacklist"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:background="@drawable/edit_text_bg"
+            android:divider="#333333"
+            android:dividerHeight="1dp"
+            android:layout_marginBottom="24dp" />
+
+        <!-- Reset -->
+        <Button
+            android:id="@+id/btnResetDefaults"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:text="RESET TO DEFAULTS"
+            android:textColor="#FFFFFF"
+            android:backgroundTint="#880000"
+            android:layout_marginBottom="12dp" />
+
+        <Button
+            android:id="@+id/btnBack"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:text="BACK"
+            android:textColor="#FFFFFF"
+            android:backgroundTint="#333333" />
+
+    </LinearLayout>
+</ScrollView>

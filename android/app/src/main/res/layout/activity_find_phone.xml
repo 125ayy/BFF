@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#000000">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="32dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Find Phone"
+            android:textSize="28sp"
+            android:textStyle="bold"
+            android:textColor="#00C853"
+            android:layout_marginBottom="24dp" />
+
+        <!-- Contact Selector -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Select Target Contact:"
+            android:textColor="#FFFFFF"
+            android:textSize="16sp"
+            android:layout_marginBottom="8dp" />
+
+        <Button
+            android:id="@+id/btnSelectContact"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:text="SELECT CONTACT"
+            android:textColor="#000000"
+            android:backgroundTint="#00C853"
+            android:layout_marginBottom="8dp" />
+
+        <TextView
+            android:id="@+id/tvSelectedContact"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="No contact selected"
+            android:textColor="#AAAAAA"
+            android:textSize="14sp"
+            android:padding="12dp"
+            android:background="@drawable/edit_text_bg"
+            android:layout_marginBottom="24dp" />
+
+        <!-- Password -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Your Password:"
+            android:textColor="#FFFFFF"
+            android:textSize="16sp"
+            android:layout_marginBottom="8dp" />
+
+        <EditText
+            android:id="@+id/etPassword"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Enter your password"
+            android:textColor="#FFFFFF"
+            android:textColorHint="#666666"
+            android:background="@drawable/edit_text_bg"
+            android:padding="12dp"
+            android:inputType="numberPassword"
+            android:layout_marginBottom="24dp" />
+
+        <!-- Device Type Toggle -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Target Device Type:"
+            android:textColor="#FFFFFF"
+            android:textSize="16sp"
+            android:layout_marginBottom="8dp" />
+
+        <RadioGroup
+            android:id="@+id/rgDeviceType"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginBottom="24dp">
+
+            <RadioButton
+                android:id="@+id/radioAndroid"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Android"
+                android:textColor="#FFFFFF"
+                android:buttonTint="#00C853"
+                android:checked="true" />
+
+            <RadioButton
+                android:id="@+id/radioIphone"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="iPhone"
+                android:textColor="#FFFFFF"
+                android:buttonTint="#00C853" />
+
+        </RadioGroup>
+
+        <Button
+            android:id="@+id/btnFindNow"
+            android:layout_width="match_parent"
+            android:layout_height="64dp"
+            android:text="FIND NOW"
+            android:textColor="#000000"
+            android:backgroundTint="#00C853"
+            android:textStyle="bold"
+            android:textSize="18sp"
+            android:layout_marginBottom="16dp" />
+
+        <Button
+            android:id="@+id/btnBack"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:text="BACK"
+            android:textColor="#FFFFFF"
+            android:backgroundTint="#333333" />
+
+    </LinearLayout>
+</ScrollView>
