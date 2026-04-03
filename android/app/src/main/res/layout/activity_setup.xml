@@ -27,6 +27,63 @@
             android:textColor="#FFFFFF"
             android:layout_marginBottom="24dp" />
 
+        <!-- Step 0: Permissions -->
+        <LinearLayout
+            android:id="@+id/step0Layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="BFF needs a few permissions to find your phone. Here's why:"
+                android:textColor="#AAAAAA"
+                android:textSize="14sp"
+                android:layout_marginBottom="20dp" />
+
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:text="📩  Receive &amp; Read SMS"
+                android:textColor="#FFFFFF" android:textSize="15sp" android:textStyle="bold"
+                android:layout_marginBottom="2dp"/>
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:text="Detects the password in incoming messages to trigger the alarm."
+                android:textColor="#AAAAAA" android:textSize="13sp" android:layout_marginBottom="14dp"/>
+
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:text="📤  Send SMS"
+                android:textColor="#FFFFFF" android:textSize="15sp" android:textStyle="bold"
+                android:layout_marginBottom="2dp"/>
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:text="Sends the trigger message to a friend's Android phone."
+                android:textColor="#AAAAAA" android:textSize="13sp" android:layout_marginBottom="14dp"/>
+
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:text="👤  Contacts"
+                android:textColor="#FFFFFF" android:textSize="15sp" android:textStyle="bold"
+                android:layout_marginBottom="2dp"/>
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:text="Lets you pick a contact when triggering Find Phone."
+                android:textColor="#AAAAAA" android:textSize="13sp" android:layout_marginBottom="14dp"/>
+
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:text="🪟  Display over other apps"
+                android:textColor="#FFFFFF" android:textSize="15sp" android:textStyle="bold"
+                android:layout_marginBottom="2dp"/>
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:text="Shows the Found screen on top of whatever is on screen when the alarm fires."
+                android:textColor="#AAAAAA" android:textSize="13sp" android:layout_marginBottom="14dp"/>
+
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:text="🔓  Full-screen notifications"
+                android:textColor="#FFFFFF" android:textSize="15sp" android:textStyle="bold"
+                android:layout_marginBottom="2dp"/>
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:text="Pops the Found screen open even when the phone is locked."
+                android:textColor="#AAAAAA" android:textSize="13sp" android:layout_marginBottom="4dp"/>
+
+        </LinearLayout>
+
         <!-- Step 1: Phone Number -->
         <LinearLayout
             android:id="@+id/step1Layout"
