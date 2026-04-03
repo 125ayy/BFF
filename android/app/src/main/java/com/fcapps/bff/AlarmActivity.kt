@@ -1,6 +1,7 @@
 package com.fcapps.bff
 
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.view.WindowManager
 import android.widget.Button
@@ -11,11 +12,17 @@ class AlarmActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        // Keep screen on and show over lock screen
+        // Show over lock screen and wake the display
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1) {
+            setShowWhenLocked(true)
+            setTurnScreenOn(true)
+        }
         window.addFlags(
             WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON or
             WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD or
+            @Suppress("DEPRECATION")
             WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED or
+            @Suppress("DEPRECATION")
             WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON
         )
 

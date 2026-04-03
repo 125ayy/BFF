@@ -1,10 +1,14 @@
 package com.fcapps.bff
 
+import android.Manifest
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.os.Bundle
 import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import com.fcapps.bff.Prefs.ownerEmail
 import com.fcapps.bff.Prefs.ownerName
 import com.fcapps.bff.Prefs.password
@@ -57,6 +61,7 @@ class SetupActivity : AppCompatActivity() {
         etOwnerName = findViewById(R.id.etOwnerName)
         etOwnerEmail = findViewById(R.id.etOwnerEmail)
 
+        requestRequiredPermissions()
         showStep(1)
 
         btnNext.setOnClickListener {
@@ -124,5 +129,32 @@ class SetupActivity : AppCompatActivity() {
         setupDone = true
         startActivity(Intent(this, SplashActivity::class.java))
         finish()
+    }
+
+    private fun requestRequiredPermissions() {
+        val permissions = arrayOf(
+            Manifest.permission.RECEIVE_SMS,
+            Manifest.permission.READ_SMS,
+            Manifest.permission.SEND_SMS,
+            Manifest.permission.READ_CONTACTS
+        )
+        val missing = permissions.filter {
+            ContextCompat.checkSelfPermission(this, it) != PackageManager.PERMISSION_GRANTED
+        }
+        if (missing.isNotEmpty()) {
+            ActivityCompat.requestPermissions(this, missing.toTypedArray(), 100)
+        }
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == 100) {
+            val denied = permissions.filterIndexed { i, _ ->
+                grantResults[i] != PackageManager.PERMISSION_GRANTED
+            }
+            if (denied.isNotEmpty()) {
+                Toast.makeText(this, "BFF needs SMS & Contacts permissions to work properly.", Toast.LENGTH_LONG).show()
+            }
+        }
     }
 }
