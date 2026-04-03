@@ -8,69 +8,140 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="32dp"
-        android:gravity="center">
+        android:padding="20dp">
 
+        <!-- Header -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="24dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="📱"
+                android:textSize="56sp"
+                android:layout_marginBottom="12dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="BestFoneFinder"
+                android:textSize="22sp"
+                android:textStyle="bold"
+                android:textColor="#00C853"
+                android:layout_marginBottom="4dp" />
+
+            <TextView
+                android:id="@+id/tvVersion"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="13sp"
+                android:textColor="#AAAAAA" />
+
+        </LinearLayout>
+
+        <!-- Privacy card -->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="📱😊"
-            android:textSize="64sp"
-            android:layout_marginBottom="8dp" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="BestFoneFinder"
-            android:textSize="28sp"
-            android:textStyle="bold"
-            android:textColor="#00C853"
-            android:layout_marginBottom="4dp" />
-
-        <TextView
-            android:id="@+id/tvVersion"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="16sp"
+            android:text="PRIVACY"
             android:textColor="#AAAAAA"
-            android:layout_marginBottom="32dp" />
+            android:textSize="11sp"
+            android:letterSpacing="0.12"
+            android:layout_marginBottom="8dp" />
 
-        <TextView
-            android:id="@+id/tvPrivacy"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textColor="#FFFFFF"
-            android:textSize="14sp"
-            android:background="@drawable/edit_text_bg"
+            android:orientation="vertical"
+            android:background="@drawable/card_bg"
             android:padding="16dp"
-            android:layout_marginBottom="24dp" />
+            android:layout_marginBottom="20dp">
 
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginBottom="8dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="🔒"
+                    android:textSize="20sp"
+                    android:layout_marginEnd="10dp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Your data stays on your device"
+                    android:textColor="#FFFFFF"
+                    android:textSize="14sp"
+                    android:textStyle="bold" />
+
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/tvPrivacy"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="#AAAAAA"
+                android:textSize="13sp"
+                android:lineSpacingExtra="4dp" />
+
+        </LinearLayout>
+
+        <!-- Support card -->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Support Development"
-            android:textSize="18sp"
-            android:textStyle="bold"
-            android:textColor="#FFFFFF"
+            android:text="SUPPORT DEVELOPMENT"
+            android:textColor="#AAAAAA"
+            android:textSize="11sp"
+            android:letterSpacing="0.12"
             android:layout_marginBottom="8dp" />
 
-        <Button
-            android:id="@+id/btnDonate"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="56dp"
-            android:text="DONATE VIA PAYPAL"
-            android:textColor="#000000"
-            android:backgroundTint="#00C853"
-            android:textStyle="bold"
-            android:layout_marginBottom="16dp" />
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="@drawable/card_bg"
+            android:padding="16dp"
+            android:layout_marginBottom="20dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Enjoying BFF? Consider supporting further development."
+                android:textColor="#AAAAAA"
+                android:textSize="13sp"
+                android:layout_marginBottom="12dp" />
+
+            <Button
+                android:id="@+id/btnDonate"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:text="💚  DONATE VIA PAYPAL"
+                android:textColor="#000000"
+                android:background="@drawable/btn_green"
+                android:textStyle="bold"
+                android:stateListAnimator="@null" />
+
+        </LinearLayout>
 
         <Button
             android:id="@+id/btnBack"
             android:layout_width="match_parent"
             android:layout_height="48dp"
             android:text="BACK"
-            android:textColor="#FFFFFF"
-            android:backgroundTint="#333333" />
+            android:textColor="#AAAAAA"
+            android:background="@drawable/btn_dark"
+            android:stateListAnimator="@null" />
 
     </LinearLayout>
 </ScrollView>

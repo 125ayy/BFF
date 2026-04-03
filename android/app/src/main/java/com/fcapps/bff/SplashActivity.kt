@@ -2,7 +2,9 @@ package com.fcapps.bff
 
 import android.content.Intent
 import android.os.Bundle
-import android.widget.Button
+import android.text.SpannableString
+import android.text.style.ForegroundColorSpan
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import com.fcapps.bff.Prefs.setupDone
 
@@ -19,13 +21,23 @@ class SplashActivity : AppCompatActivity() {
 
         setContentView(R.layout.activity_splash)
 
-        findViewById<Button>(R.id.btnFindPhone).setOnClickListener {
+        // Style BFF letters in app name
+        val appNameView = findViewById<TextView>(R.id.tvAppName)
+        val fullName = "BestFoneFinder"
+        val spannable = SpannableString(fullName)
+        val green = 0xFF00C853.toInt()
+        spannable.setSpan(ForegroundColorSpan(green), 0, 1, 0)  // B
+        spannable.setSpan(ForegroundColorSpan(green), 4, 5, 0)  // F
+        spannable.setSpan(ForegroundColorSpan(green), 8, 9, 0)  // F
+        appNameView.text = spannable
+
+        findViewById<android.view.View>(R.id.btnFindPhone).setOnClickListener {
             startActivity(Intent(this, FindPhoneActivity::class.java))
         }
-        findViewById<Button>(R.id.btnSettings).setOnClickListener {
+        findViewById<android.view.View>(R.id.btnSettings).setOnClickListener {
             startActivity(Intent(this, SettingsActivity::class.java))
         }
-        findViewById<Button>(R.id.btnShare).setOnClickListener {
+        findViewById<android.view.View>(R.id.btnShare).setOnClickListener {
             val shareIntent = Intent(Intent.ACTION_SEND).apply {
                 type = "text/plain"
                 putExtra(Intent.EXTRA_SUBJECT, "BestFoneFinder App")
@@ -33,7 +45,7 @@ class SplashActivity : AppCompatActivity() {
             }
             startActivity(Intent.createChooser(shareIntent, "Share BFF via"))
         }
-        findViewById<Button>(R.id.btnAbout).setOnClickListener {
+        findViewById<android.view.View>(R.id.btnAbout).setOnClickListener {
             startActivity(Intent(this, AboutActivity::class.java))
         }
     }

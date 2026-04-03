@@ -8,171 +8,286 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="32dp">
+        android:padding="20dp">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Settings"
-            android:textSize="28sp"
-            android:textStyle="bold"
-            android:textColor="#00C853"
-            android:layout_marginBottom="24dp" />
-
-        <!-- Change Password -->
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Change Password"
-            android:textSize="18sp"
-            android:textStyle="bold"
-            android:textColor="#FFFFFF"
-            android:layout_marginBottom="8dp" />
-
-        <EditText
-            android:id="@+id/etNewPassword"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="New password"
-            android:textColor="#FFFFFF"
-            android:textColorHint="#666666"
-            android:background="@drawable/edit_text_bg"
-            android:padding="12dp"
-            android:inputType="textPassword"
-            android:layout_marginBottom="8dp" />
-
-        <EditText
-            android:id="@+id/etConfirmNewPassword"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Confirm new password"
-            android:textColor="#FFFFFF"
-            android:textColorHint="#666666"
-            android:background="@drawable/edit_text_bg"
-            android:padding="12dp"
-            android:inputType="textPassword"
-            android:layout_marginBottom="8dp" />
-
-        <Button
-            android:id="@+id/btnSavePassword"
-            android:layout_width="match_parent"
-            android:layout_height="48dp"
-            android:text="SAVE PASSWORD"
-            android:textColor="#000000"
-            android:backgroundTint="#00C853"
-            android:layout_marginBottom="24dp" />
-
-        <!-- Siren Duration -->
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Siren Duration"
-            android:textSize="18sp"
-            android:textStyle="bold"
-            android:textColor="#FFFFFF"
-            android:layout_marginBottom="8dp" />
-
-        <RadioGroup
-            android:id="@+id/rgSirenDuration"
+        <!-- Page header -->
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginTop="8dp"
             android:layout_marginBottom="24dp">
 
-            <RadioButton
-                android:id="@+id/radio15"
-                android:layout_width="0dp"
+            <TextView
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="15s"
-                android:textColor="#FFFFFF"
-                android:buttonTint="#00C853" />
+                android:text="⚙️"
+                android:textSize="28sp"
+                android:layout_marginEnd="12dp" />
 
-            <RadioButton
-                android:id="@+id/radio30"
-                android:layout_width="0dp"
+            <TextView
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="30s"
-                android:textColor="#FFFFFF"
-                android:buttonTint="#00C853"
-                android:checked="true" />
+                android:text="Settings"
+                android:textSize="22sp"
+                android:textStyle="bold"
+                android:textColor="#FFFFFF" />
 
-            <RadioButton
-                android:id="@+id/radio60"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="60s"
-                android:textColor="#FFFFFF"
-                android:buttonTint="#00C853" />
+        </LinearLayout>
 
-        </RadioGroup>
-
-        <!-- Blacklist -->
+        <!-- ===== Section: Password ===== -->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="SMS Blacklist"
-            android:textSize="18sp"
-            android:textStyle="bold"
-            android:textColor="#FFFFFF"
-            android:layout_marginBottom="4dp" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Numbers that cannot trigger the alarm. Long-press to remove."
+            android:text="SECURITY"
             android:textColor="#AAAAAA"
-            android:textSize="12sp"
+            android:textSize="11sp"
+            android:letterSpacing="0.12"
             android:layout_marginBottom="8dp" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginBottom="8dp">
+            android:orientation="vertical"
+            android:background="@drawable/card_bg"
+            android:padding="16dp"
+            android:layout_marginBottom="20dp">
 
-            <EditText
-                android:id="@+id/etAddBlacklist"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:hint="+1234567890"
-                android:textColor="#FFFFFF"
-                android:textColorHint="#666666"
-                android:background="@drawable/edit_text_bg"
-                android:padding="12dp"
-                android:inputType="phone"
-                android:layout_marginEnd="8dp" />
-
-            <Button
-                android:id="@+id/btnAddBlacklist"
+            <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="ADD"
+                android:text="Change Password"
+                android:textColor="#FFFFFF"
+                android:textSize="15sp"
+                android:textStyle="bold"
+                android:layout_marginBottom="12dp" />
+
+            <EditText
+                android:id="@+id/etNewPassword"
+                android:layout_width="match_parent"
+                android:layout_height="52dp"
+                android:hint="New password"
+                android:textColor="#FFFFFF"
+                android:textColorHint="#555555"
+                android:background="@drawable/edit_text_bg"
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp"
+                android:inputType="textPassword"
+                android:layout_marginBottom="10dp" />
+
+            <EditText
+                android:id="@+id/etConfirmNewPassword"
+                android:layout_width="match_parent"
+                android:layout_height="52dp"
+                android:hint="Confirm new password"
+                android:textColor="#FFFFFF"
+                android:textColorHint="#555555"
+                android:background="@drawable/edit_text_bg"
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp"
+                android:inputType="textPassword"
+                android:layout_marginBottom="12dp" />
+
+            <Button
+                android:id="@+id/btnSavePassword"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:text="SAVE PASSWORD"
                 android:textColor="#000000"
-                android:backgroundTint="#00C853" />
+                android:background="@drawable/btn_green"
+                android:textStyle="bold"
+                android:stateListAnimator="@null" />
 
         </LinearLayout>
 
-        <ListView
-            android:id="@+id/lvBlacklist"
-            android:layout_width="match_parent"
-            android:layout_height="200dp"
-            android:background="@drawable/edit_text_bg"
-            android:divider="#333333"
-            android:dividerHeight="1dp"
-            android:layout_marginBottom="24dp" />
+        <!-- ===== Section: Siren Duration ===== -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="ALARM"
+            android:textColor="#AAAAAA"
+            android:textSize="11sp"
+            android:letterSpacing="0.12"
+            android:layout_marginBottom="8dp" />
 
-        <!-- Reset -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="@drawable/card_bg"
+            android:padding="16dp"
+            android:layout_marginBottom="20dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginBottom="12dp">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Siren Duration"
+                    android:textColor="#FFFFFF"
+                    android:textSize="15sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="🔔"
+                    android:textSize="18sp" />
+
+            </LinearLayout>
+
+            <!-- Pill buttons for siren duration -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="46dp"
+                android:orientation="horizontal"
+                android:background="@drawable/card_bg_secondary"
+                android:padding="3dp">
+
+                <Button
+                    android:id="@+id/radio15"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:text="15s"
+                    android:textColor="#FFFFFF"
+                    android:background="@drawable/pill_unselected"
+                    android:textStyle="bold"
+                    android:textSize="13sp"
+                    android:stateListAnimator="@null"
+                    android:layout_marginEnd="2dp" />
+
+                <Button
+                    android:id="@+id/radio30"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:text="30s"
+                    android:textColor="#000000"
+                    android:background="@drawable/pill_selected"
+                    android:textStyle="bold"
+                    android:textSize="13sp"
+                    android:stateListAnimator="@null"
+                    android:layout_marginEnd="2dp" />
+
+                <Button
+                    android:id="@+id/radio60"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:text="60s"
+                    android:textColor="#FFFFFF"
+                    android:background="@drawable/pill_unselected"
+                    android:textStyle="bold"
+                    android:textSize="13sp"
+                    android:stateListAnimator="@null" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <!-- ===== Section: Blacklist ===== -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="SMS BLACKLIST"
+            android:textColor="#AAAAAA"
+            android:textSize="11sp"
+            android:letterSpacing="0.12"
+            android:layout_marginBottom="8dp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="@drawable/card_bg"
+            android:padding="16dp"
+            android:layout_marginBottom="20dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Blocked numbers cannot trigger the alarm."
+                android:textColor="#AAAAAA"
+                android:textSize="12sp"
+                android:layout_marginBottom="12dp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginBottom="10dp">
+
+                <EditText
+                    android:id="@+id/etAddBlacklist"
+                    android:layout_width="0dp"
+                    android:layout_height="48dp"
+                    android:layout_weight="1"
+                    android:hint="+1234567890"
+                    android:textColor="#FFFFFF"
+                    android:textColorHint="#555555"
+                    android:background="@drawable/edit_text_bg"
+                    android:paddingStart="14dp"
+                    android:paddingEnd="14dp"
+                    android:inputType="phone"
+                    android:layout_marginEnd="8dp" />
+
+                <Button
+                    android:id="@+id/btnAddBlacklist"
+                    android:layout_width="72dp"
+                    android:layout_height="48dp"
+                    android:text="ADD"
+                    android:textColor="#000000"
+                    android:background="@drawable/btn_green"
+                    android:textStyle="bold"
+                    android:stateListAnimator="@null" />
+
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Long-press a number to remove it."
+                android:textColor="#555555"
+                android:textSize="11sp"
+                android:layout_marginBottom="6dp" />
+
+            <ListView
+                android:id="@+id/lvBlacklist"
+                android:layout_width="match_parent"
+                android:layout_height="180dp"
+                android:background="@drawable/card_bg_secondary"
+                android:divider="#2A2A2A"
+                android:dividerHeight="1dp" />
+
+        </LinearLayout>
+
+        <!-- ===== Section: Danger Zone ===== -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="DANGER ZONE"
+            android:textColor="#AAAAAA"
+            android:textSize="11sp"
+            android:letterSpacing="0.12"
+            android:layout_marginBottom="8dp" />
+
         <Button
             android:id="@+id/btnResetDefaults"
             android:layout_width="match_parent"
-            android:layout_height="48dp"
+            android:layout_height="50dp"
             android:text="RESET TO DEFAULTS"
-            android:textColor="#FFFFFF"
-            android:backgroundTint="#880000"
+            android:textColor="#FF4444"
+            android:background="@drawable/btn_danger"
+            android:textStyle="bold"
+            android:stateListAnimator="@null"
             android:layout_marginBottom="12dp" />
 
         <Button
@@ -180,8 +295,9 @@
             android:layout_width="match_parent"
             android:layout_height="48dp"
             android:text="BACK"
-            android:textColor="#FFFFFF"
-            android:backgroundTint="#333333" />
+            android:textColor="#AAAAAA"
+            android:background="@drawable/btn_dark"
+            android:stateListAnimator="@null" />
 
     </LinearLayout>
 </ScrollView>

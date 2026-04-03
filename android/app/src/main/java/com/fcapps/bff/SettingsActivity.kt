@@ -15,14 +15,15 @@ class SettingsActivity : AppCompatActivity() {
 
     private lateinit var etNewPassword: EditText
     private lateinit var etConfirmNewPassword: EditText
-    private lateinit var rgSirenDuration: RadioGroup
-    private lateinit var radio15: RadioButton
-    private lateinit var radio30: RadioButton
-    private lateinit var radio60: RadioButton
+    private lateinit var btn15: Button
+    private lateinit var btn30: Button
+    private lateinit var btn60: Button
     private lateinit var lvBlacklist: ListView
     private lateinit var etAddBlacklist: EditText
     private lateinit var blacklistAdapter: ArrayAdapter<String>
     private val blacklistItems = mutableListOf<String>()
+
+    private var selectedDuration: Int = 30
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -30,19 +31,19 @@ class SettingsActivity : AppCompatActivity() {
 
         etNewPassword = findViewById(R.id.etNewPassword)
         etConfirmNewPassword = findViewById(R.id.etConfirmNewPassword)
-        rgSirenDuration = findViewById(R.id.rgSirenDuration)
-        radio15 = findViewById(R.id.radio15)
-        radio30 = findViewById(R.id.radio30)
-        radio60 = findViewById(R.id.radio60)
+        btn15 = findViewById(R.id.radio15)
+        btn30 = findViewById(R.id.radio30)
+        btn60 = findViewById(R.id.radio60)
         lvBlacklist = findViewById(R.id.lvBlacklist)
         etAddBlacklist = findViewById(R.id.etAddBlacklist)
 
         // Load current siren duration
-        when (sirenDuration) {
-            15 -> radio15.isChecked = true
-            60 -> radio60.isChecked = true
-            else -> radio30.isChecked = true
-        }
+        selectedDuration = sirenDuration
+        updateDurationPills(selectedDuration)
+
+        btn15.setOnClickListener { selectDuration(15) }
+        btn30.setOnClickListener { selectDuration(30) }
+        btn60.setOnClickListener { selectDuration(60) }
 
         // Load blacklist
         blacklistItems.clear()
@@ -81,14 +82,6 @@ class SettingsActivity : AppCompatActivity() {
             etConfirmNewPassword.text.clear()
         }
 
-        rgSirenDuration.setOnCheckedChangeListener { _, checkedId ->
-            sirenDuration = when (checkedId) {
-                R.id.radio15 -> 15
-                R.id.radio60 -> 60
-                else -> 30
-            }
-        }
-
         findViewById<Button>(R.id.btnAddBlacklist).setOnClickListener {
             val num = etAddBlacklist.text.toString().trim()
             if (num.isEmpty()) {
@@ -110,7 +103,7 @@ class SettingsActivity : AppCompatActivity() {
                 .setMessage("This will reset siren duration and clear the blacklist. Your phone number and password will be kept.")
                 .setPositiveButton("Reset") { _, _ ->
                     resetToDefaults()
-                    radio30.isChecked = true
+                    selectDuration(30)
                     blacklistItems.clear()
                     blacklistAdapter.notifyDataSetChanged()
                     Toast.makeText(this, "Reset to defaults", Toast.LENGTH_SHORT).show()
@@ -120,5 +113,27 @@ class SettingsActivity : AppCompatActivity() {
         }
 
         findViewById<Button>(R.id.btnBack).setOnClickListener { finish() }
+    }
+
+    private fun selectDuration(seconds: Int) {
+        selectedDuration = seconds
+        sirenDuration = seconds
+        updateDurationPills(seconds)
+    }
+
+    private fun updateDurationPills(selected: Int) {
+        val greenBg = R.drawable.pill_selected
+        val darkBg = R.drawable.pill_unselected
+        val black = 0xFF000000.toInt()
+        val white = 0xFFFFFFFF.toInt()
+
+        btn15.setBackgroundResource(if (selected == 15) greenBg else darkBg)
+        btn15.setTextColor(if (selected == 15) black else white)
+
+        btn30.setBackgroundResource(if (selected == 30) greenBg else darkBg)
+        btn30.setTextColor(if (selected == 30) black else white)
+
+        btn60.setBackgroundResource(if (selected == 60) greenBg else darkBg)
+        btn60.setTextColor(if (selected == 60) black else white)
     }
 }

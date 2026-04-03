@@ -24,11 +24,12 @@ class FindPhoneActivity : AppCompatActivity() {
 
     private lateinit var tvSelectedContact: TextView
     private lateinit var etPassword: EditText
-    private lateinit var radioAndroid: RadioButton
-    private lateinit var radioIphone: RadioButton
+    private lateinit var btnAndroid: Button
+    private lateinit var btnIphone: Button
     private lateinit var btnFindNow: Button
 
     private var selectedPhoneNumber: String = ""
+    private var isAndroidSelected: Boolean = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -36,8 +37,8 @@ class FindPhoneActivity : AppCompatActivity() {
 
         tvSelectedContact = findViewById(R.id.tvSelectedContact)
         etPassword = findViewById(R.id.etPassword)
-        radioAndroid = findViewById(R.id.radioAndroid)
-        radioIphone = findViewById(R.id.radioIphone)
+        btnAndroid = findViewById(R.id.radioAndroid)
+        btnIphone = findViewById(R.id.radioIphone)
         btnFindNow = findViewById(R.id.btnFindNow)
 
         val btnSelectContact = findViewById<Button>(R.id.btnSelectContact)
@@ -47,6 +48,26 @@ class FindPhoneActivity : AppCompatActivity() {
 
         val btnBack = findViewById<Button>(R.id.btnBack)
         btnBack.setOnClickListener { finish() }
+
+        // Segmented toggle logic
+        btnAndroid.setOnClickListener { selectDevice(true) }
+        btnIphone.setOnClickListener { selectDevice(false) }
+        selectDevice(true)
+    }
+
+    private fun selectDevice(androidSelected: Boolean) {
+        isAndroidSelected = androidSelected
+        if (androidSelected) {
+            btnAndroid.setBackgroundResource(R.drawable.pill_selected)
+            btnAndroid.setTextColor(0xFF000000.toInt())
+            btnIphone.setBackgroundResource(R.drawable.pill_unselected)
+            btnIphone.setTextColor(0xFFFFFFFF.toInt())
+        } else {
+            btnIphone.setBackgroundResource(R.drawable.pill_selected)
+            btnIphone.setTextColor(0xFF000000.toInt())
+            btnAndroid.setBackgroundResource(R.drawable.pill_unselected)
+            btnAndroid.setTextColor(0xFFFFFFFF.toInt())
+        }
     }
 
     private fun pickContact() {
@@ -71,6 +92,7 @@ class FindPhoneActivity : AppCompatActivity() {
                         selectedPhoneNumber = it.getString(numberIdx) ?: ""
                         val name = it.getString(nameIdx) ?: ""
                         tvSelectedContact.text = "$name\n$selectedPhoneNumber"
+                        tvSelectedContact.setTextColor(0xFFFFFFFF.toInt())
                     }
                 }
             }
@@ -94,7 +116,7 @@ class FindPhoneActivity : AppCompatActivity() {
             return
         }
 
-        if (radioAndroid.isChecked) {
+        if (isAndroidSelected) {
             sendFindSms()
         } else {
             // iPhone placeholder

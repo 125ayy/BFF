@@ -2,32 +2,43 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#000000">
+    android:background="#000000"
+    android:fillViewport="true">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="32dp">
+        android:padding="20dp">
 
-        <TextView
-            android:layout_width="wrap_content"
+        <!-- Header -->
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="BestFoneFinder Setup"
-            android:textSize="24sp"
-            android:textStyle="bold"
-            android:textColor="#00C853"
-            android:layout_marginBottom="8dp" />
+            android:orientation="vertical"
+            android:layout_marginBottom="4dp"
+            android:layout_marginTop="8dp">
 
-        <TextView
-            android:id="@+id/tvStepTitle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="18sp"
-            android:textColor="#FFFFFF"
-            android:layout_marginBottom="24dp" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="📱 BestFoneFinder"
+                android:textSize="22sp"
+                android:textStyle="bold"
+                android:textColor="#00C853"
+                android:layout_marginBottom="4dp" />
 
-        <!-- Step 0: Permissions -->
+            <TextView
+                android:id="@+id/tvStepTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="15sp"
+                android:textColor="#AAAAAA"
+                android:layout_marginBottom="20dp" />
+
+        </LinearLayout>
+
+        <!-- ========== Step 0: Permissions ========== -->
         <LinearLayout
             android:id="@+id/step0Layout"
             android:layout_width="match_parent"
@@ -37,110 +48,276 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="BFF needs a few permissions to find your phone. Here's why:"
+                android:text="BFF needs a few permissions to work correctly. Here's what each one does:"
                 android:textColor="#AAAAAA"
-                android:textSize="14sp"
-                android:layout_marginBottom="20dp" />
+                android:textSize="13sp"
+                android:layout_marginBottom="16dp" />
 
-            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                android:text="📩  Receive &amp; Read SMS"
-                android:textColor="#FFFFFF" android:textSize="15sp" android:textStyle="bold"
-                android:layout_marginBottom="2dp"/>
-            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                android:text="Detects the password in incoming messages to trigger the alarm."
-                android:textColor="#AAAAAA" android:textSize="13sp" android:layout_marginBottom="14dp"/>
+            <!-- Permission Card: Receive SMS -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:background="@drawable/permission_card_bg"
+                android:padding="14dp"
+                android:layout_marginBottom="10dp">
+                <TextView
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:text="📩"
+                    android:textSize="22sp"
+                    android:gravity="center"
+                    android:layout_marginEnd="14dp" />
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Receive &amp; Read SMS"
+                        android:textColor="#FFFFFF"
+                        android:textSize="14sp"
+                        android:textStyle="bold"
+                        android:layout_marginBottom="2dp"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Detects the password in incoming messages to trigger the alarm."
+                        android:textColor="#AAAAAA"
+                        android:textSize="12sp"/>
+                </LinearLayout>
+            </LinearLayout>
 
-            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                android:text="📤  Send SMS"
-                android:textColor="#FFFFFF" android:textSize="15sp" android:textStyle="bold"
-                android:layout_marginBottom="2dp"/>
-            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                android:text="Sends the trigger message to a friend's Android phone."
-                android:textColor="#AAAAAA" android:textSize="13sp" android:layout_marginBottom="14dp"/>
+            <!-- Permission Card: Send SMS -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:background="@drawable/permission_card_bg"
+                android:padding="14dp"
+                android:layout_marginBottom="10dp">
+                <TextView
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:text="📤"
+                    android:textSize="22sp"
+                    android:gravity="center"
+                    android:layout_marginEnd="14dp" />
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Send SMS"
+                        android:textColor="#FFFFFF"
+                        android:textSize="14sp"
+                        android:textStyle="bold"
+                        android:layout_marginBottom="2dp"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Sends the trigger message to a friend's Android phone."
+                        android:textColor="#AAAAAA"
+                        android:textSize="12sp"/>
+                </LinearLayout>
+            </LinearLayout>
 
-            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                android:text="👤  Contacts"
-                android:textColor="#FFFFFF" android:textSize="15sp" android:textStyle="bold"
-                android:layout_marginBottom="2dp"/>
-            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                android:text="Lets you pick a contact when triggering Find Phone."
-                android:textColor="#AAAAAA" android:textSize="13sp" android:layout_marginBottom="14dp"/>
+            <!-- Permission Card: Contacts -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:background="@drawable/permission_card_bg"
+                android:padding="14dp"
+                android:layout_marginBottom="10dp">
+                <TextView
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:text="👤"
+                    android:textSize="22sp"
+                    android:gravity="center"
+                    android:layout_marginEnd="14dp" />
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Contacts"
+                        android:textColor="#FFFFFF"
+                        android:textSize="14sp"
+                        android:textStyle="bold"
+                        android:layout_marginBottom="2dp"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Lets you pick a contact when triggering Find Phone."
+                        android:textColor="#AAAAAA"
+                        android:textSize="12sp"/>
+                </LinearLayout>
+            </LinearLayout>
 
-            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                android:text="🪟  Display over other apps"
-                android:textColor="#FFFFFF" android:textSize="15sp" android:textStyle="bold"
-                android:layout_marginBottom="2dp"/>
-            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                android:text="Shows the Found screen on top of whatever is on screen when the alarm fires."
-                android:textColor="#AAAAAA" android:textSize="13sp" android:layout_marginBottom="14dp"/>
+            <!-- Permission Card: Display over apps -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:background="@drawable/permission_card_bg"
+                android:padding="14dp"
+                android:layout_marginBottom="10dp">
+                <TextView
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:text="🪟"
+                    android:textSize="22sp"
+                    android:gravity="center"
+                    android:layout_marginEnd="14dp" />
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Display over other apps"
+                        android:textColor="#FFFFFF"
+                        android:textSize="14sp"
+                        android:textStyle="bold"
+                        android:layout_marginBottom="2dp"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Shows the alarm screen on top of whatever is currently open."
+                        android:textColor="#AAAAAA"
+                        android:textSize="12sp"/>
+                </LinearLayout>
+            </LinearLayout>
 
-            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                android:text="🔓  Full-screen notifications"
-                android:textColor="#FFFFFF" android:textSize="15sp" android:textStyle="bold"
-                android:layout_marginBottom="2dp"/>
-            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                android:text="Pops the Found screen open even when the phone is locked."
-                android:textColor="#AAAAAA" android:textSize="13sp" android:layout_marginBottom="4dp"/>
+            <!-- Permission Card: Full-screen -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:background="@drawable/permission_card_bg"
+                android:padding="14dp"
+                android:layout_marginBottom="10dp">
+                <TextView
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:text="🔓"
+                    android:textSize="22sp"
+                    android:gravity="center"
+                    android:layout_marginEnd="14dp" />
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Full-screen notifications"
+                        android:textColor="#FFFFFF"
+                        android:textSize="14sp"
+                        android:textStyle="bold"
+                        android:layout_marginBottom="2dp"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Pops the alarm screen open even when the phone is locked."
+                        android:textColor="#AAAAAA"
+                        android:textSize="12sp"/>
+                </LinearLayout>
+            </LinearLayout>
 
         </LinearLayout>
 
-        <!-- Step 1: Phone Number -->
+        <!-- ========== Step 1: Phone Number ========== -->
         <LinearLayout
             android:id="@+id/step1Layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:visibility="gone">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Country Code (e.g. +1):"
-                android:textColor="#FFFFFF"
-                android:textSize="14sp"
-                android:layout_marginBottom="4dp" />
+                android:text="Country"
+                android:textColor="#AAAAAA"
+                android:textSize="13sp"
+                android:layout_marginBottom="6dp" />
 
-            <EditText
-                android:id="@+id/etCountryCode"
+            <Spinner
+                android:id="@+id/spinnerCountry"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="+1"
-                android:textColor="#FFFFFF"
-                android:textColorHint="#666666"
-                android:background="@drawable/edit_text_bg"
-                android:padding="12dp"
-                android:inputType="phone"
+                android:layout_height="52dp"
+                android:background="@drawable/spinner_bg"
+                android:paddingStart="14dp"
+                android:paddingEnd="14dp"
                 android:layout_marginBottom="16dp" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Phone Number:"
-                android:textColor="#FFFFFF"
-                android:textSize="14sp"
-                android:layout_marginBottom="4dp" />
+                android:text="Phone Number"
+                android:textColor="#AAAAAA"
+                android:textSize="13sp"
+                android:layout_marginBottom="6dp" />
 
             <EditText
                 android:id="@+id/etPhoneNumber"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="52dp"
                 android:hint="5551234567"
                 android:textColor="#FFFFFF"
-                android:textColorHint="#666666"
+                android:textColorHint="#555555"
                 android:background="@drawable/edit_text_bg"
-                android:padding="12dp"
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp"
                 android:inputType="phone"
-                android:layout_marginBottom="8dp" />
+                android:layout_marginBottom="12dp" />
 
-            <TextView
-                android:layout_width="wrap_content"
+            <!-- Hidden view kept for Kotlin compat — not displayed -->
+            <EditText
+                android:id="@+id/etCountryCode"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:visibility="gone"
+                android:inputType="phone" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Your password will be the last 7 digits of your phone number."
-                android:textColor="#AAAAAA"
-                android:textSize="12sp" />
+                android:orientation="horizontal"
+                android:background="@drawable/card_bg_secondary"
+                android:padding="12dp">
+                <TextView
+                    android:layout_width="20dp"
+                    android:layout_height="wrap_content"
+                    android:text="ℹ️"
+                    android:textSize="13sp"
+                    android:layout_marginEnd="8dp" />
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Your password will be the last 7 digits of your full phone number."
+                    android:textColor="#AAAAAA"
+                    android:textSize="12sp" />
+            </LinearLayout>
 
         </LinearLayout>
 
-        <!-- Step 2: Password Confirmation -->
+        <!-- ========== Step 2: Password Confirmation ========== -->
         <LinearLayout
             android:id="@+id/step2Layout"
             android:layout_width="match_parent"
@@ -148,45 +325,89 @@
             android:orientation="vertical"
             android:visibility="gone">
 
-            <TextView
-                android:id="@+id/tvGeneratedPassword"
-                android:layout_width="wrap_content"
+            <!-- Password display card -->
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textColor="#00C853"
-                android:textSize="20sp"
-                android:textStyle="bold"
-                android:layout_marginBottom="16dp" />
+                android:orientation="vertical"
+                android:background="@drawable/card_bg"
+                android:padding="20dp"
+                android:gravity="center"
+                android:layout_marginBottom="20dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Your Password"
+                    android:textColor="#AAAAAA"
+                    android:textSize="13sp"
+                    android:layout_marginBottom="8dp" />
+
+                <TextView
+                    android:id="@+id/tvGeneratedPassword"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="#00C853"
+                    android:textSize="36sp"
+                    android:textStyle="bold"
+                    android:letterSpacing="0.2"
+                    android:layout_marginBottom="8dp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Write this down — you'll need it to find your phone."
+                    android:textColor="#777777"
+                    android:textSize="12sp"
+                    android:gravity="center" />
+
+            </LinearLayout>
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Confirm your password:"
-                android:textColor="#FFFFFF"
-                android:textSize="14sp"
-                android:layout_marginBottom="4dp" />
+                android:text="Confirm Password"
+                android:textColor="#AAAAAA"
+                android:textSize="13sp"
+                android:layout_marginBottom="6dp" />
 
             <EditText
                 android:id="@+id/etConfirmPassword"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="Enter password shown above"
+                android:layout_height="52dp"
+                android:hint="Type the password shown above"
                 android:textColor="#FFFFFF"
-                android:textColorHint="#666666"
+                android:textColorHint="#555555"
                 android:background="@drawable/edit_text_bg"
-                android:padding="12dp"
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp"
                 android:inputType="numberPassword"
-                android:layout_marginBottom="8dp" />
+                android:layout_marginBottom="12dp" />
 
-            <TextView
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Remember this password - you will need it to trigger the Find Phone alarm."
-                android:textColor="#AAAAAA"
-                android:textSize="12sp" />
+                android:orientation="horizontal"
+                android:background="@drawable/card_bg_secondary"
+                android:padding="12dp">
+                <TextView
+                    android:layout_width="20dp"
+                    android:layout_height="wrap_content"
+                    android:text="🔒"
+                    android:textSize="13sp"
+                    android:layout_marginEnd="8dp" />
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="This is the SMS trigger password. Anyone who sends it to this phone activates the alarm."
+                    android:textColor="#AAAAAA"
+                    android:textSize="12sp" />
+            </LinearLayout>
 
         </LinearLayout>
 
-        <!-- Step 3: Owner Info -->
+        <!-- ========== Step 3: Owner Info ========== -->
         <LinearLayout
             android:id="@+id/step3Layout"
             android:layout_width="match_parent"
@@ -197,45 +418,55 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Name (optional):"
-                android:textColor="#FFFFFF"
-                android:textSize="14sp"
-                android:layout_marginBottom="4dp" />
+                android:text="This info is stored locally on your device only."
+                android:textColor="#AAAAAA"
+                android:textSize="13sp"
+                android:layout_marginBottom="16dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Name (optional)"
+                android:textColor="#AAAAAA"
+                android:textSize="13sp"
+                android:layout_marginBottom="6dp" />
 
             <EditText
                 android:id="@+id/etOwnerName"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="52dp"
                 android:hint="John Doe"
                 android:textColor="#FFFFFF"
-                android:textColorHint="#666666"
+                android:textColorHint="#555555"
                 android:background="@drawable/edit_text_bg"
-                android:padding="12dp"
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp"
                 android:inputType="textPersonName"
                 android:layout_marginBottom="16dp" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Email (optional):"
-                android:textColor="#FFFFFF"
-                android:textSize="14sp"
-                android:layout_marginBottom="4dp" />
+                android:text="Email (optional)"
+                android:textColor="#AAAAAA"
+                android:textSize="13sp"
+                android:layout_marginBottom="6dp" />
 
             <EditText
                 android:id="@+id/etOwnerEmail"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="52dp"
                 android:hint="john@example.com"
                 android:textColor="#FFFFFF"
-                android:textColorHint="#666666"
+                android:textColorHint="#555555"
                 android:background="@drawable/edit_text_bg"
-                android:padding="12dp"
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp"
                 android:inputType="textEmailAddress" />
 
         </LinearLayout>
 
-        <!-- Step 4: Confirmation -->
+        <!-- ========== Step 4: Confirmation ========== -->
         <LinearLayout
             android:id="@+id/step4Layout"
             android:layout_width="match_parent"
@@ -244,42 +475,56 @@
             android:gravity="center"
             android:visibility="gone">
 
-            <TextView
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="✓"
-                android:textSize="72sp"
-                android:textColor="#00C853"
-                android:layout_marginBottom="16dp" />
+                android:orientation="vertical"
+                android:gravity="center"
+                android:background="@drawable/card_bg"
+                android:padding="32dp"
+                android:layout_marginBottom="16dp">
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Installation completed!"
-                android:textSize="22sp"
-                android:textStyle="bold"
-                android:textColor="#FFFFFF"
-                android:layout_marginBottom="12dp" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="✅"
+                    android:textSize="64sp"
+                    android:layout_marginBottom="16dp" />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="BestFoneFinder is ready. When someone sends an SMS containing your password to this phone, the alarm will sound."
-                android:textColor="#AAAAAA"
-                android:textSize="14sp"
-                android:gravity="center" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Setup Complete!"
+                    android:textSize="22sp"
+                    android:textStyle="bold"
+                    android:textColor="#FFFFFF"
+                    android:layout_marginBottom="12dp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="BestFoneFinder is ready. When someone sends an SMS with your password to this phone, the alarm will sound."
+                    android:textColor="#AAAAAA"
+                    android:textSize="13sp"
+                    android:gravity="center"
+                    android:lineSpacingExtra="4dp" />
+
+            </LinearLayout>
 
         </LinearLayout>
 
+        <!-- Bottom button -->
         <Button
             android:id="@+id/btnNext"
             android:layout_width="match_parent"
             android:layout_height="56dp"
-            android:text="NEXT"
+            android:text="GRANT PERMISSIONS"
             android:textColor="#000000"
-            android:backgroundTint="#00C853"
+            android:background="@drawable/btn_green"
             android:textStyle="bold"
-            android:layout_marginTop="32dp" />
+            android:textSize="15sp"
+            android:stateListAnimator="@null"
+            android:layout_marginTop="24dp" />
 
     </LinearLayout>
 </ScrollView>

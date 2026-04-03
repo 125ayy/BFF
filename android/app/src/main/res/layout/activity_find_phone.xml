@@ -8,122 +8,183 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="32dp">
+        android:padding="20dp">
 
+        <!-- Page header -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="24dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="📱"
+                android:textSize="28sp"
+                android:layout_marginEnd="12dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Find Phone"
+                android:textSize="22sp"
+                android:textStyle="bold"
+                android:textColor="#FFFFFF" />
+
+        </LinearLayout>
+
+        <!-- Contact selector card -->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Find Phone"
-            android:textSize="28sp"
-            android:textStyle="bold"
-            android:textColor="#00C853"
-            android:layout_marginBottom="24dp" />
-
-        <!-- Contact Selector -->
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Select Target Contact:"
-            android:textColor="#FFFFFF"
-            android:textSize="16sp"
-            android:layout_marginBottom="8dp" />
-
-        <Button
-            android:id="@+id/btnSelectContact"
-            android:layout_width="match_parent"
-            android:layout_height="48dp"
-            android:text="SELECT CONTACT"
-            android:textColor="#000000"
-            android:backgroundTint="#00C853"
-            android:layout_marginBottom="8dp" />
-
-        <TextView
-            android:id="@+id/tvSelectedContact"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="No contact selected"
+            android:text="TARGET CONTACT"
             android:textColor="#AAAAAA"
-            android:textSize="14sp"
-            android:padding="12dp"
-            android:background="@drawable/edit_text_bg"
-            android:layout_marginBottom="24dp" />
+            android:textSize="11sp"
+            android:letterSpacing="0.12"
+            android:layout_marginBottom="8dp" />
 
-        <!-- Password -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="@drawable/card_bg"
+            android:padding="16dp"
+            android:layout_marginBottom="20dp">
+
+            <!-- Avatar row -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginBottom="12dp">
+
+                <TextView
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:text="👤"
+                    android:textSize="28sp"
+                    android:gravity="center"
+                    android:background="@drawable/card_bg_secondary"
+                    android:layout_marginEnd="14dp" />
+
+                <TextView
+                    android:id="@+id/tvSelectedContact"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="No contact selected"
+                    android:textColor="#AAAAAA"
+                    android:textSize="14sp" />
+
+            </LinearLayout>
+
+            <Button
+                android:id="@+id/btnSelectContact"
+                android:layout_width="match_parent"
+                android:layout_height="44dp"
+                android:text="SELECT CONTACT"
+                android:textColor="#00C853"
+                android:background="@drawable/btn_dark"
+                android:textStyle="bold"
+                android:textSize="13sp"
+                android:stateListAnimator="@null" />
+
+        </LinearLayout>
+
+        <!-- Password field -->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Your Password:"
-            android:textColor="#FFFFFF"
-            android:textSize="16sp"
+            android:text="YOUR PASSWORD"
+            android:textColor="#AAAAAA"
+            android:textSize="11sp"
+            android:letterSpacing="0.12"
             android:layout_marginBottom="8dp" />
 
         <EditText
             android:id="@+id/etPassword"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="52dp"
             android:hint="Enter your password"
             android:textColor="#FFFFFF"
-            android:textColorHint="#666666"
+            android:textColorHint="#555555"
             android:background="@drawable/edit_text_bg"
-            android:padding="12dp"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
             android:inputType="numberPassword"
-            android:layout_marginBottom="24dp" />
+            android:layout_marginBottom="20dp" />
 
-        <!-- Device Type Toggle -->
+        <!-- Device type segmented toggle -->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Target Device Type:"
-            android:textColor="#FFFFFF"
-            android:textSize="16sp"
+            android:text="TARGET DEVICE"
+            android:textColor="#AAAAAA"
+            android:textSize="11sp"
+            android:letterSpacing="0.12"
             android:layout_marginBottom="8dp" />
 
-        <RadioGroup
-            android:id="@+id/rgDeviceType"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="50dp"
             android:orientation="horizontal"
-            android:layout_marginBottom="24dp">
+            android:background="@drawable/card_bg_secondary"
+            android:padding="4dp"
+            android:layout_marginBottom="28dp">
 
-            <RadioButton
+            <Button
                 android:id="@+id/radioAndroid"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:text="Android"
-                android:textColor="#FFFFFF"
-                android:buttonTint="#00C853"
-                android:checked="true" />
+                android:text="🤖  Android"
+                android:textColor="#000000"
+                android:background="@drawable/pill_selected"
+                android:textStyle="bold"
+                android:textSize="13sp"
+                android:stateListAnimator="@null"
+                android:layout_marginEnd="2dp" />
 
-            <RadioButton
+            <Button
                 android:id="@+id/radioIphone"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:text="iPhone"
+                android:text="🍎  iPhone"
                 android:textColor="#FFFFFF"
-                android:buttonTint="#00C853" />
+                android:background="@drawable/pill_unselected"
+                android:textStyle="bold"
+                android:textSize="13sp"
+                android:stateListAnimator="@null"
+                android:layout_marginStart="2dp" />
 
-        </RadioGroup>
+        </LinearLayout>
 
+        <!-- Find Now button -->
         <Button
             android:id="@+id/btnFindNow"
             android:layout_width="match_parent"
-            android:layout_height="64dp"
+            android:layout_height="60dp"
             android:text="FIND NOW"
             android:textColor="#000000"
-            android:backgroundTint="#00C853"
+            android:background="@drawable/btn_green"
             android:textStyle="bold"
-            android:textSize="18sp"
-            android:layout_marginBottom="16dp" />
+            android:textSize="17sp"
+            android:stateListAnimator="@null"
+            android:layout_marginBottom="12dp" />
 
         <Button
             android:id="@+id/btnBack"
             android:layout_width="match_parent"
             android:layout_height="48dp"
             android:text="BACK"
-            android:textColor="#FFFFFF"
-            android:backgroundTint="#333333" />
+            android:textColor="#AAAAAA"
+            android:background="@drawable/btn_dark"
+            android:stateListAnimator="@null" />
 
     </LinearLayout>
 </ScrollView>

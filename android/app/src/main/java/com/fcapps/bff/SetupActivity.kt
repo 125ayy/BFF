@@ -6,7 +6,6 @@ import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.provider.Settings
 import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
@@ -34,7 +33,7 @@ class SetupActivity : AppCompatActivity() {
 
     // Step 1 views
     private lateinit var step1Layout: View
-    private lateinit var etCountryCode: EditText
+    private lateinit var spinnerCountry: Spinner
     private lateinit var etPhoneNumber: EditText
 
     // Step 2 views
@@ -53,6 +52,10 @@ class SetupActivity : AppCompatActivity() {
     private lateinit var btnNext: Button
     private lateinit var tvStepTitle: TextView
 
+    // Country spinner data
+    private val countries = CountryCodes.list
+    private var selectedCountry: Country = countries.firstOrNull { it.dialCode == "+1" } ?: countries[0]
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_setup)
@@ -65,12 +68,26 @@ class SetupActivity : AppCompatActivity() {
         btnNext = findViewById(R.id.btnNext)
         tvStepTitle = findViewById(R.id.tvStepTitle)
 
-        etCountryCode = findViewById(R.id.etCountryCode)
+        spinnerCountry = findViewById(R.id.spinnerCountry)
         etPhoneNumber = findViewById(R.id.etPhoneNumber)
         tvGeneratedPassword = findViewById(R.id.tvGeneratedPassword)
         etConfirmPassword = findViewById(R.id.etConfirmPassword)
         etOwnerName = findViewById(R.id.etOwnerName)
         etOwnerEmail = findViewById(R.id.etOwnerEmail)
+
+        // Setup country spinner
+        val adapter = CountrySpinnerAdapter(this, countries)
+        spinnerCountry.adapter = adapter
+        // Default to US (+1)
+        val defaultIndex = countries.indexOfFirst { it.dialCode == "+1" && it.name == "United States" }
+        if (defaultIndex >= 0) spinnerCountry.setSelection(defaultIndex)
+
+        spinnerCountry.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
+                selectedCountry = countries[position]
+            }
+            override fun onNothingSelected(parent: AdapterView<*>) {}
+        }
 
         showStep(0)
 
@@ -94,18 +111,18 @@ class SetupActivity : AppCompatActivity() {
         step4Layout.visibility = if (step == 4) View.VISIBLE else View.GONE
 
         tvStepTitle.text = when (step) {
-            0 -> "Permissions"
-            1 -> "Step 1: Your Phone Number"
-            2 -> "Step 2: Your Password"
-            3 -> "Step 3: Owner Info (Optional)"
-            4 -> "Setup Complete!"
+            0 -> "Permissions needed"
+            1 -> "Step 1 of 3  —  Your phone number"
+            2 -> "Step 2 of 3  —  Confirm your password"
+            3 -> "Step 3 of 3  —  Owner info (optional)"
+            4 -> "All done!"
             else -> ""
         }
 
         btnNext.text = when (step) {
             0 -> "GRANT PERMISSIONS"
             4 -> "START USING BFF"
-            else -> "NEXT"
+            else -> "CONTINUE"
         }
     }
 
@@ -134,9 +151,9 @@ class SetupActivity : AppCompatActivity() {
 
     private fun requestSpecialPermissions() {
         // SYSTEM_ALERT_WINDOW (display over other apps)
-        if (!Settings.canDrawOverlays(this)) {
+        if (!android.provider.Settings.canDrawOverlays(this)) {
             val intent = Intent(
-                Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
+                android.provider.Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
                 Uri.parse("package:$packageName")
             )
             @Suppress("DEPRECATION")
@@ -152,7 +169,7 @@ class SetupActivity : AppCompatActivity() {
             val nm = getSystemService(android.app.NotificationManager::class.java)
             if (!nm.canUseFullScreenIntent()) {
                 val intent = Intent(
-                    Settings.ACTION_MANAGE_APP_USE_FULL_SCREEN_INTENT,
+                    android.provider.Settings.ACTION_MANAGE_APP_USE_FULL_SCREEN_INTENT,
                     Uri.parse("package:$packageName")
                 )
                 @Suppress("DEPRECATION")
@@ -191,7 +208,7 @@ class SetupActivity : AppCompatActivity() {
         super.onActivityResult(requestCode, resultCode, data)
         when (requestCode) {
             REQ_OVERLAY -> {
-                if (!Settings.canDrawOverlays(this)) {
+                if (!android.provider.Settings.canDrawOverlays(this)) {
                     Toast.makeText(
                         this,
                         "'Display over other apps' was not granted. The alarm screen may not appear.",
@@ -219,17 +236,17 @@ class SetupActivity : AppCompatActivity() {
     // ── Steps 1–4 ─────────────────────────────────────────────────────────────
 
     private fun handleStep1() {
-        val cc = etCountryCode.text.toString().trim()
         val num = etPhoneNumber.text.toString().trim()
-        if (cc.isEmpty() || num.isEmpty()) {
-            Toast.makeText(this, "Please enter country code and phone number", Toast.LENGTH_SHORT).show()
+        if (num.isEmpty()) {
+            Toast.makeText(this, "Please enter your phone number", Toast.LENGTH_SHORT).show()
             return
         }
+        val cc = selectedCountry.dialCode
         val fullNumber = cc + num
         phoneNumber = fullNumber
         val digitsOnly = fullNumber.filter { it.isDigit() }
         generatedPassword = if (digitsOnly.length >= 7) digitsOnly.takeLast(7) else digitsOnly
-        tvGeneratedPassword.text = "Your password: $generatedPassword"
+        tvGeneratedPassword.text = generatedPassword
         showStep(2)
     }
 
