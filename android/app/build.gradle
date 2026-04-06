@@ -11,8 +11,16 @@ android {
         applicationId "com.fcapps.bff"
         minSdk 26
         targetSdk 28
-        versionCode 1
-        versionName "1.0"
+        versionCode 5
+        versionName "1.5"
+    }
+
+    def buildDate = new Date().format('yyyyMMdd')
+
+    applicationVariants.all { variant ->
+        variant.outputs.all { output ->
+            outputFileName = "BFF-v${variant.versionName}-${buildDate}-${variant.buildType.name}.apk"
+        }
     }
 
     buildTypes {
