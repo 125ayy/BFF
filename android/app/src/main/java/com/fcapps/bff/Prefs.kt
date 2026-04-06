@@ -21,7 +21,7 @@ object Prefs {
         set(value) { prefs(this).edit().putString(KEY_PHONE, value).apply() }
 
     var Context.password: String
-        get() = prefs(this).getString(KEY_PASSWORD, "") ?: ""
+        get() = prefs(this).getString(KEY_PASSWORD, "BFF") ?: "BFF"
         set(value) { prefs(this).edit().putString(KEY_PASSWORD, value).apply() }
 
     var Context.ownerName: String
