@@ -4,31 +4,36 @@
     android:height="108dp"
     android:viewportWidth="108"
     android:viewportHeight="108">
-    <!-- Phone body -->
+
+    <!-- Green circle outline -->
     <path
-        android:fillColor="#00C853"
-        android:pathData="M36,20 L72,20 Q76,20 76,24 L76,84 Q76,88 72,88 L36,88 Q32,88 32,84 L32,24 Q32,20 36,20 Z" />
-    <!-- Screen -->
-    <path
-        android:fillColor="#000000"
-        android:pathData="M38,30 L70,30 L70,74 L38,74 Z" />
-    <!-- Smiley on screen -->
-    <path
-        android:fillColor="#00C853"
-        android:pathData="M54,44 A8,8 0 1,1 54,44.01 Z" />
-    <path
-        android:fillColor="#000000"
-        android:pathData="M50,41 A1.5,1.5 0 1,1 50,41.01 Z" />
-    <path
-        android:fillColor="#000000"
-        android:pathData="M58,41 A1.5,1.5 0 1,1 58,41.01 Z" />
-    <path
-        android:strokeColor="#000000"
-        android:strokeWidth="1.5"
+        android:strokeColor="#00C853"
+        android:strokeWidth="5"
         android:fillColor="#00000000"
-        android:pathData="M50,46 Q54,50 58,46" />
-    <!-- Home button -->
+        android:pathData="M54,20 A34,34 0 1,1 53.99,20 Z" />
+
+    <!-- BFF text rendered as paths — B -->
     <path
-        android:fillColor="#000000"
-        android:pathData="M50,78 A4,4 0 1,1 50,78.01 Z" />
+        android:fillColor="#00C853"
+        android:pathData="M30,40 L30,68 L37,68 Q44,68 44,61 Q44,57 41,55.5 Q44,54 44,50 Q44,40 37,40 Z
+                          M36,43 Q41,43 41,49 Q41,54 36,54 L33,54 L33,43 Z
+                          M36,57 Q41,57 41,62 Q41,65 36,65 L33,65 L33,57 Z" />
+
+    <!-- F (first) -->
+    <path
+        android:fillColor="#00C853"
+        android:pathData="M48,40 L48,68 L51,68 L51,56 L59,56 L59,53 L51,53 L51,43 L60,43 L60,40 Z" />
+
+    <!-- F (second) -->
+    <path
+        android:fillColor="#00C853"
+        android:pathData="M63,40 L63,68 L66,68 L66,56 L74,56 L74,53 L66,53 L66,43 L75,43 L75,40 Z" />
+
+    <!-- Smile arc below text -->
+    <path
+        android:strokeColor="#00C853"
+        android:strokeWidth="3"
+        android:fillColor="#00000000"
+        android:pathData="M38,74 Q54,84 70,74" />
+
 </vector>

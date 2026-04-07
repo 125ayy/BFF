@@ -54,6 +54,18 @@
             android:turnScreenOn="true"
             android:launchMode="singleInstance" />
 
+        <activity
+            android:name=".HistoryActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".FoundActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".TrustedContactsActivity"
+            android:exported="false" />
+
         <receiver
             android:name=".SmsReceiver"
             android:exported="true"

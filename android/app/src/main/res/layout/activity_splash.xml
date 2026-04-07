@@ -4,209 +4,40 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:background="#000000"
-    android:padding="20dp">
+    android:gravity="center"
+    android:padding="32dp">
 
-    <!-- Logo area -->
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:orientation="vertical"
-        android:gravity="center">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="📱"
-            android:textSize="72sp"
-            android:layout_marginBottom="16dp" />
-
-        <TextView
-            android:id="@+id/tvAppName"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="BestFoneFinder"
-            android:textSize="28sp"
-            android:textStyle="bold"
-            android:textColor="#FFFFFF"
-            android:layout_marginBottom="8dp" />
-
-        <TextView
-            android:id="@+id/tvTagline"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Find your phone instantly"
-            android:textSize="14sp"
-            android:textColor="#AAAAAA" />
-
-    </LinearLayout>
-
-    <!-- Menu cards -->
-    <LinearLayout
-        android:layout_width="match_parent"
+    <!-- Large phone emoji with "vibration" lines using text -->
+    <FrameLayout
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:layout_marginBottom="8dp">
+        android:layout_marginBottom="24dp">
 
-        <!-- Find Phone card -->
-        <LinearLayout
-            android:id="@+id/btnFindPhone"
-            android:layout_width="match_parent"
-            android:layout_height="64dp"
-            android:orientation="horizontal"
-            android:gravity="center_vertical"
-            android:background="@drawable/splash_card_bg"
-            android:paddingStart="18dp"
-            android:paddingEnd="18dp"
-            android:layout_marginBottom="10dp"
-            android:clickable="true"
-            android:focusable="true">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="〜 📱 〜"
+            android:textSize="72sp"
+            android:gravity="center" />
 
-            <TextView
-                android:layout_width="36dp"
-                android:layout_height="36dp"
-                android:text="📱"
-                android:textSize="22sp"
-                android:gravity="center"
-                android:layout_marginEnd="16dp" />
+    </FrameLayout>
 
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Find Phone"
-                android:textColor="#FFFFFF"
-                android:textSize="16sp"
-                android:textStyle="bold" />
+    <TextView
+        android:id="@+id/tvAppName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="BestFoneFinder"
+        android:textSize="32sp"
+        android:textStyle="bold"
+        android:textColor="#FFFFFF"
+        android:layout_marginBottom="12dp" />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="›"
-                android:textColor="#00C853"
-                android:textSize="24sp" />
-
-        </LinearLayout>
-
-        <!-- Settings card -->
-        <LinearLayout
-            android:id="@+id/btnSettings"
-            android:layout_width="match_parent"
-            android:layout_height="64dp"
-            android:orientation="horizontal"
-            android:gravity="center_vertical"
-            android:background="@drawable/splash_card_bg"
-            android:paddingStart="18dp"
-            android:paddingEnd="18dp"
-            android:layout_marginBottom="10dp"
-            android:clickable="true"
-            android:focusable="true">
-
-            <TextView
-                android:layout_width="36dp"
-                android:layout_height="36dp"
-                android:text="⚙️"
-                android:textSize="22sp"
-                android:gravity="center"
-                android:layout_marginEnd="16dp" />
-
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Settings"
-                android:textColor="#FFFFFF"
-                android:textSize="16sp"
-                android:textStyle="bold" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="›"
-                android:textColor="#00C853"
-                android:textSize="24sp" />
-
-        </LinearLayout>
-
-        <!-- Share BFF card -->
-        <LinearLayout
-            android:id="@+id/btnShare"
-            android:layout_width="match_parent"
-            android:layout_height="64dp"
-            android:orientation="horizontal"
-            android:gravity="center_vertical"
-            android:background="@drawable/splash_card_bg"
-            android:paddingStart="18dp"
-            android:paddingEnd="18dp"
-            android:layout_marginBottom="10dp"
-            android:clickable="true"
-            android:focusable="true">
-
-            <TextView
-                android:layout_width="36dp"
-                android:layout_height="36dp"
-                android:text="🔗"
-                android:textSize="22sp"
-                android:gravity="center"
-                android:layout_marginEnd="16dp" />
-
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Share BFF"
-                android:textColor="#FFFFFF"
-                android:textSize="16sp"
-                android:textStyle="bold" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="›"
-                android:textColor="#00C853"
-                android:textSize="24sp" />
-
-        </LinearLayout>
-
-        <!-- About card -->
-        <LinearLayout
-            android:id="@+id/btnAbout"
-            android:layout_width="match_parent"
-            android:layout_height="64dp"
-            android:orientation="horizontal"
-            android:gravity="center_vertical"
-            android:background="@drawable/splash_card_bg"
-            android:paddingStart="18dp"
-            android:paddingEnd="18dp"
-            android:clickable="true"
-            android:focusable="true">
-
-            <TextView
-                android:layout_width="36dp"
-                android:layout_height="36dp"
-                android:text="ℹ️"
-                android:textSize="22sp"
-                android:gravity="center"
-                android:layout_marginEnd="16dp" />
-
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="About"
-                android:textColor="#FFFFFF"
-                android:textSize="16sp"
-                android:textStyle="bold" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="›"
-                android:textColor="#00C853"
-                android:textSize="24sp" />
-
-        </LinearLayout>
-
-    </LinearLayout>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="No Fees... No Ads... No BS... Phone FOUND!"
+        android:textSize="13sp"
+        android:textColor="#777777"
+        android:gravity="center" />
 
 </LinearLayout>

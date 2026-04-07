@@ -19,6 +19,8 @@ class AlarmService : Service() {
 
     companion object {
         const val ACTION_STOP = "com.fcapps.bff.ACTION_STOP_ALARM"
+        const val EXTRA_SENDER_NAME = "sender_name"
+        const val EXTRA_SENDER_NUMBER = "sender_number"
         private const val CHANNEL_ID = "bff_alarm_channel"
         private const val NOTIF_ID = 1001
     }
@@ -29,6 +31,8 @@ class AlarmService : Service() {
     private var wakeLock: PowerManager.WakeLock? = null
     private val handler = Handler(Looper.getMainLooper())
     private var stopRunnable: Runnable? = null
+    private var senderName: String = ""
+    private var senderNumber: String = ""
 
     override fun onBind(intent: Intent?): IBinder? = null
 
@@ -43,6 +47,9 @@ class AlarmService : Service() {
             stopSelf()
             return START_NOT_STICKY
         }
+
+        senderName = intent?.getStringExtra(EXTRA_SENDER_NAME) ?: ""
+        senderNumber = intent?.getStringExtra(EXTRA_SENDER_NUMBER) ?: ""
 
         // Must call startForeground immediately (within 5s on Android 8+)
         startForeground(NOTIF_ID, buildNotification())
@@ -94,7 +101,6 @@ class AlarmService : Service() {
         }
 
         // Show AlarmActivity over the lock screen via full-screen notification intent
-        // This is the correct way on Android 10+ to pop the screen open
         val nm = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         nm.notify(NOTIF_ID, buildNotification())
     }
@@ -125,7 +131,6 @@ class AlarmService : Service() {
                 NotificationManager.IMPORTANCE_HIGH
             ).apply {
                 description = "BestFoneFinder alarm"
-                // Allow this channel to pop the full-screen intent
                 lockscreenVisibility = Notification.VISIBILITY_PUBLIC
             }
             val nm = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
@@ -134,9 +139,10 @@ class AlarmService : Service() {
     }
 
     private fun buildNotification(): Notification {
-        // Full-screen intent: pops AlarmActivity open even on the lock screen
         val fullScreenIntent = Intent(this, AlarmActivity::class.java).apply {
             addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP)
+            putExtra(AlarmActivity.EXTRA_SENDER_NAME, senderName)
+            putExtra(AlarmActivity.EXTRA_SENDER_NUMBER, senderNumber)
         }
         val fullScreenPendingIntent = PendingIntent.getActivity(
             this, 0, fullScreenIntent,
@@ -156,7 +162,7 @@ class AlarmService : Service() {
             .setPriority(NotificationCompat.PRIORITY_MAX)
             .setCategory(NotificationCompat.CATEGORY_ALARM)
             .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
-            .setFullScreenIntent(fullScreenPendingIntent, true)  // opens AlarmActivity immediately
+            .setFullScreenIntent(fullScreenPendingIntent, true)
             .addAction(android.R.drawable.ic_menu_close_clear_cancel, "FOUND", stopPendingIntent)
             .setOngoing(true)
             .setAutoCancel(false)

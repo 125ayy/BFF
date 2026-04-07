@@ -8,6 +8,7 @@ import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
 import android.widget.Button
+import android.widget.ImageView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
@@ -26,13 +27,47 @@ class SetupActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_setup)
 
-        // Fire permissions immediately — no dedicated page
-        requestStandardPermissions()
+        updatePermissionIndicators()
+
+        // "Continue" triggers permission requests then proceeds to welcome screen
+        findViewById<Button>(R.id.btnContinue).setOnClickListener {
+            requestStandardPermissions()
+        }
 
         findViewById<Button>(R.id.btnGetStarted).setOnClickListener {
             setupDone = true
             startActivity(Intent(this, SplashActivity::class.java))
             finish()
+        }
+    }
+
+    private fun updatePermissionIndicators() {
+        // SMS
+        val smsGranted = ContextCompat.checkSelfPermission(this, Manifest.permission.RECEIVE_SMS) == PackageManager.PERMISSION_GRANTED
+        setIndicator(R.id.imgSmsStatus, smsGranted)
+
+        // Contacts
+        val contactsGranted = ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_GRANTED
+        setIndicator(R.id.imgContactsStatus, contactsGranted)
+
+        // Notifications (only relevant on Android 13+)
+        val notifGranted = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED
+        } else true
+        setIndicator(R.id.imgNotifStatus, notifGranted)
+
+        // Audio Control — MODIFY_AUDIO_SETTINGS is a normal permission, always granted
+        setIndicator(R.id.imgAudioStatus, true)
+    }
+
+    private fun setIndicator(viewId: Int, granted: Boolean) {
+        val view = findViewById<ImageView>(viewId) ?: return
+        if (granted) {
+            view.setImageResource(R.drawable.ic_check_circle)
+            view.setColorFilter(0xFF00C853.toInt())
+        } else {
+            view.setImageResource(R.drawable.ic_circle_empty)
+            view.setColorFilter(0xFF666666.toInt())
         }
     }
 
@@ -79,11 +114,13 @@ class SetupActivity : AppCompatActivity() {
                 startActivityForResult(intent, REQ_FULL_SCREEN)
             }
         }
+        updatePermissionIndicators()
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (requestCode == REQ_STANDARD) {
+            updatePermissionIndicators()
             requestOverlayPermission()
         }
     }
@@ -95,5 +132,6 @@ class SetupActivity : AppCompatActivity() {
         when (requestCode) {
             REQ_OVERLAY -> requestFullScreenIntentPermission()
         }
+        updatePermissionIndicators()
     }
 }

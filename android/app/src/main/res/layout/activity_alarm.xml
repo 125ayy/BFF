@@ -4,35 +4,45 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="#000000"
+    android:background="#00C853"
     android:gravity="center"
     android:padding="32dp">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="📱"
-        android:textSize="96sp"
-        android:gravity="center"
-        android:layout_marginBottom="24dp" />
+    <!-- Bell in dark semi-transparent circle -->
+    <FrameLayout
+        android:id="@+id/ivBell"
+        android:layout_width="120dp"
+        android:layout_height="120dp"
+        android:background="@drawable/bell_circle_bg"
+        android:layout_marginBottom="32dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="🔔"
+            android:textSize="56sp" />
+
+    </FrameLayout>
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="ALARM ACTIVE"
-        android:textSize="28sp"
+        android:textSize="36sp"
         android:textStyle="bold"
-        android:textColor="#FFFFFF"
-        android:letterSpacing="0.1"
-        android:layout_marginBottom="8dp" />
+        android:textColor="#000000"
+        android:letterSpacing="0.05"
+        android:layout_marginBottom="12dp" />
 
     <TextView
+        android:id="@+id/tvTriggeredBy"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Your phone has been found!"
+        android:text="Triggered by Unknown"
         android:textSize="16sp"
-        android:textColor="#AAAAAA"
-        android:layout_marginBottom="56dp" />
+        android:textColor="#1A1A1A"
+        android:layout_marginBottom="48dp" />
 
     <Button
         android:id="@+id/btnFound"
@@ -40,9 +50,17 @@
         android:layout_height="64dp"
         android:text="FOUND!"
         android:textColor="#000000"
-        android:background="@drawable/btn_green"
+        android:background="@drawable/btn_white_rounded"
         android:textStyle="bold"
         android:textSize="20sp"
-        android:stateListAnimator="@null" />
+        android:stateListAnimator="@null"
+        android:layout_marginBottom="16dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Tap to stop the alarm"
+        android:textSize="13sp"
+        android:textColor="#1A1A1A" />
 
 </LinearLayout>

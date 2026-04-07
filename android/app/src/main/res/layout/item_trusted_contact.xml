@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:gravity="center_vertical"
+    android:background="@drawable/card_bg"
+    android:paddingStart="14dp"
+    android:paddingEnd="14dp"
+    android:paddingTop="12dp"
+    android:paddingBottom="12dp">
+
+    <!-- Avatar circle with initials -->
+    <TextView
+        android:id="@+id/tvAvatar"
+        android:layout_width="44dp"
+        android:layout_height="44dp"
+        android:text="AB"
+        android:textColor="#FFFFFF"
+        android:textSize="15sp"
+        android:textStyle="bold"
+        android:gravity="center"
+        android:background="@drawable/avatar_circle"
+        android:layout_marginEnd="14dp" />
+
+    <!-- Name + number -->
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/tvContactName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Contact Name"
+            android:textColor="#FFFFFF"
+            android:textSize="14sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/tvContactNumber"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="+1234567890"
+            android:textColor="#AAAAAA"
+            android:textSize="12sp" />
+
+    </LinearLayout>
+
+    <!-- Invite button -->
+    <Button
+        android:id="@+id/btnInvite"
+        android:layout_width="56dp"
+        android:layout_height="36dp"
+        android:text="Invite"
+        android:textColor="#00C853"
+        android:background="@drawable/btn_green_outline_small"
+        android:textStyle="bold"
+        android:textSize="10sp"
+        android:stateListAnimator="@null"
+        android:layout_marginEnd="8dp" />
+
+    <!-- Remove button -->
+    <Button
+        android:id="@+id/btnRemove"
+        android:layout_width="64dp"
+        android:layout_height="36dp"
+        android:text="Remove"
+        android:textColor="#FF4444"
+        android:background="@drawable/btn_danger_small"
+        android:textStyle="bold"
+        android:textSize="9sp"
+        android:stateListAnimator="@null" />
+
+</LinearLayout>

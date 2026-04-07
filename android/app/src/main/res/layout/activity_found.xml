@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#000000">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center_horizontal"
+        android:padding="28dp">
+
+        <!-- Back button -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginBottom="16dp">
+
+            <TextView
+                android:id="@+id/btnBack"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:text="←"
+                android:textColor="#FFFFFF"
+                android:textSize="22sp"
+                android:gravity="center"
+                android:clickable="true"
+                android:focusable="true" />
+
+            <View android:layout_width="0dp" android:layout_height="0dp" android:layout_weight="1" />
+
+        </LinearLayout>
+
+        <!-- Green smiley circle -->
+        <FrameLayout
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:background="@drawable/found_circle_bg"
+            android:layout_marginBottom="20dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="😊"
+                android:textSize="52sp" />
+
+        </FrameLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Phone Found!"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:textColor="#FFFFFF"
+            android:layout_marginBottom="8dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Thanks for using BFF! Support the project:"
+            android:textSize="14sp"
+            android:textColor="#777777"
+            android:layout_marginBottom="24dp"
+            android:gravity="center" />
+
+        <!-- Donation pills -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:layout_marginBottom="28dp">
+
+            <Button
+                android:id="@+id/btn1Dollar"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:text="$1"
+                android:textColor="#FFFFFF"
+                android:background="@drawable/pill_unselected"
+                android:textStyle="bold"
+                android:textSize="15sp"
+                android:stateListAnimator="@null"
+                android:layout_marginEnd="8dp" />
+
+            <Button
+                android:id="@+id/btn3Dollar"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:text="$3"
+                android:textColor="#FFFFFF"
+                android:background="@drawable/pill_unselected"
+                android:textStyle="bold"
+                android:textSize="15sp"
+                android:stateListAnimator="@null"
+                android:layout_marginEnd="8dp" />
+
+            <Button
+                android:id="@+id/btn5Dollar"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:text="$5"
+                android:textColor="#FFFFFF"
+                android:background="@drawable/pill_unselected"
+                android:textStyle="bold"
+                android:textSize="15sp"
+                android:stateListAnimator="@null" />
+
+        </LinearLayout>
+
+        <!-- Divider -->
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#2A2A2A"
+            android:layout_marginBottom="24dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Recommend BFF to friends"
+            android:textSize="14sp"
+            android:textColor="#AAAAAA"
+            android:layout_marginBottom="16dp" />
+
+        <Button
+            android:id="@+id/btnShareBff"
+            android:layout_width="match_parent"
+            android:layout_height="52dp"
+            android:text="Share BFF"
+            android:textColor="#00C853"
+            android:background="@drawable/btn_green_outline"
+            android:textStyle="bold"
+            android:textSize="15sp"
+            android:stateListAnimator="@null" />
+
+    </LinearLayout>
+</ScrollView>

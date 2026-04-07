@@ -1,12 +1,20 @@
 package com.fcapps.bff
 
+import android.content.Intent
 import android.os.Bundle
 import android.widget.*
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import com.fcapps.bff.Prefs.addToBlacklist
 import com.fcapps.bff.Prefs.getBlacklist
+import com.fcapps.bff.Prefs.matrixAllAlarm
+import com.fcapps.bff.Prefs.matrixContactsAlarm
+import com.fcapps.bff.Prefs.matrixTrustedAlarm
+import com.fcapps.bff.Prefs.MATRIX_YES
+import com.fcapps.bff.Prefs.MATRIX_PIN
+import com.fcapps.bff.Prefs.MATRIX_NO
 import com.fcapps.bff.Prefs.password
+import com.fcapps.bff.Prefs.pin
 import com.fcapps.bff.Prefs.removeFromBlacklist
 import com.fcapps.bff.Prefs.resetToDefaults
 import com.fcapps.bff.Prefs.sirenDuration
@@ -15,6 +23,7 @@ class SettingsActivity : AppCompatActivity() {
 
     private lateinit var etNewPassword: EditText
     private lateinit var etConfirmNewPassword: EditText
+    private lateinit var etPin: EditText
     private lateinit var btn15: Button
     private lateinit var btn30: Button
     private lateinit var btn60: Button
@@ -22,6 +31,11 @@ class SettingsActivity : AppCompatActivity() {
     private lateinit var etAddBlacklist: EditText
     private lateinit var blacklistAdapter: ArrayAdapter<String>
     private val blacklistItems = mutableListOf<String>()
+
+    // Matrix badge buttons
+    private lateinit var badgeAllAlarm: TextView
+    private lateinit var badgeContactsAlarm: TextView
+    private lateinit var badgeTrustedAlarm: TextView
 
     private var selectedDuration: Int = 30
 
@@ -31,11 +45,18 @@ class SettingsActivity : AppCompatActivity() {
 
         etNewPassword = findViewById(R.id.etNewPassword)
         etConfirmNewPassword = findViewById(R.id.etConfirmNewPassword)
+        etPin = findViewById(R.id.etPin)
         btn15 = findViewById(R.id.radio15)
         btn30 = findViewById(R.id.radio30)
         btn60 = findViewById(R.id.radio60)
         lvBlacklist = findViewById(R.id.lvBlacklist)
         etAddBlacklist = findViewById(R.id.etAddBlacklist)
+        badgeAllAlarm = findViewById(R.id.badgeAllAlarm)
+        badgeContactsAlarm = findViewById(R.id.badgeContactsAlarm)
+        badgeTrustedAlarm = findViewById(R.id.badgeTrustedAlarm)
+
+        // Load PIN
+        etPin.setText(pin)
 
         // Load current siren duration
         selectedDuration = sirenDuration
@@ -44,6 +65,12 @@ class SettingsActivity : AppCompatActivity() {
         btn15.setOnClickListener { selectDuration(15) }
         btn30.setOnClickListener { selectDuration(30) }
         btn60.setOnClickListener { selectDuration(60) }
+
+        // Matrix badges
+        updateMatrixBadges()
+        badgeAllAlarm.setOnClickListener { showMatrixPicker("All People") { v -> matrixAllAlarm = v; updateMatrixBadges() } }
+        badgeContactsAlarm.setOnClickListener { showMatrixPicker("My Contacts") { v -> matrixContactsAlarm = v; updateMatrixBadges() } }
+        badgeTrustedAlarm.setOnClickListener { showMatrixPicker("Trusted Contacts") { v -> matrixTrustedAlarm = v; updateMatrixBadges() } }
 
         // Load blacklist
         blacklistItems.clear()
@@ -63,6 +90,17 @@ class SettingsActivity : AppCompatActivity() {
                 .setNegativeButton("Cancel", null)
                 .show()
             true
+        }
+
+        // Trusted contacts
+        findViewById<android.view.View>(R.id.rowTrustedContacts).setOnClickListener {
+            startActivity(Intent(this, TrustedContactsActivity::class.java))
+        }
+
+        // PIN save
+        findViewById<Button>(R.id.btnSavePin).setOnClickListener {
+            pin = etPin.text.toString().trim()
+            Toast.makeText(this, if (pin.isEmpty()) "PIN disabled" else "PIN saved", Toast.LENGTH_SHORT).show()
         }
 
         findViewById<Button>(R.id.btnSavePassword).setOnClickListener {
@@ -113,6 +151,52 @@ class SettingsActivity : AppCompatActivity() {
         }
 
         findViewById<Button>(R.id.btnBack).setOnClickListener { finish() }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        updateMatrixBadges()
+    }
+
+    private fun showMatrixPicker(rowLabel: String, onPick: (String) -> Unit) {
+        val options = arrayOf("Yes — Always allow", "PIN Required", "No — Always block")
+        AlertDialog.Builder(this)
+            .setTitle("$rowLabel — Alarm")
+            .setItems(options) { _, which ->
+                val value = when (which) {
+                    0 -> MATRIX_YES
+                    1 -> MATRIX_PIN
+                    else -> MATRIX_NO
+                }
+                onPick(value)
+            }
+            .show()
+    }
+
+    private fun updateMatrixBadges() {
+        setBadge(badgeAllAlarm, matrixAllAlarm)
+        setBadge(badgeContactsAlarm, matrixContactsAlarm)
+        setBadge(badgeTrustedAlarm, matrixTrustedAlarm)
+    }
+
+    private fun setBadge(view: TextView, value: String) {
+        when (value) {
+            MATRIX_YES -> {
+                view.text = "YES"
+                view.setBackgroundResource(R.drawable.badge_green)
+                view.setTextColor(0xFF000000.toInt())
+            }
+            MATRIX_PIN -> {
+                view.text = "PIN"
+                view.setBackgroundResource(R.drawable.badge_amber)
+                view.setTextColor(0xFF000000.toInt())
+            }
+            else -> {
+                view.text = "NO"
+                view.setBackgroundResource(R.drawable.badge_gray)
+                view.setTextColor(0xFFFFFFFF.toInt())
+            }
+        }
     }
 
     private fun selectDuration(seconds: Int) {
