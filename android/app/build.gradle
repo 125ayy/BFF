@@ -19,7 +19,8 @@ android {
 
     applicationVariants.all { variant ->
         variant.outputs.all { output ->
-            outputFileName = "BFF-v${variant.versionName}-${buildDate}-${variant.buildType.name}.apk"
+            def verNum = String.format("%03d", variant.versionCode)
+            outputFileName = "BFF-ver${verNum}-${buildDate}-${variant.buildType.name}.apk"
         }
     }
 

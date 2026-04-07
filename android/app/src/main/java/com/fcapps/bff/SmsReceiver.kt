@@ -7,6 +7,7 @@ import android.provider.ContactsContract
 import android.provider.Telephony
 import com.fcapps.bff.Prefs.addHistoryEntry
 import com.fcapps.bff.Prefs.getTrustedContacts
+import com.fcapps.bff.Prefs.isBlacklisted
 import com.fcapps.bff.Prefs.matrixAllAlarm
 import com.fcapps.bff.Prefs.matrixContactsAlarm
 import com.fcapps.bff.Prefs.matrixTrustedAlarm
@@ -14,18 +15,19 @@ import com.fcapps.bff.Prefs.MATRIX_YES
 import com.fcapps.bff.Prefs.MATRIX_PIN
 import com.fcapps.bff.Prefs.password
 import com.fcapps.bff.Prefs.pin
-import com.fcapps.bff.Prefs.setupDone
 
 class SmsReceiver : BroadcastReceiver() {
 
     override fun onReceive(context: Context, intent: Intent) {
         if (intent.action != Telephony.Sms.Intents.SMS_RECEIVED_ACTION) return
-        if (!context.setupDone) return
 
         val messages = Telephony.Sms.Intents.getMessagesFromIntent(intent)
         messageLoop@ for (message in messages) {
             val sender = message.originatingAddress ?: continue
             val body = message.messageBody ?: continue
+
+            // Skip blacklisted senders
+            if (context.isBlacklisted(sender)) continue
 
             // Must contain activation word (case-insensitive)
             val storedPassword = context.password
