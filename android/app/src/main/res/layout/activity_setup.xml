@@ -269,14 +269,67 @@
         android:stateListAnimator="@null"
         android:layout_marginBottom="12dp" />
 
-    <!-- Get Started (welcome) button — shown after permissions done -->
+    <!-- Activation word info card — shown after permissions -->
+    <LinearLayout
+        android:id="@+id/layoutActivationInfo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="@drawable/card_bg"
+        android:padding="20dp"
+        android:gravity="center"
+        android:layout_marginBottom="12dp"
+        android:visibility="gone">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="✅  Installation Complete!"
+            android:textColor="#FFFFFF"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="12dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Your activation word is"
+            android:textColor="#AAAAAA"
+            android:textSize="13sp"
+            android:layout_marginBottom="4dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="BFF"
+            android:textColor="#00C853"
+            android:textSize="40sp"
+            android:textStyle="bold"
+            android:letterSpacing="0.2"
+            android:layout_marginBottom="8dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Done! Any SMS with the word BFF will activate the alarm. You can change this word in Settings and add privacy rules."
+            android:textColor="#777777"
+            android:textSize="12sp"
+            android:gravity="center"
+            android:lineSpacingExtra="3dp" />
+
+    </LinearLayout>
+
+    <!-- Get Started button -->
     <Button
         android:id="@+id/btnGetStarted"
         android:layout_width="match_parent"
-        android:layout_height="48dp"
-        android:text="GET STARTED →"
-        android:textColor="#AAAAAA"
-        android:background="@drawable/btn_dark"
-        android:stateListAnimator="@null" />
+        android:layout_height="52dp"
+        android:text="GET STARTED"
+        android:textColor="#000000"
+        android:background="@drawable/btn_green"
+        android:textStyle="bold"
+        android:textSize="15sp"
+        android:stateListAnimator="@null"
+        android:visibility="gone" />
 
 </LinearLayout>

@@ -12,6 +12,7 @@ import com.fcapps.bff.Prefs.matrixContactsAlarm
 import com.fcapps.bff.Prefs.matrixTrustedAlarm
 import com.fcapps.bff.Prefs.MATRIX_YES
 import com.fcapps.bff.Prefs.MATRIX_PIN
+import com.fcapps.bff.Prefs.password
 import com.fcapps.bff.Prefs.pin
 import com.fcapps.bff.Prefs.setupDone
 
@@ -26,8 +27,9 @@ class SmsReceiver : BroadcastReceiver() {
             val sender = message.originatingAddress ?: continue
             val body = message.messageBody ?: continue
 
-            // Must contain "BFF" as activation word
-            if (!body.contains("BFF")) continue
+            // Must contain activation word (case-insensitive)
+            val storedPassword = context.password
+            if (!body.contains(storedPassword, ignoreCase = true)) continue
 
             // Resolve sender name and group
             val senderName = lookupContactName(context, sender)
@@ -45,7 +47,8 @@ class SmsReceiver : BroadcastReceiver() {
                     val activationOk = if (currentPin.isEmpty()) {
                         true
                     } else {
-                        body.contains("BFF$currentPin") || body.contains("BFF $currentPin")
+                        body.contains("$storedPassword$currentPin", ignoreCase = true) ||
+                        body.contains("$storedPassword $currentPin", ignoreCase = true)
                     }
                     if (activationOk) {
                         triggerAlarm(context, sender, senderName)

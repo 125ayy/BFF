@@ -7,6 +7,7 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
+import android.view.View
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.Toast
@@ -115,6 +116,13 @@ class SetupActivity : AppCompatActivity() {
             }
         }
         updatePermissionIndicators()
+        showActivationInfo()
+    }
+
+    private fun showActivationInfo() {
+        findViewById<View>(R.id.layoutActivationInfo).visibility = View.VISIBLE
+        findViewById<Button>(R.id.btnGetStarted).visibility = View.VISIBLE
+        findViewById<Button>(R.id.btnContinue).visibility = View.GONE
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
