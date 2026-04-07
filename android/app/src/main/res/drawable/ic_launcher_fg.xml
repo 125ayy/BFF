@@ -10,7 +10,7 @@
         android:strokeColor="#00C853"
         android:strokeWidth="5"
         android:fillColor="#00000000"
-        android:pathData="M54,20 A34,34 0 1,1 53.99,20 Z" />
+        android:pathData="M54,20 A34,34 0 0,1 88,54 A34,34 0 0,1 54,88 A34,34 0 0,1 20,54 A34,34 0 0,1 54,20 Z" />
 
     <!-- BFF text rendered as paths — B -->
     <path
