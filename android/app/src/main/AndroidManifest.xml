@@ -66,6 +66,10 @@
             android:name=".TrustedContactsActivity"
             android:exported="false" />
 
+        <activity
+            android:name=".ReadyActivity"
+            android:exported="false" />
+
         <receiver
             android:name=".SmsReceiver"
             android:exported="true">

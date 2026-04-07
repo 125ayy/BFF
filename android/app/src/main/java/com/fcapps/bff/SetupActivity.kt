@@ -10,11 +10,11 @@ import android.provider.Settings
 import android.view.View
 import android.widget.Button
 import android.widget.ImageView
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import com.fcapps.bff.Prefs.setupDone
 
 class SetupActivity : AppCompatActivity() {
 
@@ -30,34 +30,33 @@ class SetupActivity : AppCompatActivity() {
 
         updatePermissionIndicators()
 
-        // "Continue" triggers permission requests then proceeds to welcome screen
         findViewById<Button>(R.id.btnContinue).setOnClickListener {
+            hideError()
             requestStandardPermissions()
-        }
-
-        findViewById<Button>(R.id.btnGetStarted).setOnClickListener {
-            setupDone = true
-            startActivity(Intent(this, SplashActivity::class.java))
-            finish()
         }
     }
 
+    // ── Indicators ────────────────────────────────────────────────────────────
+
     private fun updatePermissionIndicators() {
-        // SMS
-        val smsGranted = ContextCompat.checkSelfPermission(this, Manifest.permission.RECEIVE_SMS) == PackageManager.PERMISSION_GRANTED
+        val smsGranted = ContextCompat.checkSelfPermission(
+            this, Manifest.permission.RECEIVE_SMS
+        ) == PackageManager.PERMISSION_GRANTED
         setIndicator(R.id.imgSmsStatus, smsGranted)
 
-        // Contacts
-        val contactsGranted = ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_GRANTED
+        val contactsGranted = ContextCompat.checkSelfPermission(
+            this, Manifest.permission.READ_CONTACTS
+        ) == PackageManager.PERMISSION_GRANTED
         setIndicator(R.id.imgContactsStatus, contactsGranted)
 
-        // Notifications (only relevant on Android 13+)
         val notifGranted = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED
+            ContextCompat.checkSelfPermission(
+                this, Manifest.permission.POST_NOTIFICATIONS
+            ) == PackageManager.PERMISSION_GRANTED
         } else true
         setIndicator(R.id.imgNotifStatus, notifGranted)
 
-        // Audio Control — MODIFY_AUDIO_SETTINGS is a normal permission, always granted
+        // MODIFY_AUDIO_SETTINGS is a normal permission — always granted at install
         setIndicator(R.id.imgAudioStatus, true)
     }
 
@@ -70,6 +69,18 @@ class SetupActivity : AppCompatActivity() {
             view.setImageResource(R.drawable.ic_circle_empty)
             view.setColorFilter(0xFF666666.toInt())
         }
+    }
+
+    // ── Error banner ──────────────────────────────────────────────────────────
+
+    private fun showError(message: String) {
+        val v = findViewById<TextView>(R.id.tvPermissionError)
+        v.text = message
+        v.visibility = View.VISIBLE
+    }
+
+    private fun hideError() {
+        findViewById<TextView>(R.id.tvPermissionError).visibility = View.GONE
     }
 
     // ── Permission chain ──────────────────────────────────────────────────────
@@ -96,50 +107,86 @@ class SetupActivity : AppCompatActivity() {
 
     private fun requestOverlayPermission() {
         if (!Settings.canDrawOverlays(this)) {
-            Toast.makeText(this, "Please allow 'Display over other apps' for the alarm screen to work", Toast.LENGTH_LONG).show()
-            val intent = Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION, Uri.parse("package:$packageName"))
+            Toast.makeText(
+                this,
+                "Please allow 'Display over other apps' — this lets the alarm appear on your lock screen",
+                Toast.LENGTH_LONG
+            ).show()
+            val intent = Intent(
+                Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
+                Uri.parse("package:$packageName")
+            )
             @Suppress("DEPRECATION")
             startActivityForResult(intent, REQ_OVERLAY)
-        } else {
-            requestFullScreenIntentPermission()
+            return
         }
+        requestFullScreenIntentPermission()
     }
 
     private fun requestFullScreenIntentPermission() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
             val nm = getSystemService(android.app.NotificationManager::class.java)
             if (!nm.canUseFullScreenIntent()) {
-                Toast.makeText(this, "Please allow 'Full-screen notifications' so the alarm opens on your lock screen", Toast.LENGTH_LONG).show()
-                val intent = Intent(Settings.ACTION_MANAGE_APP_USE_FULL_SCREEN_INTENT, Uri.parse("package:$packageName"))
+                Toast.makeText(
+                    this,
+                    "Please allow 'Full-screen notifications' so the alarm opens on your lock screen",
+                    Toast.LENGTH_LONG
+                ).show()
+                val intent = Intent(
+                    Settings.ACTION_MANAGE_APP_USE_FULL_SCREEN_INTENT,
+                    Uri.parse("package:$packageName")
+                )
                 @Suppress("DEPRECATION")
                 startActivityForResult(intent, REQ_FULL_SCREEN)
+                return  // wait for user to return from Settings before proceeding
             }
         }
+        navigateToReady()
+    }
+
+    private fun navigateToReady() {
         updatePermissionIndicators()
-        showActivationInfo()
+        startActivity(Intent(this, ReadyActivity::class.java))
+        finish()
     }
 
-    private fun showActivationInfo() {
-        findViewById<View>(R.id.layoutActivationInfo).visibility = View.VISIBLE
-        findViewById<Button>(R.id.btnGetStarted).visibility = View.VISIBLE
-        findViewById<Button>(R.id.btnContinue).visibility = View.GONE
-    }
+    // ── Results ───────────────────────────────────────────────────────────────
 
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (requestCode == REQ_STANDARD) {
-            updatePermissionIndicators()
-            requestOverlayPermission()
+        if (requestCode != REQ_STANDARD) return
+
+        updatePermissionIndicators()
+
+        // SMS is required — block progress if denied
+        val smsGranted = ContextCompat.checkSelfPermission(
+            this, Manifest.permission.RECEIVE_SMS
+        ) == PackageManager.PERMISSION_GRANTED
+
+        if (!smsGranted) {
+            showError(
+                "⚠  SMS permission is required. Without it the alarm cannot be triggered.\n\n" +
+                "Tap GRANT PERMISSIONS again and allow SMS access."
+            )
+            return
         }
+
+        hideError()
+        requestOverlayPermission()
     }
 
     @Deprecated("Deprecated in Java")
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         @Suppress("DEPRECATION")
         super.onActivityResult(requestCode, resultCode, data)
+        updatePermissionIndicators()
         when (requestCode) {
             REQ_OVERLAY -> requestFullScreenIntentPermission()
+            REQ_FULL_SCREEN -> navigateToReady()
         }
-        updatePermissionIndicators()
     }
 }

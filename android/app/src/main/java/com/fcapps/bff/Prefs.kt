@@ -87,8 +87,10 @@ object Prefs {
         prefs(this).edit().putStringSet(KEY_BLACKLIST, current).apply()
     }
 
-    fun Context.isBlacklisted(number: String): Boolean =
-        getBlacklist().contains(number)
+    fun Context.isBlacklisted(number: String): Boolean {
+        val normalized = number.replace(Regex("[^0-9+]"), "")
+        return getBlacklist().any { it.replace(Regex("[^0-9+]"), "") == normalized }
+    }
 
     // History — last 10 entries as JSON array
     fun Context.addHistoryEntry(sender: String, name: String, status: String) {
@@ -181,9 +183,11 @@ object Prefs {
     fun Context.resetToDefaults() {
         val phone = phoneNumber
         val pass = password
+        val done = setupDone
         prefs(this).edit().clear().apply()
         phoneNumber = phone
         password = pass
+        setupDone = done
         sirenDuration = 30
     }
 }

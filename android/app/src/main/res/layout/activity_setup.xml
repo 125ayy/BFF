@@ -43,7 +43,7 @@
         android:orientation="vertical"
         android:background="@drawable/card_bg"
         android:padding="8dp"
-        android:layout_marginBottom="24dp">
+        android:layout_marginBottom="16dp">
 
         <!-- SMS -->
         <LinearLayout
@@ -82,7 +82,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="To detect the activation message"
+                    android:text="Required — to detect the activation message"
                     android:textColor="#777777"
                     android:textSize="12sp" />
             </LinearLayout>
@@ -253,10 +253,23 @@
 
     </LinearLayout>
 
+    <!-- Error banner — shown when a required permission is denied -->
+    <TextView
+        android:id="@+id/tvPermissionError"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/card_bg"
+        android:padding="16dp"
+        android:textColor="#FF5252"
+        android:textSize="13sp"
+        android:lineSpacingExtra="3dp"
+        android:layout_marginBottom="16dp"
+        android:visibility="gone" />
+
     <!-- Spacer -->
     <View android:layout_width="match_parent" android:layout_height="0dp" android:layout_weight="1" />
 
-    <!-- Continue button -->
+    <!-- Grant Permissions button -->
     <Button
         android:id="@+id/btnContinue"
         android:layout_width="match_parent"
@@ -266,70 +279,6 @@
         android:background="@drawable/btn_green"
         android:textStyle="bold"
         android:textSize="15sp"
-        android:stateListAnimator="@null"
-        android:layout_marginBottom="12dp" />
-
-    <!-- Activation word info card — shown after permissions -->
-    <LinearLayout
-        android:id="@+id/layoutActivationInfo"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:background="@drawable/card_bg"
-        android:padding="20dp"
-        android:gravity="center"
-        android:layout_marginBottom="12dp"
-        android:visibility="gone">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="✅  Installation Complete!"
-            android:textColor="#FFFFFF"
-            android:textSize="16sp"
-            android:textStyle="bold"
-            android:layout_marginBottom="12dp" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Your activation word is"
-            android:textColor="#AAAAAA"
-            android:textSize="13sp"
-            android:layout_marginBottom="4dp" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="BFF"
-            android:textColor="#00C853"
-            android:textSize="40sp"
-            android:textStyle="bold"
-            android:letterSpacing="0.2"
-            android:layout_marginBottom="8dp" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Done! Any SMS with the word BFF will activate the alarm. You can change this word in Settings and add privacy rules."
-            android:textColor="#777777"
-            android:textSize="12sp"
-            android:gravity="center"
-            android:lineSpacingExtra="3dp" />
-
-    </LinearLayout>
-
-    <!-- Get Started button -->
-    <Button
-        android:id="@+id/btnGetStarted"
-        android:layout_width="match_parent"
-        android:layout_height="52dp"
-        android:text="GET STARTED"
-        android:textColor="#000000"
-        android:background="@drawable/btn_green"
-        android:textStyle="bold"
-        android:textSize="15sp"
-        android:stateListAnimator="@null"
-        android:visibility="gone" />
+        android:stateListAnimator="@null" />
 
 </LinearLayout>
