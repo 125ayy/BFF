@@ -3,8 +3,19 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="#000000"
-    android:padding="24dp">
+    android:background="#000000">
+<ScrollView
+    android:layout_width="match_parent"
+    android:layout_height="0dp"
+    android:layout_weight="1"
+    android:fillViewport="true">
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:paddingStart="24dp"
+    android:paddingEnd="24dp"
+    android:paddingTop="8dp">
 
     <ImageView
         android:layout_width="96dp"
@@ -12,7 +23,7 @@
         android:src="@drawable/ic_bff_mark"
         android:contentDescription="@null"
         android:layout_gravity="center_horizontal"
-        android:layout_marginTop="48dp"
+        android:layout_marginTop="24dp"
         android:layout_marginBottom="16dp" />
 
     <TextView
@@ -27,7 +38,8 @@
 
     <TextView
         android:id="@+id/tvSubtitle"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
+        android:gravity="center"
         android:layout_height="wrap_content"
         android:textSize="15sp"
         android:textColor="#BBBBBB"
@@ -43,24 +55,24 @@
         android:layout_marginBottom="16dp">
         <TextView
             android:id="@+id/tvLine1"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textSize="15sp"
             android:textColor="#FFFFFF"
             android:layout_marginBottom="10dp" />
         <TextView
             android:id="@+id/tvLine2"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textSize="15sp"
             android:textColor="#FFFFFF" />
         <TextView
             android:id="@+id/tvLine3"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/ready_location_hint"
             android:textSize="13sp"
-            android:textColor="#777777"
+            android:textColor="#9E9E9E"
             android:layout_marginTop="6dp" />
     </LinearLayout>
 
@@ -69,11 +81,16 @@
         style="@style/SecondaryButton"
         android:text="Privacy settings" />
 
-    <View android:layout_width="match_parent" android:layout_height="0dp" android:layout_weight="1" />
+</LinearLayout>
+</ScrollView>
 
     <Button
         android:id="@+id/btnReady"
         style="@style/PrimaryButton"
+        android:layout_marginStart="24dp"
+        android:layout_marginEnd="24dp"
+        android:layout_marginTop="12dp"
+        android:layout_marginBottom="24dp"
         android:text="READY" />
 
 </LinearLayout>

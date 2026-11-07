@@ -23,7 +23,7 @@
         android:layout_weight="1"
         android:orientation="vertical">
         <TextView android:id="@+id/tvName" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Name" android:textColor="#FFFFFF" android:textSize="14sp" android:textStyle="bold" />
-        <TextView android:id="@+id/tvNumber" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="+55" android:textColor="#777777" android:textSize="12sp" />
+        <TextView android:id="@+id/tvNumber" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="+55" android:textColor="#9E9E9E" android:textSize="12sp" />
     </LinearLayout>
-    <TextView android:id="@+id/btnRemove" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="remove" android:textColor="#777777" android:textSize="12sp" android:padding="8dp" android:clickable="true" android:focusable="true" />
+    <TextView android:id="@+id/btnRemove" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="remove" android:textColor="#9E9E9E" android:textSize="12sp" android:padding="8dp" android:clickable="true" android:focusable="true" />
 </LinearLayout>

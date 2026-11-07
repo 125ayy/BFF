@@ -39,6 +39,10 @@ android {
     }
     testOptions {
         unitTests.includeAndroidResources = true
+        unitTests.all { test ->
+            test.systemProperty 'screens.dir', "${project.buildDir}/reports/screens"
+            test.systemProperty 'robolectric.graphicsMode', 'NATIVE'
+        }
     }
     buildFeatures {
         buildConfig true

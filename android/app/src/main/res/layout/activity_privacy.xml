@@ -74,16 +74,18 @@
                 android:background="@drawable/card_bg"
                 android:padding="16dp"
                 android:layout_marginBottom="20dp">
+                <TextView style="@style/FieldLabel" android:text="PIN" android:labelFor="@+id/etPin" />
                 <EditText
                     android:id="@+id/etPin"
                     style="@style/Field"
-                    android:hint="PIN · 4 to 8 digits"
+                    android:hint="4 to 8 digits"
                     android:inputType="numberPassword"
-                    android:layout_marginBottom="10dp" />
+                    android:layout_marginBottom="12dp" />
+                <TextView style="@style/FieldLabel" android:text="Confirm PIN" android:labelFor="@+id/etPin2" />
                 <EditText
                     android:id="@+id/etPin2"
                     style="@style/Field"
-                    android:hint="Confirm PIN"
+                    android:hint="Same digits again"
                     android:inputType="numberPassword" />
             </LinearLayout>
 
@@ -131,28 +133,39 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:gravity="center_vertical"
-                    android:padding="4dp">
-                    <EditText
-                        android:id="@+id/etBlack"
-                        style="@style/Field"
-                        android:layout_width="0dp"
-                        android:layout_weight="1"
-                        android:layout_height="48dp"
-                        android:hint="Phone number"
-                        android:inputType="phone"
-                        android:layout_marginEnd="8dp" />
-                    <Button
-                        android:id="@+id/btnAddBlack"
-                        android:layout_width="72dp"
-                        android:layout_height="48dp"
-                        android:text="ADD"
-                        android:textColor="#000000"
-                        android:textStyle="bold"
-                        android:textSize="14sp"
-                        android:background="@drawable/btn_green"
-                        android:stateListAnimator="@null" />
+                    android:orientation="vertical"
+                    android:padding="4dp"
+                    android:paddingTop="8dp">
+                    <TextView style="@style/FieldLabel" android:text="Block a number" android:labelFor="@+id/etBlack" />
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical">
+                        <EditText
+                            android:id="@+id/etBlack"
+                            style="@style/Field"
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            android:minHeight="48dp"
+                            android:paddingTop="10dp"
+                            android:paddingBottom="10dp"
+                            android:hint="+55 92 9…"
+                            android:inputType="phone"
+                            android:layout_marginEnd="8dp" />
+                        <Button
+                            android:id="@+id/btnAddBlack"
+                            style="@style/PrimaryButton"
+                            android:layout_width="wrap_content"
+                            android:minWidth="72dp"
+                            android:minHeight="48dp"
+                            android:paddingStart="16dp"
+                            android:paddingEnd="16dp"
+                            android:paddingTop="10dp"
+                            android:paddingBottom="10dp"
+                            android:textSize="14sp"
+                            android:text="ADD" />
+                    </LinearLayout>
                 </LinearLayout>
             </LinearLayout>
         </LinearLayout>

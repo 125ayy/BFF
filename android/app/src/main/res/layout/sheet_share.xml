@@ -18,7 +18,7 @@
     <LinearLayout android:id="@+id/optWhatsApp" style="@style/ShareRow">
         <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:orientation="vertical">
             <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="WhatsApp" android:textColor="#FFFFFF" android:textSize="15sp" android:textStyle="bold" />
-            <TextView android:id="@+id/tvWhatsAppSub" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Sends the app (APK) + link" android:textColor="#777777" android:textSize="12sp" />
+            <TextView android:id="@+id/tvWhatsAppSub" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Sends the app (APK) + link" android:textColor="#9E9E9E" android:textSize="12sp" />
         </LinearLayout>
         <TextView style="@style/MenuChevron" />
     </LinearLayout>
@@ -28,7 +28,7 @@
     <LinearLayout android:id="@+id/optOther" style="@style/ShareRow">
         <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:orientation="vertical">
             <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Other apps" android:textColor="#FFFFFF" android:textSize="15sp" android:textStyle="bold" />
-            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Link only · bestfonefinder.cloud" android:textColor="#777777" android:textSize="12sp" />
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Link only · bestfonefinder.cloud" android:textColor="#9E9E9E" android:textSize="12sp" />
         </LinearLayout>
         <TextView style="@style/MenuChevron" />
     </LinearLayout>
@@ -36,6 +36,7 @@
     <Button
         android:id="@+id/btnCancel"
         style="@style/SecondaryButton"
+        android:textColor="#FFFFFF"
         android:layout_marginTop="12dp"
         android:text="Cancel" />
 
