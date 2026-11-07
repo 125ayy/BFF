@@ -14,7 +14,7 @@ class AboutActivity : AppCompatActivity() {
         setContentView(R.layout.activity_about)
 
         val tvVersion = findViewById<TextView>(R.id.tvVersion)
-        tvVersion.text = "Version 1.0.0"
+        tvVersion.text = "Version 3.0"
 
         val tvPrivacy = findViewById<TextView>(R.id.tvPrivacy)
         tvPrivacy.text = "Privacy: BestFoneFinder does not collect or transmit any personal data to external servers. " +

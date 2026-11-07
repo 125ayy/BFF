@@ -6,7 +6,6 @@
     android:background="#000000"
     android:padding="24dp">
 
-    <!-- Header -->
     <ImageView
         android:layout_width="88dp"
         android:layout_height="88dp"
@@ -19,23 +18,13 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="BestFoneFinder"
+        android:text="BFF needs 5 permissions"
         android:textSize="24sp"
         android:textStyle="bold"
         android:textColor="#FFFFFF"
         android:layout_gravity="center_horizontal"
-        android:layout_marginBottom="4dp" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Grant permissions to get started"
-        android:textSize="13sp"
-        android:textColor="#777777"
-        android:layout_gravity="center_horizontal"
         android:layout_marginBottom="28dp" />
 
-    <!-- Permission rows -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -43,8 +32,6 @@
         android:background="@drawable/card_bg"
         android:padding="8dp"
         android:layout_marginBottom="16dp">
-
-        <!-- SMS -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="64dp"
@@ -52,7 +39,6 @@
             android:gravity="center_vertical"
             android:paddingStart="12dp"
             android:paddingEnd="12dp">
-
             <FrameLayout
                 android:layout_width="40dp"
                 android:layout_height="40dp"
@@ -65,38 +51,33 @@
                     android:text="📩"
                     android:textSize="18sp" />
             </FrameLayout>
-
             <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:orientation="vertical">
                 <TextView
+                    
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="SMS Access"
+                    android:text="SMS"
                     android:textColor="#FFFFFF"
                     android:textSize="14sp"
                     android:textStyle="bold" />
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Required — to detect the activation message"
+                    android:text="reads the BFF text"
                     android:textColor="#777777"
                     android:textSize="12sp" />
             </LinearLayout>
-
             <ImageView
                 android:id="@+id/imgSmsStatus"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
                 android:src="@drawable/ic_circle_empty" />
-
         </LinearLayout>
-
         <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#2A2A2A" />
-
-        <!-- Contacts -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="64dp"
@@ -104,7 +85,6 @@
             android:gravity="center_vertical"
             android:paddingStart="12dp"
             android:paddingEnd="12dp">
-
             <FrameLayout
                 android:layout_width="40dp"
                 android:layout_height="40dp"
@@ -117,13 +97,13 @@
                     android:text="👥"
                     android:textSize="18sp" />
             </FrameLayout>
-
             <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:orientation="vertical">
                 <TextView
+                    
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Contacts"
@@ -133,22 +113,17 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="To identify who&#39;s finding your phone"
+                    android:text="knows who is texting"
                     android:textColor="#777777"
                     android:textSize="12sp" />
             </LinearLayout>
-
             <ImageView
                 android:id="@+id/imgContactsStatus"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
                 android:src="@drawable/ic_circle_empty" />
-
         </LinearLayout>
-
         <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#2A2A2A" />
-
-        <!-- Notifications -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="64dp"
@@ -156,7 +131,6 @@
             android:gravity="center_vertical"
             android:paddingStart="12dp"
             android:paddingEnd="12dp">
-
             <FrameLayout
                 android:layout_width="40dp"
                 android:layout_height="40dp"
@@ -169,13 +143,13 @@
                     android:text="🔔"
                     android:textSize="18sp" />
             </FrameLayout>
-
             <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:orientation="vertical">
                 <TextView
+                    
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Notifications"
@@ -185,22 +159,17 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="To alert you when phone is found"
+                    android:text="shows the alarm"
                     android:textColor="#777777"
                     android:textSize="12sp" />
             </LinearLayout>
-
             <ImageView
                 android:id="@+id/imgNotifStatus"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
                 android:src="@drawable/ic_circle_empty" />
-
         </LinearLayout>
-
         <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#2A2A2A" />
-
-        <!-- Audio Control -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="64dp"
@@ -208,7 +177,6 @@
             android:gravity="center_vertical"
             android:paddingStart="12dp"
             android:paddingEnd="12dp">
-
             <FrameLayout
                 android:layout_width="40dp"
                 android:layout_height="40dp"
@@ -221,38 +189,80 @@
                     android:text="🔊"
                     android:textSize="18sp" />
             </FrameLayout>
-
             <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:orientation="vertical">
                 <TextView
+                    
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Audio Control"
+                    android:text="Sound"
                     android:textColor="#FFFFFF"
                     android:textSize="14sp"
                     android:textStyle="bold" />
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="To override silent mode"
+                    android:text="rings on silent"
                     android:textColor="#777777"
                     android:textSize="12sp" />
             </LinearLayout>
-
             <ImageView
                 android:id="@+id/imgAudioStatus"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
                 android:src="@drawable/ic_circle_empty" />
-
         </LinearLayout>
-
+        <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#2A2A2A" />
+        <LinearLayout android:id="@+id/rowGps" android:clickable="true" android:focusable="true"
+            android:layout_width="match_parent"
+            android:layout_height="64dp"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:paddingStart="12dp"
+            android:paddingEnd="12dp">
+            <FrameLayout
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:background="@drawable/icon_circle_green"
+                android:layout_marginEnd="14dp">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text="📍"
+                    android:textSize="18sp" />
+            </FrameLayout>
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+                <TextView
+                    android:id="@+id/tvGpsTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="GPS"
+                    android:textColor="#FFFFFF"
+                    android:textSize="14sp"
+                    android:textStyle="bold" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="sends location via SMS"
+                    android:textColor="#777777"
+                    android:textSize="12sp" />
+            </LinearLayout>
+            <ImageView
+                android:id="@+id/imgGpsStatus"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/ic_circle_empty" />
+        </LinearLayout>
     </LinearLayout>
 
-    <!-- Error banner — shown when a required permission is denied -->
     <TextView
         android:id="@+id/tvPermissionError"
         android:layout_width="match_parent"
@@ -261,23 +271,14 @@
         android:padding="16dp"
         android:textColor="#FF5252"
         android:textSize="13sp"
-        android:lineSpacingExtra="3dp"
         android:layout_marginBottom="16dp"
         android:visibility="gone" />
 
-    <!-- Spacer -->
     <View android:layout_width="match_parent" android:layout_height="0dp" android:layout_weight="1" />
 
-    <!-- Grant Permissions button -->
     <Button
         android:id="@+id/btnContinue"
-        android:layout_width="match_parent"
-        android:layout_height="52dp"
-        android:text="GRANT PERMISSIONS"
-        android:textColor="#000000"
-        android:background="@drawable/btn_green"
-        android:textStyle="bold"
-        android:textSize="15sp"
-        android:stateListAnimator="@null" />
+        style="@style/PrimaryButton"
+        android:text="ALLOW" />
 
 </LinearLayout>

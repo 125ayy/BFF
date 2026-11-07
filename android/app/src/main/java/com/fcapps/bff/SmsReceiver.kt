@@ -1,18 +1,25 @@
 package com.fcapps.bff
 
+import android.Manifest
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
+import android.net.Uri
+import android.os.Build
 import android.provider.ContactsContract
 import android.provider.Telephony
+import androidx.core.content.ContextCompat
 import com.fcapps.bff.Prefs.addHistoryEntry
-import com.fcapps.bff.Prefs.getTrustedContacts
 import com.fcapps.bff.Prefs.isBlacklisted
+import com.fcapps.bff.Prefs.isTrusted
+import com.fcapps.bff.Prefs.locationEnabled
 import com.fcapps.bff.Prefs.matrixAllAlarm
+import com.fcapps.bff.Prefs.matrixAllLoc
 import com.fcapps.bff.Prefs.matrixContactsAlarm
+import com.fcapps.bff.Prefs.matrixContactsLoc
 import com.fcapps.bff.Prefs.matrixTrustedAlarm
-import com.fcapps.bff.Prefs.MATRIX_YES
-import com.fcapps.bff.Prefs.MATRIX_PIN
+import com.fcapps.bff.Prefs.matrixTrustedLoc
 import com.fcapps.bff.Prefs.password
 import com.fcapps.bff.Prefs.pin
 
@@ -20,107 +27,62 @@ class SmsReceiver : BroadcastReceiver() {
 
     override fun onReceive(context: Context, intent: Intent) {
         if (intent.action != Telephony.Sms.Intents.SMS_RECEIVED_ACTION) return
+        val messages = Telephony.Sms.Intents.getMessagesFromIntent(intent) ?: return
 
-        val messages = Telephony.Sms.Intents.getMessagesFromIntent(intent)
-        messageLoop@ for (message in messages) {
-            val sender = message.originatingAddress ?: continue
-            val body = message.messageBody ?: continue
+        // Multipart texts arrive as several parts from the same sender: join them.
+        val bySender = messages.filter { it.originatingAddress != null }
+            .groupBy { it.originatingAddress!! }
+            .mapValues { (_, parts) -> parts.joinToString("") { it.messageBody ?: "" } }
 
-            // Skip blacklisted senders
-            if (context.isBlacklisted(sender)) continue
+        for ((sender, body) in bySender) {
+            if (context.isBlacklisted(sender)) continue          // silently ignored
+            val word = context.password
+            if (!body.contains(word, ignoreCase = true)) continue
 
-            // Must contain activation word (case-insensitive)
-            val storedPassword = context.password
-            if (!body.contains(storedPassword, ignoreCase = true)) continue
-
-            // Resolve sender name and group
-            val senderName = lookupContactName(context, sender)
-            val group = determineGroup(context, sender)
-            val matrixValue = getMatrixValue(context, group)
-
-            when (matrixValue) {
-                MATRIX_YES -> {
-                    triggerAlarm(context, sender, senderName)
-                    context.addHistoryEntry(sender, senderName, "Success")
-                    break@messageLoop
-                }
-                MATRIX_PIN -> {
-                    val currentPin = context.pin
-                    val activationOk = if (currentPin.isEmpty()) {
-                        true
-                    } else {
-                        body.contains("$storedPassword$currentPin", ignoreCase = true) ||
-                        body.contains("$storedPassword $currentPin", ignoreCase = true)
-                    }
-                    if (activationOk) {
-                        triggerAlarm(context, sender, senderName)
-                        context.addHistoryEntry(sender, senderName, "Success")
-                    } else {
-                        context.addHistoryEntry(sender, senderName, "Blocked")
-                    }
-                    break@messageLoop
-                }
-                else -> {
-                    // MATRIX_NO
-                    context.addHistoryEntry(sender, senderName, "Blocked")
-                    break@messageLoop
-                }
+            val name = lookupContactName(context, sender)
+            val group = when {
+                context.isTrusted(sender) -> Group.TRUSTED
+                name != null -> Group.CONTACTS
+                else -> Group.ALL
             }
+            val decision = SmsRules.decide(
+                body = body, word = word, pin = context.pin,
+                alarmGate = alarmGate(context, group), locGate = locGate(context, group),
+                locationEnabled = context.locationEnabled && hasLocationPermission(context)
+            )
+            context.addHistoryEntry(sender, name ?: "Unknown", decision.status)
+            if (decision.alarm) AlarmLauncher.launch(context, sender, name ?: sender)
+            if (decision.location) LocationService.start(context, sender)
+            break
         }
     }
 
-    private fun triggerAlarm(context: Context, senderNumber: String, senderName: String) {
-        val alarmIntent = Intent(context, AlarmService::class.java).apply {
-            putExtra(AlarmService.EXTRA_SENDER_NAME, senderName)
-            putExtra(AlarmService.EXTRA_SENDER_NUMBER, senderNumber)
-        }
-        context.startForegroundService(alarmIntent)
+    private enum class Group { ALL, CONTACTS, TRUSTED }
+
+    private fun alarmGate(c: Context, g: Group) = when (g) {
+        Group.TRUSTED -> c.matrixTrustedAlarm; Group.CONTACTS -> c.matrixContactsAlarm; Group.ALL -> c.matrixAllAlarm
     }
 
-    private fun determineGroup(context: Context, number: String): String {
-        val trusted = context.getTrustedContacts()
-        val normalizedNumber = normalizeNumber(number)
-        for (tc in trusted) {
-            if (normalizeNumber(tc.number) == normalizedNumber) {
-                return "TRUSTED"
-            }
-        }
-        if (lookupContactName(context, number) != "Unknown") {
-            return "CONTACTS"
-        }
-        return "ALL"
+    private fun locGate(c: Context, g: Group) = when (g) {
+        Group.TRUSTED -> c.matrixTrustedLoc; Group.CONTACTS -> c.matrixContactsLoc; Group.ALL -> c.matrixAllLoc
     }
 
-    private fun getMatrixValue(context: Context, group: String): String {
-        return when (group) {
-            "TRUSTED" -> context.matrixTrustedAlarm
-            "CONTACTS" -> context.matrixContactsAlarm
-            else -> context.matrixAllAlarm
-        }
+    private fun granted(c: Context, p: String) = ContextCompat.checkSelfPermission(c, p) == PackageManager.PERMISSION_GRANTED
+
+    private fun hasLocationPermission(c: Context): Boolean {
+        if (!granted(c, Manifest.permission.ACCESS_FINE_LOCATION) && !granted(c, Manifest.permission.ACCESS_COARSE_LOCATION)) return false
+        // The background grant is what lets BFF answer while the phone sits in a pocket.
+        return Build.VERSION.SDK_INT < Build.VERSION_CODES.Q || granted(c, Manifest.permission.ACCESS_BACKGROUND_LOCATION)
     }
 
-    private fun lookupContactName(context: Context, number: String): String {
+    /** Display name if the number is in the phone's contacts, else null. */
+    private fun lookupContactName(context: Context, number: String): String? {
+        if (!granted(context, Manifest.permission.READ_CONTACTS)) return null
         return try {
-            val uri = android.net.Uri.withAppendedPath(
-                ContactsContract.PhoneLookup.CONTENT_FILTER_URI,
-                android.net.Uri.encode(number)
-            )
-            val cursor = context.contentResolver.query(
-                uri,
-                arrayOf(ContactsContract.PhoneLookup.DISPLAY_NAME),
-                null, null, null
-            )
-            cursor?.use {
-                if (it.moveToFirst()) {
-                    it.getString(0) ?: "Unknown"
-                } else "Unknown"
-            } ?: "Unknown"
-        } catch (e: Exception) {
-            "Unknown"
-        }
-    }
-
-    private fun normalizeNumber(number: String): String {
-        return number.replace(Regex("[^0-9+]"), "")
+            val uri = Uri.withAppendedPath(ContactsContract.PhoneLookup.CONTENT_FILTER_URI, Uri.encode(number))
+            context.contentResolver.query(uri, arrayOf(ContactsContract.PhoneLookup.DISPLAY_NAME), null, null, null)?.use {
+                if (it.moveToFirst()) it.getString(0) else null
+            }
+        } catch (e: Exception) { null }
     }
 }

@@ -10,9 +10,9 @@ android {
     defaultConfig {
         applicationId "com.fcapps.bff"
         minSdk 26
-        targetSdk 28
-        versionCode 7
-        versionName "2.1"
+        targetSdk 34
+        versionCode 8
+        versionName "3.0"
     }
 
     def buildDate = new Date().format('yyyyMMdd')
@@ -37,6 +37,9 @@ android {
     kotlinOptions {
         jvmTarget = '17'
     }
+    buildFeatures {
+        buildConfig true
+    }
 }
 
 dependencies {
@@ -44,4 +47,5 @@ dependencies {
     implementation 'androidx.appcompat:appcompat:1.6.1'
     implementation 'com.google.android.material:material:1.11.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
+    testImplementation 'junit:junit:4.13.2'
 }

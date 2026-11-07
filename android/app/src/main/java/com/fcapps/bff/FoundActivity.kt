@@ -43,14 +43,7 @@ class FoundActivity : AppCompatActivity() {
         }
 
         // Share BFF
-        findViewById<Button>(R.id.btnShareBff).setOnClickListener {
-            val shareIntent = Intent(Intent.ACTION_SEND).apply {
-                type = "text/plain"
-                putExtra(Intent.EXTRA_SUBJECT, "BestFoneFinder App")
-                putExtra(Intent.EXTRA_TEXT, "Check out BestFoneFinder - find your lost phone via SMS!\nPackage: com.fcapps.bff")
-            }
-            startActivity(Intent.createChooser(shareIntent, "Share BFF via"))
-        }
+        findViewById<Button>(R.id.btnShareBff).setOnClickListener { Share.open(this) }
 
         // Back
         findViewById<android.view.View>(R.id.btnBack).setOnClickListener { finish() }

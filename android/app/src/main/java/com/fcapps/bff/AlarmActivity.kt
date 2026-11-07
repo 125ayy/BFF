@@ -10,6 +10,7 @@ import android.view.WindowManager
 import android.widget.Button
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import com.fcapps.bff.Prefs.finderMessage
 
 class AlarmActivity : AppCompatActivity() {
 
@@ -47,7 +48,17 @@ class AlarmActivity : AppCompatActivity() {
             senderNumber.isNotEmpty() -> senderNumber
             else -> "Unknown"
         }
-        findViewById<TextView>(R.id.tvTriggeredBy).text = "Triggered by $triggeredBy"
+        val msg = finderMessage.trim()
+        findViewById<TextView>(R.id.tvTriggeredBy).text = if (msg.isNotEmpty()) msg else "Triggered by $triggeredBy"
+
+        // The receiver may not have been allowed to start the siren from the background;
+        // now that a screen is visible, make sure it runs.
+        if (!AlarmService.running) {
+            startForegroundService(Intent(this, AlarmService::class.java).apply {
+                putExtra(AlarmService.EXTRA_SENDER_NAME, senderName)
+                putExtra(AlarmService.EXTRA_SENDER_NUMBER, senderNumber)
+            })
+        }
 
         // Bell shake animation — translate left/right repeatedly
         val bellView = findViewById<View>(R.id.ivBell)

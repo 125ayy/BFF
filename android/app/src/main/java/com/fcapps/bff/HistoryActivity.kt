@@ -51,15 +51,14 @@ class HistoryActivity : AppCompatActivity() {
                 if (item.timestamp > 0) dateFormat.format(Date(item.timestamp)) else ""
 
             val badge = view.findViewById<TextView>(R.id.tvStatusBadge)
-            if (item.status == "Success") {
-                badge.text = "Success"
-                badge.setBackgroundResource(R.drawable.badge_green)
-                badge.setTextColor(0xFF000000.toInt())
-            } else {
-                badge.text = "Blocked"
-                badge.setBackgroundResource(R.drawable.badge_red)
-                badge.setTextColor(0xFFFFFFFF.toInt())
+            badge.text = item.status
+            when (item.status) {
+                Prefs.STATUS_BLOCKED -> { badge.setBackgroundResource(R.drawable.badge_red); badge.setTextColor(0xFFFFFFFF.toInt()) }
+                Prefs.STATUS_LOCATED -> { badge.setBackgroundResource(R.drawable.badge_blue); badge.setTextColor(0xFFFFFFFF.toInt()) }
+                else -> { badge.setBackgroundResource(R.drawable.badge_green); badge.setTextColor(0xFF000000.toInt()) }
             }
+            badge.layoutParams = badge.layoutParams.apply { width = android.view.ViewGroup.LayoutParams.WRAP_CONTENT }
+            badge.setPadding(24, badge.paddingTop, 24, badge.paddingBottom)
 
             return view
         }

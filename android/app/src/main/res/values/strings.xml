@@ -1,4 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">BestFoneFinder</string>
+    <string name="share_text_en">Here is BFF, the best app to find phone! https://bestfonefinder.cloud</string>
+    <string name="share_text_pt">Aqui está o BFF, o melhor app para achar o celular! https://bestfonefinder.cloud</string>
+    <string name="site_url">https://bestfonefinder.cloud</string>
+    <!-- Prominent disclosure required by Google Play before asking for background location -->
+    <string name="location_disclosure">BestFoneFinder collects location data to send this phone\'s position by SMS when someone texts BFF where, even when the app is closed or not in use.</string>
 </resources>
