@@ -27,7 +27,7 @@
     <string name="setup_battery_description">Optional. Allow BFF to ignore battery optimization so incoming commands are more reliable while the phone is idle. This may use additional battery. Return here after making your choice.</string>
     <string name="setup_complete_title">Your permissions are set</string>
     <string name="setup_complete_description">BFF has checked the permissions you actually granted. You can review or enable skipped permissions later in Settings → Permissions.</string>
-    <string name="setup_location_unavailable">Location replies are off. Enable SMS sending and foreground/background location in Permissions.</string>
+    <string name="setup_location_unavailable">Location replies are off. Turn them on in Settings › Location.</string>
     <string name="setup_notifications_unavailable">Notifications are off. Alarm recovery may require opening BFF.</string>
     <string name="setup_fullscreen_unavailable">Lock-screen opening is off. You may need to tap the alarm notification.</string>
     <string name="setup_battery_unavailable">Battery optimization is on. Background commands may be delayed.</string>
@@ -59,4 +59,16 @@
     <string name="alarm_recovery_message">Someone is looking for this phone. Tap to start the alarm.</string>
     <string name="alarm_message">Someone is looking for this phone. Tap FOUND to stop.</string>
     <string name="app_version">Version %1$s</string>
+
+    <!-- v3.11: Location lives in Settings -->
+    <string name="location_settings">Location</string>
+    <string name="location_switch">Send location by SMS</string>
+    <string name="location_state_on">On · replies to “BFF where”</string>
+    <string name="location_state_off">Off</string>
+    <string name="location_not_now">Not now</string>
+    <string name="location_needs_sms">Location stays off. BFF needs permission to send SMS.</string>
+    <string name="location_needs_location">Location stays off. BFF needs location access.</string>
+    <string name="location_needs_background">Location stays off. BFF needs “Allow all the time” so it can answer while the phone is in a pocket.</string>
+    <string name="history_location_off">Alarm · location off</string>
+    <string name="ready_location_hint">Turn on in Settings › Location.</string>
 </resources>

@@ -42,7 +42,7 @@ class SetupActivityTest {
         assertSame(request, shadowOf(activity).lastRequestedPermission)
         shadowOf(app).grantPermissions(Manifest.permission.RECEIVE_SMS)
         activity.onRequestPermissionsResult(request.requestCode, request.requestedPermissions, intArrayOf(PackageManager.PERMISSION_GRANTED))
-        assertEquals(activity.getString(R.string.setup_send_title), activity.findViewById<TextView>(R.id.tvSetupTitle).text.toString())
+        assertEquals(activity.getString(R.string.setup_contacts_title), activity.findViewById<TextView>(R.id.tvSetupTitle).text.toString())
         assertTrue(allow.isEnabled)
         // Completing one request shows the next explanation; it does not open another prompt.
         assertSame(request, shadowOf(activity).lastRequestedPermission)
@@ -71,33 +71,18 @@ class SetupActivityTest {
         shadowOf(app).grantPermissions(Manifest.permission.RECEIVE_SMS)
         restored.onRequestPermissionsResult(request.requestCode, request.requestedPermissions, intArrayOf(PackageManager.PERMISSION_GRANTED))
         assertTrue(restored.findViewById<Button>(R.id.btnContinue).isEnabled)
-        assertEquals(restored.getString(R.string.setup_send_title), restored.findViewById<TextView>(R.id.tvSetupTitle).text.toString())
+        assertEquals(restored.getString(R.string.setup_contacts_title), restored.findViewById<TextView>(R.id.tvSetupTitle).text.toString())
     }
 
-    @Test fun locationDisclosurePrecedesFirstLocationPromptAndAcceptsApproximate() {
-        shadowOf(app).grantPermissions(Manifest.permission.RECEIVE_SMS, Manifest.permission.SEND_SMS,
-            Manifest.permission.READ_CONTACTS, Manifest.permission.POST_NOTIFICATIONS)
+
+    @Test fun setupNeverAsksForSmsSendingOrLocation() {
+        shadowOf(app).grantPermissions(Manifest.permission.RECEIVE_SMS, Manifest.permission.READ_CONTACTS, Manifest.permission.POST_NOTIFICATIONS)
         val activity = Robolectric.buildActivity(SetupActivity::class.java).setup().get()
-        assertEquals(activity.getString(R.string.location_disclosure), activity.findViewById<TextView>(R.id.tvSetupDescription).text.toString())
+        // SMS receive, contacts and notifications are satisfied: the first card is the overlay step.
+        assertEquals(activity.getString(R.string.setup_overlay_title), activity.findViewById<TextView>(R.id.tvSetupTitle).text.toString())
         assertNull(shadowOf(activity).lastRequestedPermission)
         activity.findViewById<Button>(R.id.btnContinue).performClick()
-        val request = shadowOf(activity).lastRequestedPermission
-        assertArrayEquals(arrayOf(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION), request.requestedPermissions)
-        shadowOf(app).grantPermissions(Manifest.permission.ACCESS_COARSE_LOCATION)
-        activity.onRequestPermissionsResult(request.requestCode, request.requestedPermissions,
-            intArrayOf(PackageManager.PERMISSION_DENIED, PackageManager.PERMISSION_GRANTED))
-        assertEquals(activity.getString(R.string.setup_background_title), activity.findViewById<TextView>(R.id.tvSetupTitle).text.toString())
-    }
-
-    @Test fun settingsReturnRechecksGrantInsteadOfTrustingResultCode() {
-        shadowOf(app).grantPermissions(Manifest.permission.RECEIVE_SMS, Manifest.permission.SEND_SMS,
-            Manifest.permission.READ_CONTACTS, Manifest.permission.POST_NOTIFICATIONS, Manifest.permission.ACCESS_COARSE_LOCATION)
-        val activity = Robolectric.buildActivity(SetupActivity::class.java).setup().get()
-        activity.findViewById<Button>(R.id.btnContinue).performClick()
-        val opened = shadowOf(activity).nextStartedActivityForResult
-        assertEquals(Settings.ACTION_APPLICATION_DETAILS_SETTINGS, opened.intent.action)
-        shadowOf(app).grantPermissions(Manifest.permission.ACCESS_BACKGROUND_LOCATION)
-        shadowOf(activity).receiveResult(opened.intent, Activity.RESULT_CANCELED, null)
-        assertEquals(activity.getString(R.string.setup_overlay_title), activity.findViewById<TextView>(R.id.tvSetupTitle).text.toString())
+        assertEquals(Settings.ACTION_MANAGE_OVERLAY_PERMISSION, shadowOf(activity).nextStartedActivityForResult.intent.action)
+        assertNull(shadowOf(activity).lastRequestedPermission)
     }
 }

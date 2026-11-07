@@ -17,7 +17,6 @@ import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat
 import com.fcapps.bff.PermissionFlow.Step
-import com.fcapps.bff.Prefs.locationEnabled
 import com.fcapps.bff.Prefs.permissionSetupVersion
 
 /** One visible explanation and one system request at a time, including Settings returns. */
@@ -31,18 +30,13 @@ class SetupActivity : BffActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_setup)
-        flow = PermissionFlow(Build.VERSION.SDK_INT,
-            savedInstanceState?.getString("step")?.let { runCatching { Step.valueOf(it) }.getOrNull() } ?: Step.RECEIVE_SMS,
-            savedInstanceState?.getBoolean("locationWanted", true) ?: true,
+        flow = PermissionFlow(Build.VERSION.SDK_INT, PermissionFlow.SETUP,
+            savedInstanceState?.getString("step")?.let { runCatching { Step.valueOf(it) }.getOrNull() }?.takeIf { it in PermissionFlow.SETUP } ?: Step.RECEIVE_SMS,
             savedInstanceState?.getBoolean("waiting", false) ?: false)
         denied = savedInstanceState?.getBoolean("denied", false) ?: false
         findViewById<Button>(R.id.btnContinue).setOnClickListener { allowCurrent() }
         findViewById<Button>(R.id.btnSkip).setOnClickListener {
-            if (flow.skip()) {
-                if (!flow.locationWanted) locationEnabled = false
-                denied = false
-                render()
-            }
+            if (flow.skip()) { denied = false; render() }
         }
         render()
     }
@@ -54,7 +48,6 @@ class SetupActivity : BffActivity() {
 
     override fun onSaveInstanceState(outState: Bundle) {
         outState.putString("step", flow.step.name)
-        outState.putBoolean("locationWanted", flow.locationWanted)
         outState.putBoolean("waiting", flow.waiting)
         outState.putBoolean("denied", denied)
         super.onSaveInstanceState(outState)
@@ -63,17 +56,12 @@ class SetupActivity : BffActivity() {
     private fun granted(permission: String) = ContextCompat.checkSelfPermission(this, permission) == PackageManager.PERMISSION_GRANTED
     private fun permissions(step: Step): Array<String> = when (step) {
         Step.RECEIVE_SMS -> arrayOf(Manifest.permission.RECEIVE_SMS)
-        Step.SEND_SMS -> arrayOf(Manifest.permission.SEND_SMS)
         Step.CONTACTS -> arrayOf(Manifest.permission.READ_CONTACTS)
         Step.NOTIFICATIONS -> if (Build.VERSION.SDK_INT >= 33) arrayOf(Manifest.permission.POST_NOTIFICATIONS) else emptyArray()
-        // Android 12+ requires these together to offer precise/approximate choice.
-        Step.LOCATION -> arrayOf(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION)
-        Step.BACKGROUND_LOCATION -> arrayOf(Manifest.permission.ACCESS_BACKGROUND_LOCATION)
         else -> emptyArray()
     }
 
     private fun satisfied(step: Step): Boolean = when (step) {
-        Step.LOCATION -> granted(Manifest.permission.ACCESS_COARSE_LOCATION) || granted(Manifest.permission.ACCESS_FINE_LOCATION)
         Step.NOTIFICATIONS -> NotificationManagerCompat.from(this).areNotificationsEnabled()
         Step.OVERLAY -> Settings.canDrawOverlays(this)
         Step.FULL_SCREEN -> Build.VERSION.SDK_INT < 34 || getSystemService(NotificationManager::class.java).canUseFullScreenIntent()
@@ -90,26 +78,19 @@ class SetupActivity : BffActivity() {
                 denied = false
             }
         }
-        if (flow.step == Step.COMPLETE) {
-            // Recheck actual grants; never persist a fictional enabled location capability.
-            locationEnabled = flow.locationWanted && LocationPermissions.canReply(this)
-        }
         val (title, description) = when (flow.step) {
             Step.RECEIVE_SMS -> R.string.setup_sms_title to R.string.setup_sms_description
-            Step.SEND_SMS -> R.string.setup_send_title to R.string.setup_send_description
             Step.CONTACTS -> R.string.setup_contacts_title to R.string.setup_contacts_description
             Step.NOTIFICATIONS -> R.string.setup_notifications_title to R.string.setup_notifications_description
-            Step.LOCATION -> R.string.setup_location_title to R.string.location_disclosure
-            Step.BACKGROUND_LOCATION -> R.string.setup_background_title to R.string.setup_background_description
             Step.OVERLAY -> R.string.setup_overlay_title to R.string.setup_overlay_description
             Step.FULL_SCREEN -> R.string.setup_fullscreen_title to R.string.setup_fullscreen_description
             Step.BATTERY -> R.string.setup_battery_title to R.string.setup_battery_description
             Step.COMPLETE -> R.string.setup_complete_title to R.string.setup_complete_description
+            else -> R.string.setup_complete_title to R.string.setup_complete_description   // location steps never run here
         }
-        findViewById<TextView>(R.id.tvSetupProgress).text = getString(R.string.setup_progress, flow.step.ordinal + 1, Step.entries.size)
+        findViewById<TextView>(R.id.tvSetupProgress).text = getString(R.string.setup_progress, PermissionFlow.SETUP.indexOf(flow.step) + 1, PermissionFlow.SETUP.size)
         findViewById<TextView>(R.id.tvSetupTitle).setText(title)
         findViewById<TextView>(R.id.tvSetupDescription).text = when (flow.step) {
-            Step.BACKGROUND_LOCATION -> getString(description, if (Build.VERSION.SDK_INT >= 30) packageManager.backgroundPermissionOptionLabel else getString(R.string.setup_allow_all_time))
             Step.COMPLETE -> getString(description) + "\n\n" + capabilitySummary()
             else -> getString(description)
         }
@@ -135,7 +116,6 @@ class SetupActivity : BffActivity() {
 
     private fun needsSettings(): Boolean {
         val p = permissions(flow.step).firstOrNull() ?: return false
-        if (flow.step == Step.BACKGROUND_LOCATION && Build.VERSION.SDK_INT >= 30) return true
         if (flow.step == Step.NOTIFICATIONS && granted(p) && !satisfied(flow.step)) return true
         return requestHistory.getBoolean(p, false) && !ActivityCompat.shouldShowRequestPermissionRationale(this, p) && !satisfied(flow.step)
     }
@@ -147,7 +127,7 @@ class SetupActivity : BffActivity() {
             if (!granted(Manifest.permission.RECEIVE_SMS)) {
                 flow.step = Step.RECEIVE_SMS; denied = true; render(); return
             }
-            permissionSetupVersion = 31
+            permissionSetupVersion = Prefs.SETUP_VERSION
             startActivity(Intent(this, ReadyActivity::class.java))
             finish()
             return
@@ -186,7 +166,7 @@ class SetupActivity : BffActivity() {
 
     private fun capabilitySummary(): String {
         val unavailable = mutableListOf<String>()
-        if (!locationEnabled) unavailable += getString(R.string.setup_location_unavailable)
+        unavailable += getString(R.string.setup_location_unavailable)
         if (!NotificationManagerCompat.from(this).areNotificationsEnabled()) unavailable += getString(R.string.setup_notifications_unavailable)
         if (Build.VERSION.SDK_INT >= 34 && !getSystemService(NotificationManager::class.java).canUseFullScreenIntent()) unavailable += getString(R.string.setup_fullscreen_unavailable)
         if (!getSystemService(PowerManager::class.java).isIgnoringBatteryOptimizations(packageName)) unavailable += getString(R.string.setup_battery_unavailable)

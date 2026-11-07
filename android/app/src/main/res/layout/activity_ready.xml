@@ -54,6 +54,14 @@
             android:layout_height="wrap_content"
             android:textSize="15sp"
             android:textColor="#FFFFFF" />
+        <TextView
+            android:id="@+id/tvLine3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/ready_location_hint"
+            android:textSize="13sp"
+            android:textColor="#777777"
+            android:layout_marginTop="6dp" />
     </LinearLayout>
 
     <Button

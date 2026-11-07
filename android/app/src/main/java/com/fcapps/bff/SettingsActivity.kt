@@ -4,7 +4,9 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.EditText
+import android.widget.TextView
 import com.fcapps.bff.Prefs.finderMessage
+import com.fcapps.bff.Prefs.locationEnabled
 
 class SettingsActivity : BffActivity() {
 
@@ -18,8 +20,15 @@ class SettingsActivity : BffActivity() {
 
         findViewById<View>(R.id.btnBack).setOnClickListener { finish() }
         findViewById<View>(R.id.rowPrivacy).setOnClickListener { startActivity(Intent(this, PrivacyActivity::class.java)) }
+        findViewById<View>(R.id.rowLocation).setOnClickListener { startActivity(Intent(this, LocationActivity::class.java)) }
         findViewById<View>(R.id.rowPermissions).setOnClickListener { startActivity(Intent(this, SetupActivity::class.java)) }
         findViewById<View>(R.id.rowSound).setOnClickListener { startActivity(Intent(this, SoundActivity::class.java)) }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        val on = locationEnabled && LocationPermissions.canReply(this)
+        findViewById<TextView>(R.id.tvLocationRowState).setText(if (on) R.string.location_state_on else R.string.location_state_off)
     }
 
     override fun onPause() {

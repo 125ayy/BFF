@@ -47,6 +47,12 @@
         <TextView style="@style/MenuChevron" />
     </LinearLayout>
 
+    <LinearLayout android:id="@+id/rowLocation" style="@style/MenuCard">
+        <TextView style="@style/MenuText" android:text="@string/location_settings" />
+        <TextView android:id="@+id/tvLocationRowState" android:layout_width="wrap_content" android:layout_height="wrap_content" android:textColor="#777777" android:textSize="13sp" android:layout_marginEnd="10dp" />
+        <TextView style="@style/MenuChevron" />
+    </LinearLayout>
+
     <LinearLayout android:id="@+id/rowPermissions" style="@style/MenuCard">
         <TextView style="@style/MenuText" android:text="@string/permissions_settings" />
         <TextView style="@style/MenuChevron" />

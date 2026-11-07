@@ -94,4 +94,10 @@ class SmsRulesTest {
             }
         }
     }
+
+    @Test fun whereIsReportedEvenWhenLocationIsOff() {
+        val d = SmsRules.decide("BFF where", "BFF", "", Prefs.MATRIX_YES, Prefs.MATRIX_YES, false)
+        assertTrue(d.alarm); assertFalse(d.location); assertTrue(d.whereRequested)
+        assertFalse(SmsRules.decide("BFF", "BFF", "", Prefs.MATRIX_YES, Prefs.MATRIX_YES, false).whereRequested)
+    }
 }

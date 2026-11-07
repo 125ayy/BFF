@@ -47,14 +47,18 @@ class SmsReceiver : BroadcastReceiver() {
                 name != null -> Group.CONTACTS
                 else -> Group.ALL
             }
+            // The switch never lies: the stored choice and the live grants must both hold.
+            val locationOn = context.locationEnabled && LocationPermissions.canReply(context)
             val decision = SmsRules.decide(
                 body = body, word = word, pin = context.pin,
                 alarmGate = alarmGate(context, group), locGate = locGate(context, group),
-                locationEnabled = context.locationEnabled && LocationPermissions.canReply(context)
+                locationEnabled = locationOn
             )
             val subscription = intent.getIntExtra("subscription", SubscriptionManager.INVALID_SUBSCRIPTION_ID)
             context.addHistoryEntry(sender, name ?: "Unknown", when {
                 decision.location -> context.getString(R.string.history_location_requested)
+                // "where" asked while Location is off in Settings: alarm only, and a hint for the owner.
+                decision.alarm && decision.whereRequested && !locationOn -> context.getString(R.string.history_location_off)
                 decision.alarm -> "Alarm requested"
                 else -> decision.status
             })

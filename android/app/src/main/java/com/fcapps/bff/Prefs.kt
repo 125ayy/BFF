@@ -32,6 +32,9 @@ object Prefs {
     const val STATUS_BOTH = "Success + Located"
     const val STATUS_BLOCKED = "Blocked"
 
+    /** Setup/migration marker: 31 = v3.1 wizard seen, 311 = v3.11 location moved to Settings. */
+    const val SETUP_VERSION = 311
+
     private fun prefs(ctx: Context): SharedPreferences = ctx.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
 
     /** The activation word. Default BFF. */
@@ -56,9 +59,9 @@ object Prefs {
         get() = prefs(this).getInt("permission_setup_version", 0)
         set(value) { prefs(this).edit().putInt("permission_setup_version", value).apply() }
 
-    /** Owner's choice on the GPS row of setup; the Android grant is checked separately. */
+    /** The Settings › Location switch. Off by default (v3.11); the Android grants are checked separately. */
     var Context.locationEnabled: Boolean
-        get() = prefs(this).getBoolean(KEY_LOCATION_ENABLED, true)
+        get() = prefs(this).getBoolean(KEY_LOCATION_ENABLED, false)
         set(value) { prefs(this).edit().putBoolean(KEY_LOCATION_ENABLED, value).apply() }
 
     /** Shown on the alarm screen so the finder can reach the owner. */

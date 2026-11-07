@@ -24,7 +24,7 @@
     <string name="setup_battery_description">Opcional. Permita que o BFF ignore a otimização da bateria para receber comandos com mais confiança quando o celular estiver ocioso. Isso pode aumentar o consumo de bateria. Volte aqui após escolher.</string>
     <string name="setup_complete_title">Suas permissões estão configuradas</string>
     <string name="setup_complete_description">O BFF verificou as permissões realmente concedidas. Você pode revisar ou ativar permissões depois em Configurações → Permissões.</string>
-    <string name="setup_location_unavailable">As respostas de localização estão desativadas. Ative o envio de SMS e a localização em primeiro e segundo plano em Permissões.</string>
+    <string name="setup_location_unavailable">As respostas de localização estão desativadas. Ative em Configurações › Localização.</string>
     <string name="setup_notifications_unavailable">As notificações estão desativadas. Talvez seja preciso abrir o BFF para recuperar o alarme.</string>
     <string name="setup_fullscreen_unavailable">A abertura na tela de bloqueio está desativada. Talvez seja preciso tocar na notificação do alarme.</string>
     <string name="setup_battery_unavailable">A otimização da bateria está ativada. Os comandos em segundo plano podem atrasar.</string>
@@ -54,4 +54,16 @@
     <string name="alarm_recovery_message">Alguém está procurando este celular. Toque para iniciar o alarme.</string>
     <string name="alarm_message">Alguém está procurando este celular. Toque em ACHEI para parar.</string>
     <string name="app_version">Versão %1$s</string>
+
+    <!-- v3.11: Localização nas Configurações -->
+    <string name="location_settings">Localização</string>
+    <string name="location_switch">Enviar localização por SMS</string>
+    <string name="location_state_on">Ligado · responde a “BFF where”</string>
+    <string name="location_state_off">Desligado</string>
+    <string name="location_not_now">Agora não</string>
+    <string name="location_needs_sms">Localização continua desligada. O BFF precisa de permissão para enviar SMS.</string>
+    <string name="location_needs_location">Localização continua desligada. O BFF precisa de acesso à localização.</string>
+    <string name="location_needs_background">Localização continua desligada. O BFF precisa de “Permitir o tempo todo” para responder com o celular no bolso.</string>
+    <string name="history_location_off">Alarme · localização desligada</string>
+    <string name="ready_location_hint">Ative em Configurações › Localização.</string>
 </resources>

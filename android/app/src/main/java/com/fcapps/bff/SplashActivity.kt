@@ -9,6 +9,7 @@ import android.text.style.ForegroundColorSpan
 import android.widget.TextView
 import com.fcapps.bff.Prefs.setupDone
 import com.fcapps.bff.Prefs.permissionSetupVersion
+import com.fcapps.bff.Prefs.locationEnabled
 
 class SplashActivity : BffActivity() {
 
@@ -16,6 +17,12 @@ class SplashActivity : BffActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_splash)
         styleAppName(R.id.tvAppName)
+
+        // v3.11: location moved out of setup and is off by default for everyone, once.
+        if (permissionSetupVersion < Prefs.SETUP_VERSION) {
+            locationEnabled = false
+            if (permissionSetupVersion >= 31) permissionSetupVersion = Prefs.SETUP_VERSION
+        }
 
         Handler(Looper.getMainLooper()).postDelayed({
             if (!setupDone || permissionSetupVersion < 31) startActivity(Intent(this, SetupActivity::class.java))

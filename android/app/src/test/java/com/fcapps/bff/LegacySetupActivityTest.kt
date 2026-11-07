@@ -27,19 +27,20 @@ class LegacySetupActivityTest {
             Manifest.permission.ACCESS_BACKGROUND_LOCATION)
     }
 
-    @Test fun locationDisclosureAppearsOnEverySupportedAndroidVersion() {
+    @Test fun setupGoesStraightToAlarmStepsWithoutLocation() {
         val activity = Robolectric.buildActivity(SetupActivity::class.java).setup().get()
-        assertEquals(activity.getString(R.string.setup_location_title), activity.findViewById<TextView>(R.id.tvSetupTitle).text.toString())
+        val expected = if (Build.VERSION.SDK_INT >= 33) R.string.setup_notifications_title else R.string.setup_overlay_title
+        assertEquals(activity.getString(expected), activity.findViewById<TextView>(R.id.tvSetupTitle).text.toString())
         assertNull(shadowOf(activity).lastRequestedPermission)
-        activity.findViewById<Button>(R.id.btnContinue).performClick()
-        assertArrayEquals(arrayOf(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION),
-            shadowOf(activity).lastRequestedPermission.requestedPermissions)
     }
 
-    @Test fun skippingLocationDoesNotOpenAnySystemPrompt() {
+    @Test fun skippingOverlayDoesNotOpenAnySystemPrompt() {
+        shadowOf(app).grantPermissions(Manifest.permission.POST_NOTIFICATIONS)
         val activity = Robolectric.buildActivity(SetupActivity::class.java).setup().get()
-        activity.findViewById<Button>(R.id.btnSkip).performClick()
         assertEquals(activity.getString(R.string.setup_overlay_title), activity.findViewById<TextView>(R.id.tvSetupTitle).text.toString())
+        activity.findViewById<Button>(R.id.btnSkip).performClick()
+        val next = if (Build.VERSION.SDK_INT >= 34) R.string.setup_fullscreen_title else R.string.setup_battery_title
+        assertEquals(activity.getString(next), activity.findViewById<TextView>(R.id.tvSetupTitle).text.toString())
         assertNull(shadowOf(activity).lastRequestedPermission)
         assertNull(shadowOf(activity).nextStartedActivityForResult)
     }
