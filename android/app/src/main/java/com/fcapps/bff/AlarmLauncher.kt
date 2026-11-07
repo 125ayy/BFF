@@ -29,17 +29,16 @@ object AlarmLauncher {
             putExtra(AlarmActivity.EXTRA_SENDER_NAME, senderName)
             putExtra(AlarmActivity.EXTRA_SENDER_NUMBER, senderNumber)
         }
-        var activityStarted = false
         if (Settings.canDrawOverlays(ctx)) {
-            try { ctx.startActivity(activity); activityStarted = true }
+            try { ctx.startActivity(activity) }
             catch (e: Exception) { Log.w(TAG, "activity start refused: $e") }
         }
 
-        if (!serviceStarted || !activityStarted) {
+        if (!serviceStarted) {
             // Full-screen intent: opens the alarm screen on a locked phone, heads-up otherwise.
             // AlarmActivity starts the siren itself if the receiver could not.
             val nm = ctx.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-            nm.notify(Notifier.ID_ALARM, Notifier.alarm(ctx, senderName, senderNumber))
+            runCatching { nm.notify(Notifier.ID_ALARM_FALLBACK, Notifier.alarm(ctx, senderName, senderNumber, fallback = true)) }
         }
     }
 }

@@ -7,11 +7,10 @@ import android.text.Spanned
 import android.text.style.ForegroundColorSpan
 import android.text.style.StyleSpan
 import android.widget.TextView
-import androidx.appcompat.app.AppCompatActivity
 import com.fcapps.bff.Prefs.password
 import com.fcapps.bff.Prefs.setupDone
 
-class ReadyActivity : AppCompatActivity() {
+class ReadyActivity : BffActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

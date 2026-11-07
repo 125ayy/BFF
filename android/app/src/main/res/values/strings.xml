@@ -1,9 +1,62 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">BestFoneFinder</string>
-    <string name="share_text_en">Here is BFF, the best app to find phone! https://bestfonefinder.cloud</string>
-    <string name="share_text_pt">Aqui está o BFF, o melhor app para achar o celular! https://bestfonefinder.cloud</string>
-    <string name="site_url">https://bestfonefinder.cloud</string>
+    <string name="app_name" translatable="false">BestFoneFinder</string>
+    <string name="site_url" translatable="false">https://bestfonefinder.cloud</string>
     <!-- Prominent disclosure required by Google Play before asking for background location -->
     <string name="location_disclosure">BestFoneFinder collects location data to send this phone\'s position by SMS when someone texts BFF where, even when the app is closed or not in use.</string>
+
+    <string name="setup_heading">Set up BFF</string>
+    <string name="setup_progress">Step %1$d of %2$d</string>
+    <string name="setup_sms_title">Receive the activation SMS</string>
+    <string name="setup_sms_description">Required. BFF needs to receive incoming SMS messages to recognize your activation command. It does not read your stored inbox. Android may grant related SMS access together.</string>
+    <string name="setup_send_title">Reply by SMS</string>
+    <string name="setup_send_description">Optional. Allow BFF to send location replies to an authorized requester. Carrier SMS charges may apply. Skipping turns off location replies.</string>
+    <string name="setup_contacts_title">Recognize your contacts</string>
+    <string name="setup_contacts_description">Optional. Contacts access lets BFF apply your Contacts privacy rules. Without it, saved trusted numbers still work and everyone else uses the Anyone rules.</string>
+    <string name="setup_notifications_title">Show alarm notifications</string>
+    <string name="setup_notifications_description">Optional, but recommended. Notifications let you open or stop the alarm and see when BFF is finding a location. Skipping reduces alarm recovery when background launches are blocked.</string>
+    <string name="setup_location_title">Send this phone’s location</string>
+    <string name="setup_background_title">Allow location while BFF is closed</string>
+    <string name="setup_background_description">Optional. On the next screen, open Permissions → Location and choose “%1$s”. This lets BFF answer an authorized location SMS when the app is closed. You can keep approximate location. Return to BFF when finished. Skipping turns off location replies.</string>
+    <string name="setup_allow_all_time">Allow all the time</string>
+    <string name="setup_overlay_title">Show the alarm over other apps</string>
+    <string name="setup_overlay_description">Optional. Turn on “Display over other apps” for BFF, then return here. This helps the alarm screen appear while you are using another app. Android may still require an alarm notification.</string>
+    <string name="setup_fullscreen_title">Show the alarm on the lock screen</string>
+    <string name="setup_fullscreen_description">Optional. Allow full-screen notifications for BFF, then return here. Without this access you may need to tap a notification to open the alarm.</string>
+    <string name="setup_battery_title">Keep BFF ready in the background</string>
+    <string name="setup_battery_description">Optional. Allow BFF to ignore battery optimization so incoming commands are more reliable while the phone is idle. This may use additional battery. Return here after making your choice.</string>
+    <string name="setup_complete_title">Your permissions are set</string>
+    <string name="setup_complete_description">BFF has checked the permissions you actually granted. You can review or enable skipped permissions later in Settings → Permissions.</string>
+    <string name="setup_location_unavailable">Location replies are off. Enable SMS sending and foreground/background location in Permissions.</string>
+    <string name="setup_notifications_unavailable">Notifications are off. Alarm recovery may require opening BFF.</string>
+    <string name="setup_fullscreen_unavailable">Lock-screen opening is off. You may need to tap the alarm notification.</string>
+    <string name="setup_battery_unavailable">Battery optimization is on. Background commands may be delayed.</string>
+    <string name="setup_all_enabled">All requested capabilities are enabled.</string>
+    <string name="setup_required_denied">BFF cannot listen for commands without SMS access. Try again or enable it in Settings.</string>
+    <string name="setup_optional_denied">This permission was not granted. Try again, or skip this optional feature. BFF will keep the feature disabled where needed.</string>
+    <string name="setup_allow">Allow and continue</string>
+    <string name="setup_skip">Skip for now</string>
+    <string name="setup_retry">Try again</string>
+    <string name="setup_waiting">Waiting for your choice…</string>
+    <string name="setup_open_settings">Open Settings</string>
+    <string name="setup_finish">Continue</string>
+    <string name="permissions_settings">Permissions</string>
+
+    <string name="location_waiting">BFF: getting a location fix. A final update will follow.</string>
+    <string name="location_failed">BFF: unable to obtain a recent location. Check that location services are enabled and try again.</string>
+    <string name="location_first">BFF: recent location %1$s (±%2$d m; fix %3$d seconds old).</string>
+    <string name="location_final">BFF: final location update %1$s (±%2$d m; fix %3$d seconds old).</string>
+    <string name="location_start_failed">BFF could not start location access. Open BFF to review permissions.</string>
+    <string name="history_location_requested">Location requested</string>
+    <string name="history_location_failed">Location failed</string>
+    <string name="history_sms_queued">SMS queued</string>
+    <string name="history_sms_sent">SMS sent</string>
+    <string name="history_sms_failed">SMS failed</string>
+    <string name="pin_required">Set a 4 to 8 digit PIN before enabling a PIN rule.</string>
+    <string name="share_split_link">Sharing the download link for this installation.</string>
+    <string name="share_text">Here is BFF, the app to find your phone! https://bestfonefinder.cloud</string>
+    <string name="alarm_recovery_channel">BFF alarm recovery</string>
+    <string name="alarm_recovery_message">Someone is looking for this phone. Tap to start the alarm.</string>
+    <string name="alarm_message">Someone is looking for this phone. Tap FOUND to stop.</string>
+    <string name="app_version">Version %1$s</string>
 </resources>

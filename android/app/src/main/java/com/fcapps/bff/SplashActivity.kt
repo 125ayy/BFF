@@ -7,10 +7,10 @@ import android.os.Looper
 import android.text.SpannableString
 import android.text.style.ForegroundColorSpan
 import android.widget.TextView
-import androidx.appcompat.app.AppCompatActivity
 import com.fcapps.bff.Prefs.setupDone
+import com.fcapps.bff.Prefs.permissionSetupVersion
 
-class SplashActivity : AppCompatActivity() {
+class SplashActivity : BffActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -18,9 +18,9 @@ class SplashActivity : AppCompatActivity() {
         styleAppName(R.id.tvAppName)
 
         Handler(Looper.getMainLooper()).postDelayed({
-            if (!setupDone) startActivity(Intent(this, SetupActivity::class.java))
+            if (!setupDone || permissionSetupVersion < 31) startActivity(Intent(this, SetupActivity::class.java))
             else showHome()
-            if (!setupDone) finish()
+            if (!setupDone || permissionSetupVersion < 31) finish()
         }, 1500L)
     }
 

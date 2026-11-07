@@ -4,10 +4,9 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.EditText
-import androidx.appcompat.app.AppCompatActivity
 import com.fcapps.bff.Prefs.finderMessage
 
-class SettingsActivity : AppCompatActivity() {
+class SettingsActivity : BffActivity() {
 
     private lateinit var etMessage: EditText
 
@@ -19,6 +18,7 @@ class SettingsActivity : AppCompatActivity() {
 
         findViewById<View>(R.id.btnBack).setOnClickListener { finish() }
         findViewById<View>(R.id.rowPrivacy).setOnClickListener { startActivity(Intent(this, PrivacyActivity::class.java)) }
+        findViewById<View>(R.id.rowPermissions).setOnClickListener { startActivity(Intent(this, SetupActivity::class.java)) }
         findViewById<View>(R.id.rowSound).setOnClickListener { startActivity(Intent(this, SoundActivity::class.java)) }
     }
 

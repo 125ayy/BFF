@@ -9,10 +9,9 @@ import android.view.View
 import android.view.WindowManager
 import android.widget.Button
 import android.widget.TextView
-import androidx.appcompat.app.AppCompatActivity
 import com.fcapps.bff.Prefs.finderMessage
 
-class AlarmActivity : AppCompatActivity() {
+class AlarmActivity : BffActivity() {
 
     companion object {
         const val EXTRA_SENDER_NAME = "sender_name"
@@ -31,7 +30,6 @@ class AlarmActivity : AppCompatActivity() {
         }
         window.addFlags(
             WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON or
-            WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD or
             @Suppress("DEPRECATION")
             WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED or
             @Suppress("DEPRECATION")
@@ -39,6 +37,9 @@ class AlarmActivity : AppCompatActivity() {
         )
 
         setContentView(R.layout.activity_alarm)
+        onBackPressedDispatcher.addCallback(this, object : androidx.activity.OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() { /* Use FOUND to stop the alarm. */ }
+        })
 
         // Show who triggered
         val senderName = intent.getStringExtra(EXTRA_SENDER_NAME) ?: ""
@@ -88,8 +89,4 @@ class AlarmActivity : AppCompatActivity() {
         super.onDestroy()
     }
 
-    @Suppress("OVERRIDE_DEPRECATION")
-    override fun onBackPressed() {
-        // Prevent back button dismissing alarm
-    }
 }

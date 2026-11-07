@@ -47,6 +47,11 @@
         <TextView style="@style/MenuChevron" />
     </LinearLayout>
 
+    <LinearLayout android:id="@+id/rowPermissions" style="@style/MenuCard">
+        <TextView style="@style/MenuText" android:text="@string/permissions_settings" />
+        <TextView style="@style/MenuChevron" />
+    </LinearLayout>
+
     <LinearLayout android:id="@+id/rowSound" style="@style/MenuCard">
         <TextView style="@style/MenuText" android:text="Sound settings" />
         <TextView style="@style/MenuChevron" />

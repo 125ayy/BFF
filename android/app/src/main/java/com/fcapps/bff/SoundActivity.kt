@@ -3,10 +3,9 @@ package com.fcapps.bff
 import android.os.Bundle
 import android.view.View
 import android.widget.Button
-import androidx.appcompat.app.AppCompatActivity
 import com.fcapps.bff.Prefs.sirenDuration
 
-class SoundActivity : AppCompatActivity() {
+class SoundActivity : BffActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

@@ -1,136 +1,145 @@
 package com.fcapps.bff
 
-import android.Manifest
 import android.app.Service
 import android.content.Context
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.content.pm.ServiceInfo
 import android.location.Location
+import android.location.LocationListener
 import android.location.LocationManager
-import android.os.BatteryManager
 import android.os.Build
 import android.os.Handler
-import android.os.Looper
 import android.os.IBinder
-import android.telephony.SmsManager
+import android.os.Looper
+import android.os.PowerManager
+import android.os.SystemClock
 import android.util.Log
-import androidx.core.content.ContextCompat
+import com.fcapps.bff.Prefs.addHistoryEntry
 import java.util.Locale
 
-/**
- * Answers "BFF where": two SMS replies with a Google Maps link — a quick fix at ~10 s
- * and a better one at ~60 s. Runs as a foregroundServiceType=location service so it may
- * read location while the app is in the background (the app holds ACCESS_BACKGROUND_LOCATION).
- */
+/** One acquisition service, independent reply deadlines/recipients for each active sender. */
 class LocationService : Service() {
-
     companion object {
         const val EXTRA_TO = "to"
-        private const val TAG = "BFF"
-        private const val FIRST_MS = 10_000L
-        private const val SECOND_MS = 60_000L
-        private const val MAX_WAIT_MS = 90_000L
-
-        fun start(ctx: Context, to: String) {
-            val i = Intent(ctx, LocationService::class.java).putExtra(EXTRA_TO, to)
-            try { ctx.startForegroundService(i) }
-            catch (e: Exception) { Log.w(TAG, "LocationService refused from background: $e") }
+        const val EXTRA_SUBSCRIPTION = "subscription"
+        fun start(ctx: Context, to: String, subscription: Int): Boolean = try {
+            if (!LocationPermissions.canReply(ctx)) false
+            else {
+                ctx.startForegroundService(Intent(ctx, LocationService::class.java)
+                    .putExtra(EXTRA_TO, to).putExtra(EXTRA_SUBSCRIPTION, subscription))
+                true
+            }
+        } catch (e: RuntimeException) {
+            Log.w("BFF", "Location foreground start refused", e)
+            false
         }
-
-        fun mapsLink(l: Location): String =
-            "https://maps.google.com/?q=" + String.format(Locale.US, "%.6f,%.6f", l.latitude, l.longitude)
-
-        fun sendSms(ctx: Context, to: String, text: String) {
-            try {
-                @Suppress("DEPRECATION")
-                val sm = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) ctx.getSystemService(SmsManager::class.java)
-                         else SmsManager.getDefault()
-                val parts = sm.divideMessage(text)
-                if (parts.size > 1) sm.sendMultipartTextMessage(to, null, parts, null, null)
-                else sm.sendTextMessage(to, null, text, null, null)
-            } catch (e: Exception) { Log.w(TAG, "sendSms failed: $e") }
-        }
-
-        fun batteryPercent(ctx: Context): Int =
-            (ctx.getSystemService(Context.BATTERY_SERVICE) as BatteryManager)
-                .getIntProperty(BatteryManager.BATTERY_PROPERTY_CAPACITY)
     }
 
     private val handler = Handler(Looper.getMainLooper())
-    private lateinit var to: String
-    private var firstSent = false
-    private var secondSent = false
+    private val requests = LocationRequests()
+    private val subscriptions = mutableMapOf<String, Int>()
+    private val fixes = mutableMapOf<String, LocationFix>()
+    private val manager get() = getSystemService(LocationManager::class.java)
+    private var wakeLock: PowerManager.WakeLock? = null
+    private var listening = false
+    private var destroyed = false
+    private var latestStartId = 0
+    private val listener = LocationListener { location -> remember(location) }
+    private val tick = object : Runnable {
+        override fun run() {
+            if (destroyed) return
+            val now = SystemClock.elapsedRealtime()
+            for (reply in requests.due(now)) {
+                val fix = LocationFix.best(fixes.values, now)
+                val text = if (fix == null) {
+                    getString(if (reply.final) R.string.location_failed else R.string.location_waiting)
+                } else {
+                    val link = String.format(Locale.US, "https://maps.google.com/?q=%.6f,%.6f", fix.latitude, fix.longitude)
+                    getString(if (reply.final) R.string.location_final else R.string.location_first,
+                        link, fix.accuracy.toInt(), (now - fix.elapsedMs) / 1000)
+                }
+                SmsReplies.send(this@LocationService, reply.recipient, text, subscriptions[reply.recipient] ?: -1)
+                if (reply.final) subscriptions.remove(reply.recipient)
+            }
+            if (requests.isEmpty) stopEverything() else handler.postDelayed(this, 1000)
+        }
+    }
 
     override fun onBind(intent: Intent?): IBinder? = null
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        to = intent?.getStringExtra(EXTRA_TO) ?: run { stopSelf(); return START_NOT_STICKY }
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            startForeground(Notifier.ID_LOCATION, Notifier.location(this), ServiceInfo.FOREGROUND_SERVICE_TYPE_LOCATION)
-        } else {
-            startForeground(Notifier.ID_LOCATION, Notifier.location(this))
+        latestStartId = startId
+        val recipient = intent?.getStringExtra(EXTRA_TO)
+        if (recipient.isNullOrBlank()) { stopEverything(); return START_NOT_STICKY }
+        try {
+            // The grant is checked before promotion and again when requesting updates.
+            if (!LocationPermissions.canReply(this)) {
+                addHistoryEntry(recipient, recipient, getString(R.string.history_location_failed))
+                stopEverything(); return START_NOT_STICKY
+            }
+            if (Build.VERSION.SDK_INT >= 29) startForeground(Notifier.ID_LOCATION, Notifier.location(this), ServiceInfo.FOREGROUND_SERVICE_TYPE_LOCATION)
+            else startForeground(Notifier.ID_LOCATION, Notifier.location(this))
+            val subscription = intent.getIntExtra(EXTRA_SUBSCRIPTION, -1)
+            if (requests.add(recipient, SystemClock.elapsedRealtime())) {
+                subscriptions[recipient] = subscription
+                // Bound acquisition to the request lifetime, including a sleeping phone.
+                if (wakeLock == null) wakeLock = getSystemService(PowerManager::class.java)
+                    .newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "bff:location").apply { setReferenceCounted(false) }
+                wakeLock?.acquire(65_000L)
+            }
+            if (!listening) requestUpdates()
+            handler.removeCallbacks(tick)
+            handler.post(tick)
+        } catch (e: RuntimeException) {
+            Log.w("BFF", "Location permission or foreground state changed", e)
+            addHistoryEntry(recipient, recipient, getString(R.string.history_location_failed))
+            stopEverything()
         }
-
-        if (!hasPermission()) { stopEverything(); return START_NOT_STICKY }
-
-        requestUpdates()
-        handler.postDelayed({ sendFirst() }, FIRST_MS)
-        handler.postDelayed({ sendSecond() }, SECOND_MS)
-        handler.postDelayed({ stopEverything() }, MAX_WAIT_MS)
         return START_NOT_STICKY
     }
 
-    private fun hasPermission(): Boolean =
-        ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED ||
-        ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED
-
-    private val lm get() = getSystemService(Context.LOCATION_SERVICE) as LocationManager
+    private fun remember(location: Location) {
+        if (location.hasAccuracy()) fixes[location.provider ?: "unknown"] = LocationFix(
+            location.latitude, location.longitude, location.accuracy, location.elapsedRealtimeNanos / 1_000_000)
+    }
 
     private fun requestUpdates() {
-        try {
-            if (lm.isProviderEnabled(LocationManager.GPS_PROVIDER))
-                lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 2000L, 0f, listener, Looper.getMainLooper())
-            if (lm.isProviderEnabled(LocationManager.NETWORK_PROVIDER))
-                lm.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 2000L, 0f, listener, Looper.getMainLooper())
-        } catch (e: SecurityException) { Log.w(TAG, "requestLocationUpdates: $e") }
+        for (provider in listOf(LocationManager.GPS_PROVIDER, LocationManager.NETWORK_PROVIDER)) {
+            try {
+                if (manager.isProviderEnabled(provider)) {
+                    manager.getLastKnownLocation(provider)?.let(::remember)
+                    manager.requestLocationUpdates(provider, 2000L, 0f, listener, Looper.getMainLooper())
+                    listening = true
+                }
+            } catch (e: IllegalArgumentException) {
+                Log.w("BFF", "Location provider unavailable: $provider", e)
+            } catch (e: SecurityException) {
+                // Approximate-only permission can reject GPS; still try the network provider.
+                Log.w("BFF", "Location provider permission unavailable: $provider", e)
+            }
+        }
     }
 
-    private val listener = android.location.LocationListener { }  // updates are pulled via getLastKnownLocation
-
-    private fun bestLocation(): Location? = try {
-        listOfNotNull(
-            lm.getLastKnownLocation(LocationManager.GPS_PROVIDER),
-            lm.getLastKnownLocation(LocationManager.NETWORK_PROVIDER)
-        ).maxByOrNull { it.time }
-    } catch (e: SecurityException) { null }
-
-    private fun sendFirst() {
-        if (firstSent) return; firstSent = true
-        val l = bestLocation()
-        val text = if (l != null)
-            "BFF: here I am. ${mapsLink(l)} (±${l.accuracy.toInt()} m). Battery ${batteryPercent(this)}%."
-        else "BFF: getting a location fix, will text it shortly."
-        sendSms(this, to, text)
-    }
-
-    private fun sendSecond() {
-        if (secondSent) return; secondSent = true
-        val l = bestLocation()
-        if (l != null) sendSms(this, to, "BFF: better fix. ${mapsLink(l)} (±${l.accuracy.toInt()} m). Battery ${batteryPercent(this)}%.")
-        stopEverything()
+    private fun cleanup() {
+        handler.removeCallbacksAndMessages(null)
+        requests.clear()
+        subscriptions.clear()
+        fixes.clear()
+        runCatching { manager.removeUpdates(listener) }
+        listening = false
+        wakeLock?.let { if (it.isHeld) it.release() }
+        wakeLock = null
     }
 
     private fun stopEverything() {
-        handler.removeCallbacksAndMessages(null)
-        try { lm.removeUpdates(listener) } catch (e: Exception) {}
+        cleanup()
         stopForeground(STOP_FOREGROUND_REMOVE)
-        stopSelf()
+        stopSelfResult(latestStartId)
     }
 
     override fun onDestroy() {
-        try { lm.removeUpdates(listener) } catch (e: Exception) {}
+        destroyed = true
+        cleanup()
         super.onDestroy()
     }
 }

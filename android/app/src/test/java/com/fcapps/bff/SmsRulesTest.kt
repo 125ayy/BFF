@@ -51,4 +51,47 @@ class SmsRulesTest {
     @Test fun caseInsensitiveWord() {
         assertTrue(SmsRules.decide("please bff now", "BFF", "", Y, Y, true).alarm)
     }
+
+    @Test fun emptyPin_failsClosedForPinGates() {
+        val d = SmsRules.decide("BFF where", "BFF", "", P, P, true)
+        assertFalse(d.alarm); assertFalse(d.location)
+    }
+
+    @Test fun pinInsideAnotherNumber_isRejected() {
+        assertFalse(SmsRules.decide("BFF where invoice 912345", "BFF", "1234", P, P, true).location)
+    }
+
+    @Test fun pinMustFollowActivationWord() {
+        assertFalse(SmsRules.decide("1234 BFF where", "BFF", "1234", P, P, true).location)
+        assertFalse(SmsRules.decide("BFF where 1234", "BFF", "1234", P, P, true).location)
+    }
+
+    @Test fun legacyJoinedPin_stillWorks() {
+        assertTrue(SmsRules.decide("BFF1234 where", "BFF", "1234", P, P, true).location)
+    }
+
+    @Test fun activationInsideAnotherWord_isIgnored() {
+        assertFalse(SmsRules.decide("XBFFY where", "BFF", "1234", Y, Y, true).matched)
+    }
+
+    @Test fun commandWordsHaveBoundaries() {
+        val d = SmsRules.decide("BFF somewhere silently", "BFF", "", Y, Y, true)
+        assertTrue(d.alarm); assertFalse(d.location)
+        val p = SmsRules.decide("BFF, silent, where?", "BFF", "", Y, Y, true)
+        assertFalse(p.alarm); assertTrue(p.location)
+    }
+
+    @Test fun blankActivation_isIgnored() {
+        assertFalse(SmsRules.decide("where", " ", "", Y, Y, true).matched)
+    }
+
+    @Test fun allGateCombinations_failClosed() {
+        for (alarmGate in listOf(Y, P, N, "invalid")) {
+            for (locGate in listOf(Y, P, N, "invalid")) {
+                val d = SmsRules.decide("BFF 1234 where", "BFF", "1234", alarmGate, locGate, true)
+                assertEquals(alarmGate == Y || alarmGate == P, d.alarm)
+                assertEquals(locGate == Y || locGate == P, d.location)
+            }
+        }
+    }
 }

@@ -7,12 +7,11 @@ import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.ListView
 import android.widget.TextView
-import androidx.appcompat.app.AppCompatActivity
 import com.fcapps.bff.Prefs.getHistory
 import java.text.SimpleDateFormat
 import java.util.*
 
-class HistoryActivity : AppCompatActivity() {
+class HistoryActivity : BffActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -53,6 +52,7 @@ class HistoryActivity : AppCompatActivity() {
             val badge = view.findViewById<TextView>(R.id.tvStatusBadge)
             badge.text = item.status
             when (item.status) {
+                getString(R.string.history_sms_failed), getString(R.string.history_location_failed),
                 Prefs.STATUS_BLOCKED -> { badge.setBackgroundResource(R.drawable.badge_red); badge.setTextColor(0xFFFFFFFF.toInt()) }
                 Prefs.STATUS_LOCATED -> { badge.setBackgroundResource(R.drawable.badge_blue); badge.setTextColor(0xFFFFFFFF.toInt()) }
                 else -> { badge.setBackgroundResource(R.drawable.badge_green); badge.setTextColor(0xFF000000.toInt()) }

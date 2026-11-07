@@ -6,7 +6,9 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
+import android.app.NotificationManager
 import android.os.Build
+import android.telephony.SubscriptionManager
 import android.provider.ContactsContract
 import android.provider.Telephony
 import androidx.core.content.ContextCompat
@@ -37,7 +39,7 @@ class SmsReceiver : BroadcastReceiver() {
         for ((sender, body) in bySender) {
             if (context.isBlacklisted(sender)) continue          // silently ignored
             val word = context.password
-            if (!body.contains(word, ignoreCase = true)) continue
+            if (!SmsRules.matchesActivation(body, word, context.pin)) continue
 
             val name = lookupContactName(context, sender)
             val group = when {
@@ -48,11 +50,22 @@ class SmsReceiver : BroadcastReceiver() {
             val decision = SmsRules.decide(
                 body = body, word = word, pin = context.pin,
                 alarmGate = alarmGate(context, group), locGate = locGate(context, group),
-                locationEnabled = context.locationEnabled && hasLocationPermission(context)
+                locationEnabled = context.locationEnabled && LocationPermissions.canReply(context)
             )
-            context.addHistoryEntry(sender, name ?: "Unknown", decision.status)
+            val subscription = intent.getIntExtra("subscription", SubscriptionManager.INVALID_SUBSCRIPTION_ID)
+            context.addHistoryEntry(sender, name ?: "Unknown", when {
+                decision.location -> context.getString(R.string.history_location_requested)
+                decision.alarm -> "Alarm requested"
+                else -> decision.status
+            })
             if (decision.alarm) AlarmLauncher.launch(context, sender, name ?: sender)
-            if (decision.location) LocationService.start(context, sender)
+            if (decision.location && !LocationService.start(context, sender, subscription)) {
+                context.addHistoryEntry(sender, name ?: sender, context.getString(R.string.history_location_failed))
+                SmsReplies.send(context, sender, context.getString(R.string.location_start_failed), subscription)
+                runCatching {
+                    context.getSystemService(NotificationManager::class.java).notify(Notifier.ID_LOCATION_FAILURE, Notifier.locationFailure(context))
+                }
+            }
             break
         }
     }
@@ -68,12 +81,6 @@ class SmsReceiver : BroadcastReceiver() {
     }
 
     private fun granted(c: Context, p: String) = ContextCompat.checkSelfPermission(c, p) == PackageManager.PERMISSION_GRANTED
-
-    private fun hasLocationPermission(c: Context): Boolean {
-        if (!granted(c, Manifest.permission.ACCESS_FINE_LOCATION) && !granted(c, Manifest.permission.ACCESS_COARSE_LOCATION)) return false
-        // The background grant is what lets BFF answer while the phone sits in a pocket.
-        return Build.VERSION.SDK_INT < Build.VERSION_CODES.Q || granted(c, Manifest.permission.ACCESS_BACKGROUND_LOCATION)
-    }
 
     /** Display name if the number is in the phone's contacts, else null. */
     private fun lookupContactName(context: Context, number: String): String? {

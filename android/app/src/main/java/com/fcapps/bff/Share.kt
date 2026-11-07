@@ -6,14 +6,17 @@ import android.widget.Toast
 import androidx.core.content.FileProvider
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import java.io.File
-import java.util.Locale
+import androidx.activity.ComponentActivity
+import androidx.lifecycle.lifecycleScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 /** The share sheet: WhatsApp gets the APK plus a link; everything else gets the link. */
 object Share {
 
     private fun shareText(ctx: Context): String {
-        val pt = Locale.getDefault().language == "pt"
-        return ctx.getString(if (pt) R.string.share_text_pt else R.string.share_text_en)
+        return ctx.getString(R.string.share_text)
     }
 
     fun open(ctx: Context) {
@@ -36,27 +39,35 @@ object Share {
 
     /** Copy our own APK to the FileProvider cache and send it, with the link as the caption, to WhatsApp. */
     private fun shareApkToWhatsApp(ctx: Context) {
-        try {
-            val apk = File(ctx.applicationInfo.sourceDir)
-            val dir = File(ctx.cacheDir, "share").apply { mkdirs() }
-            val out = File(dir, "BestFoneFinder.apk")
-            apk.copyTo(out, overwrite = true)
-            val uri = FileProvider.getUriForFile(ctx, "${ctx.packageName}.files", out)
-            val i = Intent(Intent.ACTION_SEND).apply {
-                type = "application/vnd.android.package-archive"
-                putExtra(Intent.EXTRA_STREAM, uri)
-                putExtra(Intent.EXTRA_TEXT, shareText(ctx))
-                addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-            }
-            val wa = Intent(i).setPackage("com.whatsapp")
-            try {
-                ctx.startActivity(wa)
-            } catch (e: Exception) {
-                ctx.startActivity(Intent.createChooser(i, "Share the BFF app"))
-            }
-        } catch (e: Exception) {
-            Toast.makeText(ctx, "Could not attach the app; sharing the link", Toast.LENGTH_SHORT).show()
+        val activity = ctx as? ComponentActivity ?: run { shareLink(ctx); return }
+        if (!ctx.applicationInfo.splitSourceDirs.isNullOrEmpty()) {
+            Toast.makeText(ctx, R.string.share_split_link, Toast.LENGTH_SHORT).show()
             shareLink(ctx)
+            return
+        }
+        activity.lifecycleScope.launch {
+            try {
+                val out = withContext(Dispatchers.IO) {
+                    val dir = File(ctx.cacheDir, "share").apply { mkdirs() }
+                    dir.listFiles()?.filter { System.currentTimeMillis() - it.lastModified() > 86_400_000L }?.forEach { it.delete() }
+                    val target = File(dir, "BestFoneFinder-${System.nanoTime()}.apk")
+                    File(ctx.applicationInfo.sourceDir).copyTo(target, overwrite = false)
+                }
+                val uri = FileProvider.getUriForFile(ctx, "${ctx.packageName}.files", out)
+                val intent = Intent(Intent.ACTION_SEND).apply {
+                    type = "application/vnd.android.package-archive"
+                    putExtra(Intent.EXTRA_STREAM, uri)
+                    putExtra(Intent.EXTRA_TEXT, shareText(ctx))
+                    clipData = android.content.ClipData.newRawUri("BFF APK", uri)
+                    addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                    setPackage("com.whatsapp")
+                }
+                ctx.startActivity(intent)
+            } catch (e: kotlinx.coroutines.CancellationException) {
+                throw e
+            } catch (_: Exception) {
+                shareLink(ctx)
+            }
         }
     }
 }

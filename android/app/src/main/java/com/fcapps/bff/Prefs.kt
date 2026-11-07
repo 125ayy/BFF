@@ -47,10 +47,14 @@ object Prefs {
         get() = prefs(this).getBoolean(KEY_SETUP_DONE, false)
         set(value) { prefs(this).edit().putBoolean(KEY_SETUP_DONE, value).apply() }
 
-    /** Empty = no PIN. */
+    /** An empty PIN disables PIN-gated commands. */
     var Context.pin: String
         get() = prefs(this).getString(KEY_PIN, "") ?: ""
         set(value) { prefs(this).edit().putString(KEY_PIN, value).apply() }
+
+    var Context.permissionSetupVersion: Int
+        get() = prefs(this).getInt("permission_setup_version", 0)
+        set(value) { prefs(this).edit().putInt("permission_setup_version", value).apply() }
 
     /** Owner's choice on the GPS row of setup; the Android grant is checked separately. */
     var Context.locationEnabled: Boolean
@@ -81,7 +85,25 @@ object Prefs {
         get() = prefs(this).getString(KEY_MATRIX_TRUSTED_LOC, MATRIX_YES) ?: MATRIX_YES
         set(value) { prefs(this).edit().putString(KEY_MATRIX_TRUSTED_LOC, value).apply() }
 
-    fun normalizeNumber(number: String): String = number.replace(Regex("[^0-9+]"), "")
+    fun normalizeNumber(number: String): String {
+        val stripped = number.replace(Regex("[^0-9+]"), "")
+        val country = java.util.Locale.getDefault().country
+        return if (country.isNotEmpty()) android.telephony.PhoneNumberUtils.formatNumberToE164(number, country) ?: stripped else stripped
+    }
+
+    /** Gates and their PIN become visible as one preferences update. */
+    fun Context.savePrivacy(pinValue: String, gates: Map<String, String>) {
+        prefs(this).edit().apply {
+            putString(KEY_PIN, pinValue)
+            gates.forEach { (key, value) -> putString(key, value) }
+        }.apply()
+    }
+
+    fun Context.privacyGates(): Map<String, String> = linkedMapOf(
+        KEY_MATRIX_ALL_ALARM to matrixAllAlarm, KEY_MATRIX_ALL_LOC to matrixAllLoc,
+        KEY_MATRIX_CONTACTS_ALARM to matrixContactsAlarm, KEY_MATRIX_CONTACTS_LOC to matrixContactsLoc,
+        KEY_MATRIX_TRUSTED_ALARM to matrixTrustedAlarm, KEY_MATRIX_TRUSTED_LOC to matrixTrustedLoc)
+
 
     fun Context.getBlacklist(): List<String> = (prefs(this).getStringSet(KEY_BLACKLIST, emptySet()) ?: emptySet()).sorted()
     fun Context.addToBlacklist(number: String) {
