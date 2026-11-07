@@ -16,8 +16,10 @@ class PermissionFlow(
     companion object {
         /** Initial setup: what the siren needs. Location lives in Settings › Location (v3.11). */
         val SETUP = listOf(Step.RECEIVE_SMS, Step.CONTACTS, Step.NOTIFICATIONS, Step.OVERLAY, Step.FULL_SCREEN, Step.BATTERY, Step.COMPLETE)
-        /** Turning the Location switch on. */
-        val LOCATION = listOf(Step.SEND_SMS, Step.LOCATION, Step.BACKGROUND_LOCATION, Step.COMPLETE)
+        /** Settings › Location › "Location" switch. */
+        val LOCATION = listOf(Step.LOCATION, Step.BACKGROUND_LOCATION, Step.COMPLETE)
+        /** Settings › Location › "Send SMS" switch. */
+        val SMS = listOf(Step.SEND_SMS, Step.COMPLETE)
     }
 
     fun relevant(step: Step): Boolean = when (step) {
@@ -27,8 +29,8 @@ class PermissionFlow(
         else -> true
     }
 
-    /** Required steps cannot be skipped: receiving SMS in setup; every step of the location walk. */
-    fun required(step: Step): Boolean = step == Step.RECEIVE_SMS || steps === LOCATION
+    /** Required steps cannot be skipped: receiving SMS in setup; every step of the switch walks. */
+    fun required(step: Step): Boolean = step == Step.RECEIVE_SMS || steps !== SETUP
 
     fun begin(): Boolean {
         if (waiting || step == Step.COMPLETE) return false

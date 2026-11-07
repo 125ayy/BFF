@@ -10,6 +10,7 @@ import android.widget.TextView
 import com.fcapps.bff.Prefs.setupDone
 import com.fcapps.bff.Prefs.permissionSetupVersion
 import com.fcapps.bff.Prefs.locationEnabled
+import com.fcapps.bff.Prefs.smsEnabled
 
 class SplashActivity : BffActivity() {
 
@@ -21,6 +22,7 @@ class SplashActivity : BffActivity() {
         // v3.11: location moved out of setup and is off by default for everyone, once.
         if (permissionSetupVersion < Prefs.SETUP_VERSION) {
             locationEnabled = false
+            smsEnabled = false
             if (permissionSetupVersion >= 31) permissionSetupVersion = Prefs.SETUP_VERSION
         }
 

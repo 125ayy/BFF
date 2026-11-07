@@ -21,6 +21,7 @@ object Prefs {
     private const val KEY_MATRIX_CONTACTS_LOC = "matrix_contacts_loc"
     private const val KEY_MATRIX_TRUSTED_LOC = "matrix_trusted_loc"
     private const val KEY_LOCATION_ENABLED = "location_enabled"
+    private const val KEY_SMS_ENABLED = "sms_enabled"
     private const val KEY_FINDER_MESSAGE = "finder_message"
 
     const val MATRIX_YES = "YES"
@@ -59,10 +60,19 @@ object Prefs {
         get() = prefs(this).getInt("permission_setup_version", 0)
         set(value) { prefs(this).edit().putInt("permission_setup_version", value).apply() }
 
-    /** The Settings › Location switch. Off by default (v3.11); the Android grants are checked separately. */
+    /** Settings › Location › "Location" switch. Off by default (v3.11); the Android grants are checked separately. */
     var Context.locationEnabled: Boolean
         get() = prefs(this).getBoolean(KEY_LOCATION_ENABLED, false)
         set(value) { prefs(this).edit().putBoolean(KEY_LOCATION_ENABLED, value).apply() }
+
+    /** Settings › Location › "Send SMS" switch (v3.11.1). Off by default. */
+    var Context.smsEnabled: Boolean
+        get() = prefs(this).getBoolean(KEY_SMS_ENABLED, false)
+        set(value) { prefs(this).edit().putBoolean(KEY_SMS_ENABLED, value).apply() }
+
+    /** Location replies happen only when both switches are on and every grant still holds. The switches never lie. */
+    val Context.locationRepliesOn: Boolean
+        get() = locationEnabled && smsEnabled && LocationPermissions.canReply(this)
 
     /** Shown on the alarm screen so the finder can reach the owner. */
     var Context.finderMessage: String

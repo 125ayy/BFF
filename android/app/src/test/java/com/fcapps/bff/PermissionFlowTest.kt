@@ -42,15 +42,18 @@ class PermissionFlowTest {
 
     @Test fun locationWalkIsAllRequiredAndSkipsBackgroundBelow29() {
         val flow = PermissionFlow(28, PermissionFlow.LOCATION)
-        assertEquals(Step.SEND_SMS, flow.step)
-        assertFalse(flow.skip())                 // nothing in the location walk is skippable
-        flow.begin(); flow.result(true)
         assertEquals(Step.LOCATION, flow.step)
+        assertFalse(flow.skip())                 // nothing in the switch walks is skippable
         flow.begin(); flow.result(true)
         assertEquals(Step.COMPLETE, flow.step)   // background step irrelevant on 28
         val modern = PermissionFlow(34, PermissionFlow.LOCATION, Step.LOCATION)
         modern.begin(); modern.result(true)
         assertEquals(Step.BACKGROUND_LOCATION, modern.step)
+        val sms = PermissionFlow(34, PermissionFlow.SMS)
+        assertEquals(Step.SEND_SMS, sms.step)
+        assertFalse(sms.skip())
+        sms.begin(); sms.result(true)
+        assertEquals(Step.COMPLETE, sms.step)
     }
 
     @Test fun restoredInFlightStateDoesNotLaunchAgain() {

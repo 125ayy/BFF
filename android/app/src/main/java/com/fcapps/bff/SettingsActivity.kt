@@ -6,7 +6,7 @@ import android.view.View
 import android.widget.EditText
 import android.widget.TextView
 import com.fcapps.bff.Prefs.finderMessage
-import com.fcapps.bff.Prefs.locationEnabled
+import com.fcapps.bff.Prefs.locationRepliesOn
 
 class SettingsActivity : BffActivity() {
 
@@ -27,7 +27,7 @@ class SettingsActivity : BffActivity() {
 
     override fun onResume() {
         super.onResume()
-        val on = locationEnabled && LocationPermissions.canReply(this)
+        val on = locationRepliesOn
         findViewById<TextView>(R.id.tvLocationRowState).setText(if (on) R.string.location_state_on else R.string.location_state_off)
     }
 

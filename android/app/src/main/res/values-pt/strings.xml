@@ -57,13 +57,20 @@
 
     <!-- v3.11: Localização nas Configurações -->
     <string name="location_settings">Localização</string>
-    <string name="location_switch">Enviar localização por SMS</string>
     <string name="location_state_on">Ligado · responde a “BFF where”</string>
     <string name="location_state_off">Desligado</string>
     <string name="location_not_now">Agora não</string>
-    <string name="location_needs_sms">Localização continua desligada. O BFF precisa de permissão para enviar SMS.</string>
+    <string name="location_needs_sms">Enviar SMS continua desligado. O BFF precisa de permissão para enviar SMS.</string>
     <string name="location_needs_location">Localização continua desligada. O BFF precisa de acesso à localização.</string>
     <string name="location_needs_background">Localização continua desligada. O BFF precisa de “Permitir o tempo todo” para responder com o celular no bolso.</string>
     <string name="history_location_off">Alarme · localização desligada</string>
     <string name="ready_location_hint">Ative em Configurações › Localização.</string>
+    <string name="location_switch_location">Localização</string>
+    <string name="location_switch_sms">Enviar SMS</string>
+    <string name="location_state_on_short">Ligado</string>
+    <string name="location_missing_background">Desligado · falta “%1$s”</string>
+    <string name="location_all_the_time">Permitir o tempo todo</string>
+    <string name="location_open_settings_description">O Android não mostra mais este pedido para o BFF. Na próxima tela, abra Permissões → %1$s e escolha Permitir. Volte ao BFF ao terminar.</string>
+    <string name="perm_group_sms">SMS</string>
+    <string name="perm_group_location">Localização</string>
 </resources>

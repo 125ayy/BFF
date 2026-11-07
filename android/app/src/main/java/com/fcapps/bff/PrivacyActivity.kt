@@ -18,7 +18,7 @@ import com.fcapps.bff.Prefs.addToBlacklist
 import com.fcapps.bff.Prefs.addTrustedContact
 import com.fcapps.bff.Prefs.getBlacklist
 import com.fcapps.bff.Prefs.getTrustedContacts
-import com.fcapps.bff.Prefs.locationEnabled
+import com.fcapps.bff.Prefs.locationRepliesOn
 import com.fcapps.bff.Prefs.pin
 import com.fcapps.bff.Prefs.removeFromBlacklist
 import com.fcapps.bff.Prefs.removeTrustedContact
@@ -66,7 +66,7 @@ class PrivacyActivity : BffActivity() {
             bindBadge(id, { draftGates.getValue(key) }, { draftGates[key] = it })
         }
         // Location column exists only while Settings › Location is on (v3.11 ruling).
-        val locVisible = if (locationEnabled) View.VISIBLE else View.GONE
+        val locVisible = if (locationRepliesOn) View.VISIBLE else View.GONE
         for (id in listOf(R.id.tvLocHeader, R.id.badgeAllLoc, R.id.badgeContactsLoc, R.id.badgeTrustedLoc)) findViewById<View>(id).visibility = locVisible
 
         findViewById<View>(R.id.btnAddTrusted).setOnClickListener {
@@ -95,7 +95,7 @@ class PrivacyActivity : BffActivity() {
         val b = findViewById<EditText>(R.id.etPin2).text.toString().trim()
         if (a != b) { Toast.makeText(this, "PINs do not match", Toast.LENGTH_SHORT).show(); return }
         if (a.isNotEmpty() && !a.matches(Regex("^\\d{4,8}$"))) { Toast.makeText(this, "4 to 8 digits", Toast.LENGTH_SHORT).show(); return }
-        val visibleGates = draftGates.filterKeys { locationEnabled || !it.endsWith("_loc") }
+        val visibleGates = draftGates.filterKeys { locationRepliesOn || !it.endsWith("_loc") }
         if (a.isEmpty() && visibleGates.values.any { it == MATRIX_PIN }) {
             Toast.makeText(this, R.string.pin_required, Toast.LENGTH_LONG).show(); return
         }

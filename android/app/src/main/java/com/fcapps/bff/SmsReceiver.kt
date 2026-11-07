@@ -15,7 +15,7 @@ import androidx.core.content.ContextCompat
 import com.fcapps.bff.Prefs.addHistoryEntry
 import com.fcapps.bff.Prefs.isBlacklisted
 import com.fcapps.bff.Prefs.isTrusted
-import com.fcapps.bff.Prefs.locationEnabled
+import com.fcapps.bff.Prefs.locationRepliesOn
 import com.fcapps.bff.Prefs.matrixAllAlarm
 import com.fcapps.bff.Prefs.matrixAllLoc
 import com.fcapps.bff.Prefs.matrixContactsAlarm
@@ -47,8 +47,8 @@ class SmsReceiver : BroadcastReceiver() {
                 name != null -> Group.CONTACTS
                 else -> Group.ALL
             }
-            // The switch never lies: the stored choice and the live grants must both hold.
-            val locationOn = context.locationEnabled && LocationPermissions.canReply(context)
+            // The switches never lie: both stored choices and the live grants must all hold.
+            val locationOn = context.locationRepliesOn
             val decision = SmsRules.decide(
                 body = body, word = word, pin = context.pin,
                 alarmGate = alarmGate(context, group), locGate = locGate(context, group),

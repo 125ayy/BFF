@@ -16,21 +16,26 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.fcapps.bff.PermissionFlow.Step
 import com.fcapps.bff.Prefs.locationEnabled
+import com.fcapps.bff.Prefs.smsEnabled
 
 /**
- * Settings › Location: one switch. Turning it on (tap or slide, both land in the same handler)
- * shows the Google Play prominent disclosure, then walks SEND_SMS → location → background
- * location, one prompt at a time. Anything short of a full grant leaves the switch off with a
- * reason. The switch never lies: it is re-read from the live grants on every resume, and the
- * SMS receiver re-checks them at command time.
+ * Settings › Location: two switches, "Location" and "Send SMS" (v3.11.1). Each asks only for its
+ * own grants, one prompt at a time; tap and slide land in the same handler. Location shows the
+ * Google Play prominent disclosure first, then location → background location. Anything short of
+ * a full grant leaves that switch off with a reason. The switches never lie: they are re-read from
+ * the live grants on every resume, and the SMS receiver re-checks them at command time. Replies
+ * to "BFF where" happen only when both are on.
  */
 class LocationActivity : BffActivity() {
 
+    private enum class Walk { LOCATION, SMS }
+
+    private var walk = Walk.LOCATION
     private lateinit var flow: PermissionFlow
     private var message: Int = 0
-    /** True from the moment the user accepted the disclosure until the switch is on or turned off. */
-    private var armed: Boolean = false
-    /** Set while the code itself moves the switch, so the change listener only sees the user. */
+    /** The switch whose walk the user started, until it is on or turned off. */
+    private var armed: Walk? = null
+    /** Set while the code itself moves a switch, so the change listeners only see the user. */
     private var moving = false
     private val requestHistory by lazy { getSharedPreferences("permission_requests", MODE_PRIVATE) }
     private val permissionRequest = registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { finishStep() }
@@ -39,17 +44,18 @@ class LocationActivity : BffActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_location)
-        flow = PermissionFlow(Build.VERSION.SDK_INT, PermissionFlow.LOCATION,
-            savedInstanceState?.getString("step")?.let { runCatching { Step.valueOf(it) }.getOrNull() }?.takeIf { it in PermissionFlow.LOCATION } ?: Step.COMPLETE,
+        walk = savedInstanceState?.getString("walk")?.let { runCatching { Walk.valueOf(it) }.getOrNull() } ?: Walk.LOCATION
+        flow = PermissionFlow(Build.VERSION.SDK_INT, stepsOf(walk),
+            savedInstanceState?.getString("step")?.let { runCatching { Step.valueOf(it) }.getOrNull() }?.takeIf { it in stepsOf(walk) } ?: Step.COMPLETE,
             savedInstanceState?.getBoolean("waiting", false) ?: false)
         message = savedInstanceState?.getInt("message", 0) ?: 0
-        armed = savedInstanceState?.getBoolean("armed", false) ?: false
+        armed = savedInstanceState?.getString("armed")?.let { runCatching { Walk.valueOf(it) }.getOrNull() }
         findViewById<View>(R.id.btnBack).setOnClickListener { finish() }
-        // A checked-change listener, not a click listener: sliding the thumb never produces a click.
-        findViewById<SwitchCompat>(R.id.swLocation).setOnCheckedChangeListener { _, checked -> if (!moving) onSwitchChanged(checked) }
+        // Checked-change listeners, not click listeners: sliding the thumb never produces a click.
+        for (w in Walk.values()) switchOf(w).setOnCheckedChangeListener { _, checked -> if (!moving) onSwitchChanged(w, checked) }
         render()
-        // Recreated (rotation, process death) while the background-location dialog was up: show it again.
-        if (armed && !flow.waiting && flow.step != Step.COMPLETE) launchCurrent()
+        // Recreated (rotation, process death) while a Settings dialog was up: show it again.
+        if (armed == walk && !flow.waiting && flow.step != Step.COMPLETE) launchCurrent()
     }
 
     override fun onResume() {
@@ -61,17 +67,28 @@ class LocationActivity : BffActivity() {
             return
         }
         // The walk gave up before the user finished in Settings; the grants are in now.
-        if (armed && !locationEnabled && LocationPermissions.canReply(this)) { locationEnabled = true; message = 0; armed = false }
+        armed?.let { w -> if (!enabled(w) && granted(w)) { setEnabled(w, true); message = 0; armed = null } }
         render()
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
+        outState.putString("walk", walk.name)
         outState.putString("step", flow.step.name)
         outState.putBoolean("waiting", flow.waiting)
         outState.putInt("message", message)
-        outState.putBoolean("armed", armed)
+        outState.putString("armed", armed?.name)
         super.onSaveInstanceState(outState)
     }
+
+    // ---- per-switch plumbing -------------------------------------------------------------
+
+    private fun stepsOf(w: Walk) = if (w == Walk.LOCATION) PermissionFlow.LOCATION else PermissionFlow.SMS
+    private fun switchOf(w: Walk) = findViewById<SwitchCompat>(if (w == Walk.LOCATION) R.id.swLocation else R.id.swSms)
+    private fun stateOf(w: Walk) = findViewById<TextView>(if (w == Walk.LOCATION) R.id.tvLocationState else R.id.tvSmsState)
+    private fun enabled(w: Walk) = if (w == Walk.LOCATION) locationEnabled else smsEnabled
+    private fun setEnabled(w: Walk, value: Boolean) { if (w == Walk.LOCATION) locationEnabled = value else smsEnabled = value }
+    /** Every relevant step of the walk is granted right now. */
+    private fun granted(w: Walk) = stepsOf(w).none { it != Step.COMPLETE && flow.relevant(it) && !satisfied(it) }
 
     private fun granted(p: String) = ContextCompat.checkSelfPermission(this, p) == PackageManager.PERMISSION_GRANTED
 
@@ -89,54 +106,69 @@ class LocationActivity : BffActivity() {
         else -> permissions(step).all { granted(it) }
     }
 
-    private fun setSwitch(checked: Boolean) {
-        val sw = findViewById<SwitchCompat>(R.id.swLocation)
+    private fun setSwitch(w: Walk, checked: Boolean) {
+        val sw = switchOf(w)
         if (sw.isChecked == checked) return
         moving = true
         try { sw.isChecked = checked } finally { moving = false }
     }
 
-    /** The displayed state is derived, never trusted from the preference alone. */
+    private fun backgroundLabel(): CharSequence =
+        if (Build.VERSION.SDK_INT >= 30) packageManager.backgroundPermissionOptionLabel else getString(R.string.location_all_the_time)
+
+    /** Location granted while in use but not "all the time": say so under the switch. */
+    private fun missingText(w: Walk): String? =
+        if (w == Walk.LOCATION && satisfied(Step.LOCATION) && flow.relevant(Step.BACKGROUND_LOCATION) && !satisfied(Step.BACKGROUND_LOCATION))
+            getString(R.string.location_missing_background, backgroundLabel()) else null
+
+    private fun groupLabel(step: Step) = getString(if (step == Step.SEND_SMS) R.string.perm_group_sms else R.string.perm_group_location)
+
+    /** The displayed state is derived, never trusted from the preferences alone. */
     private fun render() {
-        val on = locationEnabled && LocationPermissions.canReply(this)
-        if (locationEnabled && !on) locationEnabled = false
-        if (on) armed = false
-        setSwitch(on)
-        findViewById<SwitchCompat>(R.id.swLocation).isEnabled = !flow.waiting
-        findViewById<TextView>(R.id.tvLocationState).setText(when {
-            flow.waiting -> R.string.setup_waiting
-            on -> R.string.location_state_on
-            else -> R.string.location_state_off
-        })
+        for (w in Walk.values()) {
+            val on = enabled(w) && granted(w)
+            if (enabled(w) && !on) setEnabled(w, false)
+            if (on && armed == w) armed = null
+            setSwitch(w, on)
+            switchOf(w).isEnabled = !flow.waiting
+            stateOf(w).text = when {
+                flow.waiting && walk == w -> getString(R.string.setup_waiting)
+                on -> getString(R.string.location_state_on_short)
+                else -> missingText(w) ?: getString(R.string.location_state_off)
+            }
+        }
         findViewById<TextView>(R.id.tvLocationMessage).apply {
-            visibility = if (message != 0 && !on) View.VISIBLE else View.GONE
+            visibility = if (message != 0) View.VISIBLE else View.GONE
             if (message != 0) setText(message)
         }
     }
 
     /** Reached by a tap and by a slide alike. */
-    private fun onSwitchChanged(checked: Boolean) {
+    private fun onSwitchChanged(w: Walk, checked: Boolean) {
         if (!checked) {                   // user turned it off
-            locationEnabled = false; armed = false; message = 0; render(); return
+            setEnabled(w, false); if (armed == w) armed = null; message = 0; render(); return
         }
-        setSwitch(false)                  // stays off until every grant is in
+        setSwitch(w, false)               // stays off until every grant is in
         if (flow.waiting) return
         message = 0
-        if (LocationPermissions.canReply(this)) { locationEnabled = true; render(); return }
+        if (granted(w)) { setEnabled(w, true); render(); return }
+        if (w == Walk.SMS) { startWalk(w); return }
         // Google Play prominent disclosure, before the first location prompt.
         AlertDialog.Builder(this)
             .setTitle(R.string.location_settings)
             .setMessage(R.string.location_disclosure)
-            .setPositiveButton(R.string.setup_finish) { _, _ -> startWalk() }
+            .setPositiveButton(R.string.setup_finish) { _, _ -> startWalk(Walk.LOCATION) }
             .setNegativeButton(R.string.location_not_now) { _, _ -> render() }
             .setOnCancelListener { render() }
             .show()
     }
 
-    private fun startWalk() {
-        armed = true
-        flow.step = PermissionFlow.LOCATION.first()
-        flow.waiting = false
+    // ---- the walk -------------------------------------------------------------------------
+
+    private fun startWalk(w: Walk) {
+        walk = w
+        armed = w
+        flow = PermissionFlow(Build.VERSION.SDK_INT, stepsOf(w))
         skipSatisfied()
         launchCurrent()
     }
@@ -153,15 +185,19 @@ class LocationActivity : BffActivity() {
     private fun launchCurrent() {
         if (flow.step == Step.COMPLETE) { complete(); return }
         if (flow.waiting) return
-        if (flow.step == Step.BACKGROUND_LOCATION && Build.VERSION.SDK_INT >= 30) {
-            // Android 11+ only grants "all the time" from the app's settings page: say so first.
-            // Not yet waiting: the dialog is not a result we could lose.
+        val background = flow.step == Step.BACKGROUND_LOCATION && Build.VERSION.SDK_INT >= 30
+        if (background || needsSettings()) {
+            // Android 11+ only grants "all the time" from the app's settings page, and a prompt
+            // refused twice is gone for good: say where to go first. Not yet waiting: the dialog
+            // is not a result we could lose.
+            val step = flow.step
             render()
             AlertDialog.Builder(this)
-                .setTitle(R.string.setup_background_title)
-                .setMessage(getString(R.string.setup_background_description, packageManager.backgroundPermissionOptionLabel))
+                .setTitle(if (background) R.string.setup_background_title else R.string.location_settings)
+                .setMessage(if (background) getString(R.string.setup_background_description, backgroundLabel())
+                            else getString(R.string.location_open_settings_description, groupLabel(step)))
                 .setPositiveButton(R.string.setup_open_settings) { _, _ -> if (flow.begin()) { render(); openSettings() } }
-                .setNegativeButton(R.string.location_not_now) { _, _ -> abort(R.string.location_needs_background) }
+                .setNegativeButton(R.string.location_not_now) { _, _ -> abort(reasonFor(step)) }
                 .setCancelable(false)
                 .show()
             return
@@ -169,12 +205,9 @@ class LocationActivity : BffActivity() {
         if (!flow.begin()) return
         render()
         try {
-            if (needsSettings()) openSettings()
-            else {
-                val requested = permissions(flow.step)
-                requestHistory.edit().apply { requested.forEach { putBoolean(it, true) } }.apply()
-                permissionRequest.launch(requested)
-            }
+            val requested = permissions(flow.step)
+            requestHistory.edit().apply { requested.forEach { putBoolean(it, true) } }.apply()
+            permissionRequest.launch(requested)
         } catch (_: RuntimeException) {
             flow.result(false); abort(reasonFor(flow.step))
         }
@@ -202,14 +235,15 @@ class LocationActivity : BffActivity() {
     }
 
     private fun complete() {
-        locationEnabled = LocationPermissions.canReply(this)
-        message = if (locationEnabled) 0 else R.string.location_needs_background
+        val ok = granted(walk)
+        setEnabled(walk, ok)
+        message = if (ok) 0 else reasonFor(stepsOf(walk).first { it != Step.COMPLETE && flow.relevant(it) && !satisfied(it) })
         render()
     }
 
     /** Leaves `armed` on: if the user finishes the grant in Settings and comes back, onResume turns the switch on. */
     private fun abort(reason: Int) {
-        locationEnabled = false
+        setEnabled(walk, false)
         message = reason
         flow.step = Step.COMPLETE
         render()

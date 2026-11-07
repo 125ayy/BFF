@@ -62,13 +62,21 @@
 
     <!-- v3.11: Location lives in Settings -->
     <string name="location_settings">Location</string>
-    <string name="location_switch">Send location by SMS</string>
     <string name="location_state_on">On · replies to “BFF where”</string>
     <string name="location_state_off">Off</string>
     <string name="location_not_now">Not now</string>
-    <string name="location_needs_sms">Location stays off. BFF needs permission to send SMS.</string>
+    <string name="location_needs_sms">Send SMS stays off. BFF needs permission to send SMS.</string>
     <string name="location_needs_location">Location stays off. BFF needs location access.</string>
     <string name="location_needs_background">Location stays off. BFF needs “Allow all the time” so it can answer while the phone is in a pocket.</string>
     <string name="history_location_off">Alarm · location off</string>
     <string name="ready_location_hint">Turn on in Settings › Location.</string>
+    <!-- v3.11.1 · Location switch tells which grant is missing; Settings routes explain themselves -->
+    <string name="location_switch_location">Location</string>
+    <string name="location_switch_sms">Send SMS</string>
+    <string name="location_state_on_short">On</string>
+    <string name="location_missing_background">Off · needs “%1$s”</string>
+    <string name="location_all_the_time">Allow all the time</string>
+    <string name="location_open_settings_description">Android no longer shows this prompt for BFF. On the next screen, open Permissions → %1$s and choose Allow. Return to BFF when finished.</string>
+    <string name="perm_group_sms">SMS</string>
+    <string name="perm_group_location">Location</string>
 </resources>
