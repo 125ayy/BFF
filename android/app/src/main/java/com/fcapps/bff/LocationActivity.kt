@@ -18,15 +18,20 @@ import com.fcapps.bff.PermissionFlow.Step
 import com.fcapps.bff.Prefs.locationEnabled
 
 /**
- * Settings › Location: one switch. Turning it on shows the Google Play prominent disclosure,
- * then walks SEND_SMS → location → background location, one prompt at a time. Anything short
- * of a full grant leaves the switch off with a reason. The switch never lies: it is re-read
- * from the live grants on every resume, and the SMS receiver re-checks them at command time.
+ * Settings › Location: one switch. Turning it on (tap or slide, both land in the same handler)
+ * shows the Google Play prominent disclosure, then walks SEND_SMS → location → background
+ * location, one prompt at a time. Anything short of a full grant leaves the switch off with a
+ * reason. The switch never lies: it is re-read from the live grants on every resume, and the
+ * SMS receiver re-checks them at command time.
  */
 class LocationActivity : BffActivity() {
 
     private lateinit var flow: PermissionFlow
     private var message: Int = 0
+    /** True from the moment the user accepted the disclosure until the switch is on or turned off. */
+    private var armed: Boolean = false
+    /** Set while the code itself moves the switch, so the change listener only sees the user. */
+    private var moving = false
     private val requestHistory by lazy { getSharedPreferences("permission_requests", MODE_PRIVATE) }
     private val permissionRequest = registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { finishStep() }
     private val settingsRequest = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { finishStep() }
@@ -38,20 +43,33 @@ class LocationActivity : BffActivity() {
             savedInstanceState?.getString("step")?.let { runCatching { Step.valueOf(it) }.getOrNull() }?.takeIf { it in PermissionFlow.LOCATION } ?: Step.COMPLETE,
             savedInstanceState?.getBoolean("waiting", false) ?: false)
         message = savedInstanceState?.getInt("message", 0) ?: 0
+        armed = savedInstanceState?.getBoolean("armed", false) ?: false
         findViewById<View>(R.id.btnBack).setOnClickListener { finish() }
-        findViewById<SwitchCompat>(R.id.swLocation).setOnClickListener { onSwitchTapped() }
+        // A checked-change listener, not a click listener: sliding the thumb never produces a click.
+        findViewById<SwitchCompat>(R.id.swLocation).setOnCheckedChangeListener { _, checked -> if (!moving) onSwitchChanged(checked) }
         render()
+        // Recreated (rotation, process death) while the background-location dialog was up: show it again.
+        if (armed && !flow.waiting && flow.step != Step.COMPLETE) launchCurrent()
     }
 
     override fun onResume() {
         super.onResume()
-        if (::flow.isInitialized && !flow.waiting) render()
+        if (!::flow.isInitialized) return
+        if (flow.waiting) {
+            // A result that never arrived but the grant did (made from Settings): finish the step.
+            if (satisfied(flow.step)) finishStep()
+            return
+        }
+        // The walk gave up before the user finished in Settings; the grants are in now.
+        if (armed && !locationEnabled && LocationPermissions.canReply(this)) { locationEnabled = true; message = 0; armed = false }
+        render()
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
         outState.putString("step", flow.step.name)
         outState.putBoolean("waiting", flow.waiting)
         outState.putInt("message", message)
+        outState.putBoolean("armed", armed)
         super.onSaveInstanceState(outState)
     }
 
@@ -71,13 +89,20 @@ class LocationActivity : BffActivity() {
         else -> permissions(step).all { granted(it) }
     }
 
+    private fun setSwitch(checked: Boolean) {
+        val sw = findViewById<SwitchCompat>(R.id.swLocation)
+        if (sw.isChecked == checked) return
+        moving = true
+        try { sw.isChecked = checked } finally { moving = false }
+    }
+
     /** The displayed state is derived, never trusted from the preference alone. */
     private fun render() {
         val on = locationEnabled && LocationPermissions.canReply(this)
         if (locationEnabled && !on) locationEnabled = false
-        val sw = findViewById<SwitchCompat>(R.id.swLocation)
-        sw.isChecked = on
-        sw.isEnabled = !flow.waiting
+        if (on) armed = false
+        setSwitch(on)
+        findViewById<SwitchCompat>(R.id.swLocation).isEnabled = !flow.waiting
         findViewById<TextView>(R.id.tvLocationState).setText(when {
             flow.waiting -> R.string.setup_waiting
             on -> R.string.location_state_on
@@ -89,12 +114,12 @@ class LocationActivity : BffActivity() {
         }
     }
 
-    private fun onSwitchTapped() {
-        val sw = findViewById<SwitchCompat>(R.id.swLocation)
-        if (!sw.isChecked) {              // user turned it off
-            locationEnabled = false; message = 0; render(); return
+    /** Reached by a tap and by a slide alike. */
+    private fun onSwitchChanged(checked: Boolean) {
+        if (!checked) {                   // user turned it off
+            locationEnabled = false; armed = false; message = 0; render(); return
         }
-        sw.isChecked = false              // stays off until every grant is in
+        setSwitch(false)                  // stays off until every grant is in
         if (flow.waiting) return
         message = 0
         if (LocationPermissions.canReply(this)) { locationEnabled = true; render(); return }
@@ -109,6 +134,7 @@ class LocationActivity : BffActivity() {
     }
 
     private fun startWalk() {
+        armed = true
         flow.step = PermissionFlow.LOCATION.first()
         flow.waiting = false
         skipSatisfied()
@@ -121,25 +147,27 @@ class LocationActivity : BffActivity() {
 
     private fun needsSettings(): Boolean {
         val p = permissions(flow.step).firstOrNull() ?: return false
-        if (flow.step == Step.BACKGROUND_LOCATION && Build.VERSION.SDK_INT >= 30) return true
         return requestHistory.getBoolean(p, false) && !ActivityCompat.shouldShowRequestPermissionRationale(this, p) && !satisfied(flow.step)
     }
 
     private fun launchCurrent() {
         if (flow.step == Step.COMPLETE) { complete(); return }
-        if (!flow.begin()) return
-        render()
+        if (flow.waiting) return
         if (flow.step == Step.BACKGROUND_LOCATION && Build.VERSION.SDK_INT >= 30) {
             // Android 11+ only grants "all the time" from the app's settings page: say so first.
+            // Not yet waiting: the dialog is not a result we could lose.
+            render()
             AlertDialog.Builder(this)
                 .setTitle(R.string.setup_background_title)
                 .setMessage(getString(R.string.setup_background_description, packageManager.backgroundPermissionOptionLabel))
-                .setPositiveButton(R.string.setup_open_settings) { _, _ -> openSettings() }
-                .setNegativeButton(R.string.location_not_now) { _, _ -> flow.result(false); abort(R.string.location_needs_background) }
+                .setPositiveButton(R.string.setup_open_settings) { _, _ -> if (flow.begin()) { render(); openSettings() } }
+                .setNegativeButton(R.string.location_not_now) { _, _ -> abort(R.string.location_needs_background) }
                 .setCancelable(false)
                 .show()
             return
         }
+        if (!flow.begin()) return
+        render()
         try {
             if (needsSettings()) openSettings()
             else {
@@ -179,6 +207,7 @@ class LocationActivity : BffActivity() {
         render()
     }
 
+    /** Leaves `armed` on: if the user finishes the grant in Settings and comes back, onResume turns the switch on. */
     private fun abort(reason: Int) {
         locationEnabled = false
         message = reason
