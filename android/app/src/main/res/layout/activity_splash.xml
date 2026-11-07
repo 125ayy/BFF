@@ -7,18 +7,17 @@
     android:gravity="center"
     android:padding="32dp">
 
-    <!-- Large phone emoji with "vibration" lines using text -->
+    <!-- BFF mark (ic_bff_mark) -->
     <FrameLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="24dp">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="〜 📱 〜"
-            android:textSize="72sp"
-            android:gravity="center" />
+        <ImageView
+            android:layout_width="120dp"
+            android:layout_height="120dp"
+            android:src="@drawable/ic_bff_mark"
+            android:contentDescription="@null" />
 
     </FrameLayout>
 

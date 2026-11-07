@@ -7,12 +7,11 @@
     android:padding="24dp">
 
     <!-- Header -->
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="📱"
-        android:textSize="56sp"
-        android:gravity="center"
+    <ImageView
+        android:layout_width="88dp"
+        android:layout_height="88dp"
+        android:src="@drawable/ic_bff_mark"
+        android:contentDescription="@null"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="16dp"
         android:layout_marginBottom="8dp" />
