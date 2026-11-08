@@ -56,8 +56,23 @@ class PrivacyActivityTest {
 
     @Test fun emptyPinCannotEnablePinRules() {
         val activity = Robolectric.buildActivity(PrivacyActivity::class.java).setup().get()
+        activity.findViewById<TextView>(R.id.badgeAllAlarm).performClick() // YES -> PIN
         activity.findViewById<Button>(R.id.btnDone).performClick()
         assertFalse(activity.isFinishing)
         assertEquals("", app.pin)
     }
+    @Test fun freshInstallAllowsAlarmWithoutPinAndKeepsLocationOff() {
+        val activity = Robolectric.buildActivity(PrivacyActivity::class.java).setup().get()
+        assertEquals("YES", activity.findViewById<TextView>(R.id.badgeAllAlarm).text.toString())
+        activity.findViewById<Button>(R.id.btnDone).performClick()
+        assertTrue(activity.isFinishing)
+        assertEquals(Prefs.MATRIX_NO, app.matrixAllLoc)
+    }
+
+    @Test fun explicitlySavedPinRuleIsPreserved() {
+        app.getSharedPreferences("bff_prefs", 0).edit().putString("matrix_all_alarm", Prefs.MATRIX_PIN).commit()
+        val activity = Robolectric.buildActivity(PrivacyActivity::class.java).setup().get()
+        assertEquals("PIN", activity.findViewById<TextView>(R.id.badgeAllAlarm).text.toString())
+    }
+
 }
