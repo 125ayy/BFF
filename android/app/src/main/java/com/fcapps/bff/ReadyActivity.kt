@@ -9,6 +9,7 @@ import android.text.style.StyleSpan
 import android.widget.TextView
 import com.fcapps.bff.Prefs.password
 import com.fcapps.bff.Prefs.setupDone
+import com.fcapps.bff.Prefs.sirenDuration
 
 class ReadyActivity : BffActivity() {
 
@@ -22,6 +23,13 @@ class ReadyActivity : BffActivity() {
         findViewById<TextView>(R.id.tvLine1).text = bold("Someone texts ", word, " → this phone screams.", green)
         findViewById<TextView>(R.id.tvLine2).text = bold("Add ", "where", " → it sends its location.", green)
 
+        findViewById<android.view.View>(R.id.btnTest).setOnClickListener {
+            android.app.AlertDialog.Builder(this)
+                .setTitle(R.string.ready_test_title)
+                .setMessage(getString(R.string.ready_test_body, word, sirenDuration))
+                .setPositiveButton(android.R.string.ok, null)
+                .show()
+        }
         findViewById<android.view.View>(R.id.btnPrivacy).setOnClickListener {
             startActivity(Intent(this, PrivacyActivity::class.java).putExtra(PrivacyActivity.EXTRA_FROM_SETUP, true))
         }

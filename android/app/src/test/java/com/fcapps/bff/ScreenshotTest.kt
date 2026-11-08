@@ -51,6 +51,16 @@ class ScreenshotTest {
         shoot(dir, "location", LocationActivity::class.java, problems, R.id.swLocation)
         shoot(dir, "privacy", PrivacyActivity::class.java, problems, R.id.btnDone)
         shoot(dir, "setup", SetupActivity::class.java, problems, R.id.btnContinue)
+        // Setup step 2 (Settings toggles) and step 3 (SMS warning, Pixel wording), then back to a bare phone.
+        shadowOf(app).grantPermissions(android.Manifest.permission.READ_CONTACTS)
+        shadowOf(app.getSystemService(android.app.NotificationManager::class.java)).setNotificationsEnabled(true)
+        shoot(dir, "setup-step2", SetupActivity::class.java, problems, R.id.btnContinue)
+        org.robolectric.util.ReflectionHelpers.setStaticField(android.os.Build::class.java, "MANUFACTURER", "Google")
+        for ((name, screen) in listOf("setup-sms" to "SMS_INFO", "setup-sms-fail" to "SMS_FAIL")) {
+            val state = android.os.Bundle().apply { putString("screen", screen); putString("step", "RECEIVE_SMS") }
+            capture(dir, name, Robolectric.buildActivity(SetupActivity::class.java).setup(state).get(), problems, R.id.btnContinue)
+        }
+        shadowOf(app).denyPermissions(android.Manifest.permission.READ_CONTACTS)
         shoot(dir, "alarm", AlarmActivity::class.java, problems, R.id.btnFound)
         // Home is SplashActivity after its 1.5 s hop
         val splash = Robolectric.buildActivity(SplashActivity::class.java).setup()

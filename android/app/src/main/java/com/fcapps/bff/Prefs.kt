@@ -34,7 +34,8 @@ object Prefs {
     const val STATUS_BLOCKED = "Blocked"
 
     /** Setup/migration marker: 31 = v3.1 wizard seen, 311 = v3.11 location moved to Settings. */
-    const val SETUP_VERSION = 311
+    /** 313 = v3.13 grouped setup; 311 = v3.11 location out of setup. */
+    const val SETUP_VERSION = 313
 
     private fun prefs(ctx: Context): SharedPreferences = ctx.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
 

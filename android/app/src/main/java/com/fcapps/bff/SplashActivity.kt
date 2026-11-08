@@ -20,16 +20,13 @@ class SplashActivity : BffActivity() {
         styleAppName(R.id.tvAppName)
 
         // v3.11: location moved out of setup and is off by default for everyone, once.
-        if (permissionSetupVersion < Prefs.SETUP_VERSION) {
-            locationEnabled = false
-            smsEnabled = false
-            if (permissionSetupVersion >= 31) permissionSetupVersion = Prefs.SETUP_VERSION
-        }
+        if (permissionSetupVersion < 311) { locationEnabled = false; smsEnabled = false }
 
+        // Below the current setup version the grouped setup runs once; groups already granted are skipped.
+        val needsSetup = !setupDone || permissionSetupVersion < Prefs.SETUP_VERSION
         Handler(Looper.getMainLooper()).postDelayed({
-            if (!setupDone || permissionSetupVersion < 31) startActivity(Intent(this, SetupActivity::class.java))
+            if (needsSetup) { startActivity(Intent(this, SetupActivity::class.java)); finish() }
             else showHome()
-            if (!setupDone || permissionSetupVersion < 31) finish()
         }, 1500L)
     }
 

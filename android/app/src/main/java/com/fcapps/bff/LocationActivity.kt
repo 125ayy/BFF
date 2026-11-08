@@ -152,12 +152,11 @@ class LocationActivity : BffActivity() {
         if (flow.waiting) return
         message = 0
         if (granted(w)) { setEnabled(w, true); render(); return }
-        if (w == Walk.SMS) { startWalk(w); return }
-        // Google Play prominent disclosure, before the first location prompt.
+        // Support sheet first: the Google Play prominent disclosure for location, a one-line objective for SMS.
         AlertDialog.Builder(this)
-            .setTitle(R.string.location_settings)
-            .setMessage(R.string.location_disclosure)
-            .setPositiveButton(R.string.setup_finish) { _, _ -> startWalk(Walk.LOCATION) }
+            .setTitle(if (w == Walk.LOCATION) R.string.location_switch_location else R.string.location_switch_sms)
+            .setMessage(if (w == Walk.LOCATION) R.string.location_disclosure else R.string.location_sms_sheet)
+            .setPositiveButton(R.string.setup_finish) { _, _ -> startWalk(w) }
             .setNegativeButton(R.string.location_not_now) { _, _ -> render() }
             .setOnCancelListener { render() }
             .show()

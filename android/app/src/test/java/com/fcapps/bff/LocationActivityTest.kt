@@ -111,11 +111,14 @@ class LocationActivityTest {
         assertFalse(app.locationRepliesOn)
     }
 
-    /** The SMS switch asks only for SMS, with no location disclosure. */
+    /** The SMS switch shows its one-line sheet, then asks only for SMS; no location disclosure. */
     @Test fun smsSwitchPromptsSmsOnly() {
         val activity = Robolectric.buildActivity(LocationActivity::class.java).setup().get()
         activity.sw(R.id.swSms).isChecked = true
-        assertNull(ShadowAlertDialog.getLatestAlertDialog())
+        val sheet = ShadowAlertDialog.getLatestAlertDialog()
+        assertEquals(activity.getString(R.string.location_sms_sheet), shadowOf(sheet).message.toString())
+        assertNull(shadowOf(activity).lastRequestedPermission)
+        sheet.getButton(DialogInterface.BUTTON_POSITIVE).performClick(); idle()
         val request = shadowOf(activity).lastRequestedPermission
         assertArrayEquals(arrayOf(SMS), request.requestedPermissions)
         shadowOf(app).grantPermissions(SMS)
@@ -131,6 +134,7 @@ class LocationActivityTest {
         app.getSharedPreferences("permission_requests", 0).edit().putBoolean(SMS, true).commit()
         val activity = Robolectric.buildActivity(LocationActivity::class.java).setup().get()
         activity.sw(R.id.swSms).performClick()
+        ShadowAlertDialog.getLatestAlertDialog().getButton(DialogInterface.BUTTON_POSITIVE).performClick(); idle()   // the sheet
         assertNull(shadowOf(activity).lastRequestedPermission)
         val dialog = ShadowAlertDialog.getLatestAlertDialog()
         assertEquals(activity.getString(R.string.location_open_settings_description, activity.getString(R.string.perm_group_sms)), shadowOf(dialog).message.toString())
@@ -232,7 +236,7 @@ class LocationActivitySettingsWalkTest {
         shadowOf(app).grantPermissions(SMS, BACKGROUND)
         val activity = Robolectric.buildActivity(LocationActivity::class.java).setup().get()
         activity.sw(R.id.swLocation).isChecked = true
-        activity.sw(R.id.swSms).isChecked = true
+        activity.sw(R.id.swSms).isChecked = true                       // every grant in: no sheets, straight on
         assertTrue(app.locationRepliesOn)
         assertEquals(activity.getString(R.string.location_state_on_short), activity.text(R.id.tvSmsState))
     }
