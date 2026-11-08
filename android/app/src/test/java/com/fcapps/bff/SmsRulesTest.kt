@@ -100,4 +100,12 @@ class SmsRulesTest {
         assertTrue(d.alarm); assertFalse(d.location); assertTrue(d.whereRequested)
         assertFalse(SmsRules.decide("BFF", "BFF", "", Prefs.MATRIX_YES, Prefs.MATRIX_YES, false).whereRequested)
     }
+    @Test fun diagnosticReasonsDescribeTheActualAlarmDecision() {
+        assertEquals(SmsRules.AlarmBlock.NONE, SmsRules.decide("BFF", "BFF", "", Y, N, false).alarmBlock)
+        assertEquals(SmsRules.AlarmBlock.SILENT, SmsRules.decide("BFF silent", "BFF", "", Y, N, false).alarmBlock)
+        assertEquals(SmsRules.AlarmBlock.RULE, SmsRules.decide("BFF", "BFF", "", N, N, false).alarmBlock)
+        assertEquals(SmsRules.AlarmBlock.PIN, SmsRules.decide("BFF", "BFF", "1234", P, N, false).alarmBlock)
+        assertEquals(SmsRules.AlarmBlock.NO_MATCH, SmsRules.decide("hello", "BFF", "", Y, N, false).alarmBlock)
+    }
+
 }

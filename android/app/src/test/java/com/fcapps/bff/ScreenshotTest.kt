@@ -46,6 +46,7 @@ class ScreenshotTest {
         val problems = mutableListOf<String>()
 
         shoot(dir, "ready", ReadyActivity::class.java, problems, R.id.btnReady, R.id.btnPrivacy)
+        shoot(dir, "diagnostics", DiagnosticsActivity::class.java, problems, R.id.diagRecord, R.id.diagReport)
         shoot(dir, "settings", SettingsActivity::class.java, problems, R.id.rowSound)
         shoot(dir, "sound", SoundActivity::class.java, problems, R.id.pill60)
         shoot(dir, "location", LocationActivity::class.java, problems, R.id.swLocation)

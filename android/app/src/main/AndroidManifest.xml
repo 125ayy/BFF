@@ -48,6 +48,7 @@
         <activity android:name=".SetupActivity" android:exported="false" />
         <activity android:name=".ReadyActivity" android:exported="false" />
         <activity android:name=".PrivacyActivity" android:exported="false" android:windowSoftInputMode="adjustResize" />
+        <activity android:name=".DiagnosticsActivity" android:exported="false" />
         <activity android:name=".SettingsActivity" android:exported="false" android:windowSoftInputMode="adjustResize" />
         <activity android:name=".SoundActivity" android:exported="false" />
         <activity android:name=".LocationActivity" android:exported="false" />

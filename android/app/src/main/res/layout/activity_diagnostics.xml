@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent" android:layout_height="match_parent" android:background="#000000" android:fillViewport="true">
+<LinearLayout android:id="@+id/diagContent" android:focusableInTouchMode="true" android:descendantFocusability="beforeDescendants" android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical" android:padding="20dp">
+<TextView android:id="@+id/btnBack" style="@style/BackArrow" android:contentDescription="@string/diag_back" />
+<TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:text="@string/diag_title" android:textColor="#FFFFFF" android:textSize="26sp" android:textStyle="bold" />
+<TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:text="@string/diag_instructions" android:textColor="#CCCCCC" android:textSize="16sp" android:layout_marginTop="12dp" android:layout_marginBottom="16dp" />
+<Button android:id="@+id/diagRecord" style="@style/SecondaryButton" android:text="@string/diag_record_start" android:layout_marginBottom="8dp" />
+<Button android:id="@+id/diagTest" style="@style/SecondaryButton" android:text="@string/diag_test" android:layout_marginBottom="8dp" />
+<Button android:id="@+id/diagStopAlarm" style="@style/SecondaryButton" android:text="@string/diag_stop_alarm" android:layout_marginBottom="8dp" />
+<Button android:id="@+id/diagHeard" style="@style/SecondaryButton" android:text="@string/diag_heard" android:layout_marginBottom="8dp" />
+<Button android:id="@+id/diagNotHeard" style="@style/SecondaryButton" android:text="@string/diag_not_heard" android:layout_marginBottom="8dp" />
+<Button android:id="@+id/diagRefresh" style="@style/SecondaryButton" android:text="@string/diag_refresh" android:layout_marginBottom="8dp" />
+<Button android:id="@+id/diagPermissions" style="@style/SecondaryButton" android:text="@string/permissions_settings" android:layout_marginBottom="8dp" />
+<Button android:id="@+id/diagCopy" style="@style/SecondaryButton" android:text="@string/diag_copy" android:layout_marginBottom="8dp" />
+<Button android:id="@+id/diagShare" style="@style/SecondaryButton" android:text="@string/diag_share" android:layout_marginBottom="8dp" />
+<Button android:id="@+id/diagClear" style="@style/SecondaryButton" android:text="@string/diag_clear" android:layout_marginBottom="8dp" />
+<TextView android:id="@+id/diagReport" android:layout_width="match_parent" android:layout_height="wrap_content" android:textColor="#FFFFFF" android:textSize="14sp" android:fontFamily="monospace" android:textIsSelectable="true" android:layout_marginTop="16dp" />
+</LinearLayout></ScrollView>
