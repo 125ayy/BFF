@@ -6,10 +6,10 @@ The trace follows real SMS delivery, activation matching, sender category and Pr
 
 The five-second test uses the real alarm service and audio player. It restores the previous volume on stop, and does not replace the locked-phone SMS test. Audio thread failures are now captured and resources released; this is diagnostic instrumentation, not a confirmed fix for the reported S24 failure.
 
-User field report: ringing works on Galaxy S25 and SMS arrives without a siren on Galaxy S24. Exact OS versions, permission states and root cause remain unverified. Capture both devices using the same test before selecting a fix.
+User field report: ringing works on Galaxy S25 and SMS arrives without a siren on Galaxy S24. The connected S24 reports Android 17/API 37. Its captured SMS was received and activation matched, but the sender was classified OTHER and rejected at the PIN gate. A separate boolean-only settings check confirmed that no PIN was configured while OTHER requires a PIN. Siren execution has not yet been tested with an authorized command.
 
 Validation: 81 automated tests passed, including real SMS PDU parsing on API 28/33, privacy-rule diagnostics, background-start failure capture, bounded/redacted event storage, explicit siren confirmation, five-second stop and volume restoration. Android lint and debug APK build passed. Normal/small screens rendered at 100%/200% text scale.
 
-Installed as an in-place update on the connected Galaxy S24 (SM-S921B, device reports Android 17/API 37). Diagnostics opens and recording has been verified on-device. Locked-phone SMS outcome is pending.
+Installed as an in-place update on the connected Galaxy S24 (SM-S921B, device reports Android 17/API 37). Diagnostics opens and recording has been verified on-device. Captured the reported failure: SMS_RECEIVED → ACTIVATION_MATCHED → SENDER_OTHER → ALARM_BLOCKED_PIN. No service launch occurred. No PIN configured with a PIN-required rule is the confirmed blocker for this test; no device compatibility conclusion follows.
 
 The external Help URL follows codex/v3.15-diagnostics; retain the branch until a permanent guide URL is shipped.
