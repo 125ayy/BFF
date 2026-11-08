@@ -21,4 +21,14 @@ class SmsReplyPlanTest {
         val plan = SmsReplyPlan.prepare("BFF: ±10 m") { throw SecurityException() }
         assertEquals(listOf("BFF: ±10 m"), plan.parts)
     }
+    @Test fun everyStandaloneReplyPartHasIgnorePrefix() {
+        val payload = "Recent location https://maps.google.com/?q=12.345678,-123.456789 BFF where permissions failed"
+        val plan = SmsReplyPlan.prepare("BFF-Answer: $payload") { throw SecurityException() }
+        assertTrue(plan.parts.size > 1)
+        assertTrue(plan.parts.all { it.length <= 70 && SmsRules.isAnswer(it) })
+        assertTrue(plan.parts.none { SmsRules.matchesActivation(it, "BFF", "") })
+        assertEquals(payload, plan.parts.joinToString("") { it.removePrefix("BFF-Answer: ") })
+        assertTrue(plan.parts.any { it.contains("https://maps.google.com/?q=12.345678,-123.456789") })
+    }
+
 }

@@ -9,16 +9,19 @@ data class SmsReplyPlan(val parts: ArrayList<String>, val individual: Boolean) {
             // Standalone UCS-2 SMS holds 70 UTF-16 units. Avoid multipart APIs,
             // which may repeat the same denied carrier lookup. Prefer word boundaries
             // so the map URL remains clickable. Never cut a surrogate pair.
+            val prefix = if (SmsRules.isAnswer(text)) "${SmsRules.ANSWER_PREFIX} " else ""
+            val payload = if (prefix.isNotEmpty()) text.trimStart().substring(SmsRules.ANSWER_PREFIX.length).trimStart() else text
+            val limit = 70 - prefix.length
             val parts = arrayListOf<String>()
             var start = 0
-            while (start < text.length) {
-                var end = minOf(start + 70, text.length)
-                if (end < text.length) {
-                    if (text[end - 1].isHighSurrogate()) end--
-                    val space = text.lastIndexOf(' ', end - 1)
+            while (start < payload.length) {
+                var end = minOf(start + limit, payload.length)
+                if (end < payload.length) {
+                    if (payload[end - 1].isHighSurrogate()) end--
+                    val space = payload.lastIndexOf(' ', end - 1)
                     if (space >= start) end = space + 1
                 }
-                parts.add(text.substring(start, end))
+                parts.add(prefix + payload.substring(start, end))
                 start = end
             }
             SmsReplyPlan(parts, true)

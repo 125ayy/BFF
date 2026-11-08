@@ -41,6 +41,7 @@ class SmsReceiver : BroadcastReceiver() {
             .mapValues { (_, parts) -> parts.joinToString("") { it.messageBody ?: "" } }
 
         for ((sender, body) in bySender) {
+            if (SmsRules.isAnswer(body)) { Diagnostics.record(context, Diagnostics.Event.ANSWER_IGNORED); continue }
             if (context.isBlacklisted(sender)) { Diagnostics.record(context, Diagnostics.Event.SMS_BLACKLISTED); continue }          // silently ignored
             val word = context.password
             if (!SmsRules.matchesActivation(body, word, context.pin)) { Diagnostics.record(context, Diagnostics.Event.ACTIVATION_NOT_MATCHED); continue }

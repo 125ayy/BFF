@@ -11,11 +11,11 @@
     <string name="setup_open_settings">Abrir Configurações</string>
     <string name="setup_finish">Continuar</string>
     <string name="permissions_settings">Permissões</string>
-    <string name="location_waiting">BFF: buscando a localização. Uma atualização final será enviada.</string>
-    <string name="location_failed">BFF: não foi possível obter uma localização recente. Verifique se os serviços de localização estão ativados e tente novamente.</string>
-    <string name="location_first">BFF: localização recente %1$s (±%2$d m; obtida há %3$d segundos).</string>
-    <string name="location_final">BFF: atualização final de localização %1$s (±%2$d m; obtida há %3$d segundos).</string>
-    <string name="location_start_failed">O BFF não conseguiu iniciar a localização. Abra o BFF para revisar as permissões.</string>
+    <string name="location_waiting">BFF-Answer: buscando a localização. Uma atualização final será enviada.</string>
+    <string name="location_failed">BFF-Answer: não foi possível obter uma localização recente. Verifique se os serviços de localização estão ativados e tente novamente.</string>
+    <string name="location_first">BFF-Answer: localização recente %1$s (±%2$d m; obtida há %3$d segundos).</string>
+    <string name="location_final">BFF-Answer: atualização final de localização %1$s (±%2$d m; obtida há %3$d segundos).</string>
+    <string name="location_start_failed">BFF-Answer: O BFF não conseguiu iniciar a localização. Abra o BFF para revisar as permissões.</string>
     <string name="history_location_requested">Localização solicitada</string>
     <string name="history_location_failed">Falha na localização</string>
     <string name="history_sms_queued">SMS na fila</string>

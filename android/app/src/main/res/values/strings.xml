@@ -15,11 +15,11 @@
     <string name="setup_finish">Continue</string>
     <string name="permissions_settings">Permissions</string>
 
-    <string name="location_waiting">BFF: getting a location fix. A final update will follow.</string>
-    <string name="location_failed">BFF: unable to obtain a recent location. Check that location services are enabled and try again.</string>
-    <string name="location_first">BFF: recent location %1$s (±%2$d m; fix %3$d seconds old).</string>
-    <string name="location_final">BFF: final location update %1$s (±%2$d m; fix %3$d seconds old).</string>
-    <string name="location_start_failed">BFF could not start location access. Open BFF to review permissions.</string>
+    <string name="location_waiting">BFF-Answer: getting a location fix. A final update will follow.</string>
+    <string name="location_failed">BFF-Answer: unable to obtain a recent location. Check that location services are enabled and try again.</string>
+    <string name="location_first">BFF-Answer: recent location %1$s (±%2$d m; fix %3$d seconds old).</string>
+    <string name="location_final">BFF-Answer: final location update %1$s (±%2$d m; fix %3$d seconds old).</string>
+    <string name="location_start_failed">BFF-Answer: Could not start location access. Open BFF to review permissions.</string>
     <string name="history_location_requested">Location requested</string>
     <string name="history_location_failed">Location failed</string>
     <string name="history_sms_queued">SMS queued</string>

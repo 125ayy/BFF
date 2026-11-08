@@ -134,4 +134,13 @@ class DiagnosticsTest {
         } finally { controller.destroy() }
     }
 
+    @Test fun incomingAnswerDoesNotStartAlarmOrLocationService() {
+        Diagnostics.start(app)
+        app.matrixAllAlarm = Prefs.MATRIX_YES
+        SmsReceiver().onReceive(app, sms(" BFF-Answer: BFF where"))
+        assertNull(shadowOf(app).nextStartedService)
+        assertTrue(Diagnostics.report(app).contains("ANSWER_IGNORED NONE"))
+        assertFalse(Diagnostics.report(app).contains("ACTIVATION_MATCHED NONE"))
+    }
+
 }

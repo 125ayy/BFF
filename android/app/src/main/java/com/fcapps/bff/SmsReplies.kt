@@ -28,7 +28,8 @@ object SmsReplies {
                 if (Build.VERSION.SDK_INT >= 31) context.getSystemService(SmsManager::class.java).createForSubscriptionId(subscription)
                 else SmsManager.getSmsManagerForSubscriptionId(subscription)
             } else if (Build.VERSION.SDK_INT >= 31) context.getSystemService(SmsManager::class.java) else SmsManager.getDefault()
-            val plan = SmsReplyPlan.prepare(text, manager::divideMessage)
+            val reply = if (SmsRules.isAnswer(text)) text.trimStart() else "${SmsRules.ANSWER_PREFIX} $text"
+            val plan = SmsReplyPlan.prepare(reply, manager::divideMessage)
             val parts = plan.parts
             val id = UUID.randomUUID().toString()
             val sent = ArrayList(parts.indices.map { index ->
@@ -40,7 +41,7 @@ object SmsReplies {
             })
             if (plan.individual) {
                 parts.forEachIndexed { index, part -> manager.sendTextMessage(to, null, part, sent[index], null) }
-            } else if (parts.size == 1) manager.sendTextMessage(to, null, text, sent[0], null)
+            } else if (parts.size == 1) manager.sendTextMessage(to, null, reply, sent[0], null)
             else manager.sendMultipartTextMessage(to, null, parts, sent, null)
             return true
         } catch (e: RuntimeException) {

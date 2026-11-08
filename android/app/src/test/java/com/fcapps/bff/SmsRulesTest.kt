@@ -108,4 +108,14 @@ class SmsRulesTest {
         assertEquals(SmsRules.AlarmBlock.NO_MATCH, SmsRules.decide("hello", "BFF", "", Y, N, false).alarmBlock)
     }
 
+    @Test fun automaticAnswersNeverBecomeCommands() {
+        for (body in listOf("BFF-Answer: BFF where", "  bFf-aNsWeR: BFF1234 where silent", "\nBFF-Answer: location failed")) {
+            assertFalse(SmsRules.matchesActivation(body, "BFF", "1234"))
+            val decision = SmsRules.decide(body, "BFF", "1234", Y, Y, true)
+            assertFalse(decision.alarm)
+            assertFalse(decision.location)
+        }
+        assertTrue(SmsRules.decide("bff where silent", "BFF", "", Y, Y, true).location)
+    }
+
 }
