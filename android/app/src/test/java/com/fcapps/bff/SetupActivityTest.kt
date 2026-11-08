@@ -80,7 +80,7 @@ class SetupActivityTest {
         assertTrue(activity.btn().isEnabled)
         assertEquals(activity.getString(R.string.setup_continue), activity.btn().text.toString())
         activity.btn().performClick()
-        assertEquals(activity.getString(R.string.setup_group_b_title), activity.title())
+        assertEquals(activity.getString(R.string.setup_sms_info_title), activity.title())
         assertSame(second, shadowOf(activity).lastRequestedPermission)            // no prompt opened by moving on
     }
 
@@ -115,12 +115,13 @@ class SetupActivityTest {
         assertEquals(restored.getString(R.string.setup_group_a_title), restored.title())
     }
 
-    @Test fun grantedGroupsAreSkippedAndStepTwoOpensSettingsToggles() {
+    @Test fun grantedGroupsAreSkippedAndStepThreeOpensSettingsToggles() {
+        shadowOf(app).grantPermissions(Manifest.permission.RECEIVE_SMS)
         shadowOf(app).grantPermissions(Manifest.permission.READ_CONTACTS)
         shadowOf(app.getSystemService(NotificationManager::class.java)).setNotificationsEnabled(true)
         val activity = Robolectric.buildActivity(SetupActivity::class.java).setup().get()
         assertEquals(activity.getString(R.string.setup_group_b_title), activity.title())
-        assertEquals(activity.getString(R.string.setup_progress, 2, 3), activity.findViewById<TextView>(R.id.tvSetupProgress).text.toString())
+        assertEquals(activity.getString(R.string.setup_progress, 3, 3), activity.findViewById<TextView>(R.id.tvSetupProgress).text.toString())
         assertEquals(2, activity.findViewById<LinearLayout>(R.id.rowsContainer).childCount)   // overlay + battery on 33
         activity.btn().performClick()
         assertEquals(Settings.ACTION_MANAGE_OVERLAY_PERMISSION, shadowOf(activity).nextStartedActivityForResult.intent.action)
@@ -135,8 +136,8 @@ class SetupActivityTest {
         shadowOf(app.packageManager).setShouldShowRequestPermissionRationale(Manifest.permission.RECEIVE_SMS, true)   // first denial: Android still prompts
         val activity = Robolectric.buildActivity(SetupActivity::class.java).setup().get()
         assertEquals(activity.getString(R.string.setup_sms_info_title), activity.title())
-        assertEquals(activity.getString(R.string.setup_progress, 3, 3), activity.findViewById<TextView>(R.id.tvSetupProgress).text.toString())
-        assertEquals(activity.getString(R.string.setup_sms_brand_google), activity.findViewById<TextView>(R.id.tvSetupBrand).text.toString())
+        assertEquals(activity.getString(R.string.setup_progress, 2, 3), activity.findViewById<TextView>(R.id.tvSetupProgress).text.toString())
+        assertEquals(View.GONE, activity.findViewById<TextView>(R.id.tvSetupBrand).visibility)
         assertEquals(View.GONE, activity.findViewById<Button>(R.id.btnSecondary).visibility)
         assertNull(shadowOf(activity).lastRequestedPermission)                    // nothing before CONTINUE
         activity.btn().performClick()
@@ -164,6 +165,8 @@ class SetupActivityTest {
         shadowOf(app.getSystemService(NotificationManager::class.java)).setNotificationsEnabled(true)
         grantGroupB()
         val activity = Robolectric.buildActivity(SetupActivity::class.java).setup().get()
+        activity.btn().performClick()
+        activity.deliver(shadowOf(activity).lastRequestedPermission, PackageManager.PERMISSION_DENIED)
         assertEquals(activity.getString(R.string.setup_sms_brand_other), activity.findViewById<TextView>(R.id.tvSetupBrand).text.toString())
     }
 
@@ -175,4 +178,29 @@ class SetupActivityTest {
         assertEquals(ReadyActivity::class.java.name, shadowOf(activity).nextStartedActivity.component?.className)
         assertTrue(activity.isFinishing)
     }
+    @Test fun smsApprovalLeadsToOptionalChecksAndCanContinueWithoutThem() {
+        shadowOf(app).grantPermissions(Manifest.permission.READ_CONTACTS)
+        shadowOf(app.getSystemService(NotificationManager::class.java)).setNotificationsEnabled(true)
+        val activity = Robolectric.buildActivity(SetupActivity::class.java).setup().get()
+        activity.btn().performClick()
+        val request = shadowOf(activity).lastRequestedPermission
+        shadowOf(app).grantPermissions(Manifest.permission.RECEIVE_SMS)
+        activity.deliver(request, PackageManager.PERMISSION_GRANTED)
+        assertEquals(activity.getString(R.string.setup_group_b_title), activity.title())
+        assertFalse(activity.isFinishing)
+        activity.findViewById<Button>(R.id.btnSecondary).performClick()
+        assertTrue(activity.isFinishing)
+        assertEquals(ReadyActivity::class.java.name, shadowOf(activity).nextStartedActivity.component?.className)
+    }
+
+    @Test fun helpOpensBrowserWithoutChangingPermissions() {
+        val activity = Robolectric.buildActivity(SetupActivity::class.java).setup().get()
+        activity.findViewById<Button>(R.id.btnHelp).performClick()
+        val intent = shadowOf(activity).nextStartedActivity
+        assertEquals(android.content.Intent.ACTION_VIEW, intent.action)
+        assertEquals(Help.URL, intent.data.toString())
+        assertNull(shadowOf(activity).lastRequestedPermission)
+        assertFalse(activity.isFinishing)
+    }
+
 }

@@ -16,12 +16,12 @@ class PermissionFlow(
     companion object {
         /** Setup step 1 of 3: one-tap prompts, a quick first success. */
         val GROUP_A = listOf(Step.CONTACTS, Step.NOTIFICATIONS, Step.COMPLETE)
-        /** Setup step 2 of 3: Settings toggles that let the alarm ring on a locked phone. Required. */
+        /** Setup step 3 of 3: Settings toggles that let the alarm ring on a locked phone. May be deferred to the physical test. */
         val GROUP_B = listOf(Step.OVERLAY, Step.FULL_SCREEN, Step.BATTERY, Step.COMPLETE)
-        /** Setup step 3 of 3: the SMS trigger itself, behind a warning screen. Required. */
+        /** Setup step 2 of 3: the SMS trigger itself, behind a warning screen. Required. */
         val GROUP_C = listOf(Step.RECEIVE_SMS, Step.COMPLETE)
         /** Every setup group, in order; location and SMS sending live in Settings › Location. */
-        val SETUP_GROUPS = listOf(GROUP_A, GROUP_B, GROUP_C)
+        val SETUP_GROUPS = listOf(GROUP_A, GROUP_C, GROUP_B)
         /** Settings › Location › "Location" switch. */
         val LOCATION = listOf(Step.LOCATION, Step.BACKGROUND_LOCATION, Step.COMPLETE)
         /** Settings › Location › "Send SMS" switch. */

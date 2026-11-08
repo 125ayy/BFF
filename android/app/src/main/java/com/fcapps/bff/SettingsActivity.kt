@@ -15,6 +15,7 @@ class SettingsActivity : BffActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_settings)
+        findViewById<View>(R.id.rowHelp).setOnClickListener { Help.open(this) }
         etMessage = findViewById(R.id.etFinderMessage)
         etMessage.setText(finderMessage)
 

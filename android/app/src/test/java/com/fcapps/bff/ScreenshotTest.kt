@@ -51,10 +51,11 @@ class ScreenshotTest {
         shoot(dir, "location", LocationActivity::class.java, problems, R.id.swLocation)
         shoot(dir, "privacy", PrivacyActivity::class.java, problems, R.id.btnDone)
         shoot(dir, "setup", SetupActivity::class.java, problems, R.id.btnContinue)
-        // Setup step 2 (Settings toggles) and step 3 (SMS warning, Pixel wording), then back to a bare phone.
+        // Capture the optional ringing checks and SMS recovery separately.
         shadowOf(app).grantPermissions(android.Manifest.permission.READ_CONTACTS)
         shadowOf(app.getSystemService(android.app.NotificationManager::class.java)).setNotificationsEnabled(true)
-        shoot(dir, "setup-step2", SetupActivity::class.java, problems, R.id.btnContinue)
+        val ringingState = android.os.Bundle().apply { putString("screen", "GROUP_B"); putString("step", "OVERLAY") }
+        capture(dir, "setup-ringing", Robolectric.buildActivity(SetupActivity::class.java).setup(ringingState).get(), problems, R.id.btnContinue, R.id.btnSecondary)
         org.robolectric.util.ReflectionHelpers.setStaticField(android.os.Build::class.java, "MANUFACTURER", "Google")
         for ((name, screen) in listOf("setup-sms" to "SMS_INFO", "setup-sms-fail" to "SMS_FAIL")) {
             val state = android.os.Bundle().apply { putString("screen", screen); putString("step", "RECEIVE_SMS") }

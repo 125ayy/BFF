@@ -21,13 +21,7 @@ import androidx.core.content.ContextCompat
 import com.fcapps.bff.PermissionFlow.Step
 import com.fcapps.bff.Prefs.permissionSetupVersion
 
-/**
- * Setup in three steps (v3.13 ruling): 1 contacts + notifications, 2 the Settings toggles that let the
- * alarm ring on a locked phone, 3 receiving SMS behind a warning screen with brand-specific help.
- * One CONTINUE runs a group's prompts one after the other; each row shows ✓ or "Not allowed"; the
- * user taps CONTINUE again to move on. Every group is required. Groups already granted when setup
- * opens (an update) are skipped. Location and SMS sending live in Settings › Location.
- */
+/** Basic grants → receive SMS → optional ringing checks. Location stays in Settings. */
 class SetupActivity : BffActivity() {
 
     enum class Screen { GROUP_A, GROUP_B, SMS_INFO, SMS_FAIL }
@@ -49,7 +43,8 @@ class SetupActivity : BffActivity() {
             savedInstanceState?.getBoolean("waiting", false) ?: false)
         deniedStep = savedInstanceState?.getString("denied")?.let { runCatching { Step.valueOf(it) }.getOrNull() }
         findViewById<Button>(R.id.btnContinue).setOnClickListener { onContinue() }
-        findViewById<Button>(R.id.btnSecondary).setOnClickListener { openAppSettings() }
+        findViewById<Button>(R.id.btnSecondary).setOnClickListener { if (screen == Screen.GROUP_B) complete() else openAppSettings() }
+        findViewById<Button>(R.id.btnHelp).setOnClickListener { Help.open(this) }
         if (savedInstanceState == null && skipGrantedGroups()) return
         render()
     }
@@ -123,11 +118,9 @@ class SetupActivity : BffActivity() {
 
     /** On first entry only: groups already granted are not shown. Returns true when setup is already complete. */
     private fun skipGrantedGroups(): Boolean {
-        while (screen == Screen.GROUP_A || screen == Screen.GROUP_B) {
-            if (!groupGranted(screen)) return false
-            show(if (screen == Screen.GROUP_A) Screen.GROUP_B else Screen.SMS_INFO)
-        }
-        if (granted(Manifest.permission.RECEIVE_SMS)) { complete(); return true }
+        if (screen == Screen.GROUP_A && groupGranted(screen)) show(Screen.SMS_INFO)
+        if (screen == Screen.SMS_INFO && granted(Manifest.permission.RECEIVE_SMS)) show(Screen.GROUP_B)
+        if (screen == Screen.GROUP_B && groupGranted(screen)) { complete(); return true }
         return false
     }
 
@@ -138,7 +131,7 @@ class SetupActivity : BffActivity() {
     }
 
     private fun render() {
-        val stepNo = when (screen) { Screen.GROUP_A -> 1; Screen.GROUP_B -> 2; else -> 3 }
+        val stepNo = when (screen) { Screen.GROUP_A -> 1; Screen.GROUP_B -> 3; else -> 2 }
         findViewById<TextView>(R.id.tvSetupProgress).text = getString(R.string.setup_progress, stepNo, 3)
         findViewById<TextView>(R.id.tvSetupTitle).setText(when (screen) {
             Screen.GROUP_A -> R.string.setup_group_a_title
@@ -148,12 +141,13 @@ class SetupActivity : BffActivity() {
         })
         val isSms = screen == Screen.SMS_INFO || screen == Screen.SMS_FAIL
         findViewById<TextView>(R.id.tvSetupDescription).apply {
-            visibility = if (isSms) View.VISIBLE else View.GONE
-            if (isSms) setText(if (screen == Screen.SMS_INFO) R.string.setup_sms_info_body else R.string.setup_sms_fail_body)
+            visibility = if (isSms || screen == Screen.GROUP_B) View.VISIBLE else View.GONE
+            if (screen == Screen.GROUP_B) setText(R.string.setup_ringing_optional)
+            else if (isSms) setText(if (screen == Screen.SMS_INFO) R.string.setup_sms_info_body else R.string.setup_sms_fail_body)
         }
         findViewById<TextView>(R.id.tvSetupBrand).apply {
-            visibility = if (isSms) View.VISIBLE else View.GONE
-            if (isSms) text = brandText()
+            visibility = if (screen == Screen.SMS_FAIL) View.VISIBLE else View.GONE
+            if (screen == Screen.SMS_FAIL) text = brandText()
         }
         renderRows()
         val allGranted = !isSms && groupGranted(screen)
@@ -168,7 +162,8 @@ class SetupActivity : BffActivity() {
             })
         }
         findViewById<Button>(R.id.btnSecondary).apply {
-            visibility = if (screen == Screen.SMS_FAIL) View.VISIBLE else View.GONE
+            visibility = if (screen == Screen.SMS_FAIL || screen == Screen.GROUP_B) View.VISIBLE else View.GONE
+            setText(if (screen == Screen.GROUP_B) R.string.setup_later else R.string.setup_open_settings)
             isEnabled = !flow.waiting
         }
     }
@@ -205,12 +200,16 @@ class SetupActivity : BffActivity() {
         if (flow.waiting) return
         when (screen) {
             Screen.GROUP_A, Screen.GROUP_B -> {
-                if (groupGranted(screen)) { show(if (screen == Screen.GROUP_A) Screen.GROUP_B else Screen.SMS_INFO); render(); return }
+                if (groupGranted(screen)) {
+                    if (screen == Screen.GROUP_B) { complete(); return }
+                    show(Screen.SMS_INFO); skipGrantedGroups(); render(); return
+                }
                 flow = PermissionFlow(Build.VERSION.SDK_INT, stepsOf(screen))
                 skipSatisfied()
                 launchCurrent()
             }
             Screen.SMS_INFO, Screen.SMS_FAIL -> {
+                if (granted(Manifest.permission.RECEIVE_SMS)) { show(Screen.GROUP_B); skipGrantedGroups(); render(); return }
                 flow = PermissionFlow(Build.VERSION.SDK_INT, PermissionFlow.GROUP_C)
                 launchCurrent()
             }
@@ -264,7 +263,7 @@ class SetupActivity : BffActivity() {
         flow.result(ok)
         if (!ok) { failed(step); return }
         deniedStep = null
-        if (screen == Screen.SMS_INFO || screen == Screen.SMS_FAIL) { complete(); return }
+        if (screen == Screen.SMS_INFO || screen == Screen.SMS_FAIL) { show(Screen.GROUP_B); skipGrantedGroups(); render(); return }
         skipSatisfied()
         if (flow.step == Step.COMPLETE) render() else launchCurrent()   // next prompt of the group follows at once
     }

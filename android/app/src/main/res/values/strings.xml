@@ -55,7 +55,7 @@
 
     <!-- v3.13 · grouped setup, brand help for the SMS step, Ready test, Send SMS sheet -->
     <string name="setup_group_a_title">Contacts and alerts</string>
-    <string name="setup_group_b_title">Ring on a locked phone</string>
+    <string name="setup_group_b_title">Check locked-phone ringing</string>
     <string name="setup_row_contacts">Contacts</string>
     <string name="setup_row_contacts_sub">who is texting</string>
     <string name="setup_row_notifications">Notifications</string>
@@ -81,6 +81,11 @@
     <string name="setup_continue">CONTINUE</string>
     <string name="ready_test">TEST</string>
     <string name="ready_test_title">Test it</string>
-    <string name="ready_test_body">From another phone, send an SMS to this phone with the word %1$s. It rings for %2$d seconds. Add where for the location, once turned on in Settings › Location.</string>
+    <string name="ready_test_body">Lock this phone. From another phone allowed in Privacy settings, send a real SMS with %1$s (and your PIN if required). Check that this phone rings for %2$d seconds. If it does not, open Help or Settings › Permissions. Repeat after a restart and a longer idle period. Location is optional in Settings › Location.</string>
     <string name="location_sms_sheet">BFF sends back an SMS with the phone location. Allow Android to send SMS.</string>
+    <string name="help_title">Help — phone setup guide</string>
+    <string name="help_no_browser">Install or enable a web browser to open the BFF help guide.</string>
+    <string name="setup_later">CONTINUE TO TEST</string>
+    <string name="setup_complete">Setup complete — test your phone</string>
+    <string name="setup_ringing_optional">These settings can help BFF ring while locked. Enable them now, or continue and test your phone. If the test fails, return to Settings → Permissions.</string>
 </resources>

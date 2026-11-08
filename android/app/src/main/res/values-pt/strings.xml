@@ -77,4 +77,9 @@
     <string name="ready_test_title">Teste</string>
     <string name="ready_test_body">De outro celular, envie um SMS para este celular com a palavra %1$s. Ele toca por %2$d segundos. Acrescente where para a localização, depois de ativar em Configurações › Localização.</string>
     <string name="location_sms_sheet">O BFF responde com um SMS com a localização do celular. Permita que o Android envie SMS.</string>
+    <string name="help_title">Ajuda — configurar o celular</string>
+    <string name="help_no_browser">Instale ou ative um navegador para abrir a ajuda do BFF.</string>
+    <string name="setup_later">CONTINUAR PARA O TESTE</string>
+    <string name="setup_complete">Configuração concluída — teste o celular</string>
+    <string name="setup_ringing_optional">Estas opções podem ajudar o BFF a tocar com a tela bloqueada. Ative agora ou continue e teste o celular. Se o teste falhar, volte a Configurações → Permissões.</string>
 </resources>

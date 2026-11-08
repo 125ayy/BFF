@@ -7,7 +7,7 @@ import org.junit.Test
 class PermissionFlowTest {
     @Test fun setupGroupsCoverTheSirenAndNothingElse() {
         val all = PermissionFlow.SETUP_GROUPS.flatten().filter { it != Step.COMPLETE }
-        assertEquals(listOf(Step.CONTACTS, Step.NOTIFICATIONS, Step.OVERLAY, Step.FULL_SCREEN, Step.BATTERY, Step.RECEIVE_SMS), all)
+        assertEquals(listOf(Step.CONTACTS, Step.NOTIFICATIONS, Step.RECEIVE_SMS, Step.OVERLAY, Step.FULL_SCREEN, Step.BATTERY), all)
         assertFalse(all.any { it in listOf(Step.SEND_SMS, Step.LOCATION, Step.BACKGROUND_LOCATION) })
     }
 
