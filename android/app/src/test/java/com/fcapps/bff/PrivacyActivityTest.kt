@@ -1,5 +1,10 @@
 package com.fcapps.bff
 
+import android.Manifest
+import android.view.View
+import org.robolectric.Shadows.shadowOf
+import com.fcapps.bff.Prefs.locationEnabled
+import com.fcapps.bff.Prefs.smsEnabled
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
@@ -21,7 +26,14 @@ class PrivacyActivityTest {
 
     @Before fun clear() { app.getSharedPreferences("bff_prefs", 0).edit().clear().commit() }
 
+    private fun enableLocation() {
+        app.locationEnabled = true
+        app.smsEnabled = true
+        shadowOf(app).grantPermissions(Manifest.permission.SEND_SMS, Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_BACKGROUND_LOCATION)
+    }
+
     @Test fun unfinishedGateChangesDoNotAffectLiveAuthorization() {
+        enableLocation()
         val controller = Robolectric.buildActivity(PrivacyActivity::class.java).setup()
         val activity = controller.get()
         activity.findViewById<TextView>(R.id.badgeAllLoc).performClick() // NO -> YES, draft only
@@ -31,9 +43,11 @@ class PrivacyActivityTest {
     }
 
     @Test fun gatesAndPinCommitTogetherAfterValidation() {
+        enableLocation()
         val activity = Robolectric.buildActivity(PrivacyActivity::class.java).setup().get()
         activity.findViewById<TextView>(R.id.badgeAllLoc).performClick() // NO -> YES
-        activity.findViewById<TextView>(R.id.badgeAllLoc).performClick() // YES -> PIN
+        activity.findViewById<TextView>(R.id.badgeAllLoc).performClick() // ON -> OFF
+        activity.findViewById<TextView>(R.id.badgeAllAlarm).performClick() // OFF -> PIN
         activity.findViewById<EditText>(R.id.etPin).setText("1234")
         activity.findViewById<EditText>(R.id.etPin2).setText("9999")
         activity.findViewById<Button>(R.id.btnDone).performClick()
@@ -56,17 +70,45 @@ class PrivacyActivityTest {
 
     @Test fun emptyPinCannotEnablePinRules() {
         val activity = Robolectric.buildActivity(PrivacyActivity::class.java).setup().get()
-        activity.findViewById<TextView>(R.id.badgeAllAlarm).performClick() // YES -> PIN
+        activity.findViewById<TextView>(R.id.badgeAllAlarm).performClick() // ON -> OFF
+        activity.findViewById<TextView>(R.id.badgeAllAlarm).performClick() // OFF -> PIN
         activity.findViewById<Button>(R.id.btnDone).performClick()
         assertFalse(activity.isFinishing)
         assertEquals("", app.pin)
     }
     @Test fun freshInstallAllowsAlarmWithoutPinAndKeepsLocationOff() {
         val activity = Robolectric.buildActivity(PrivacyActivity::class.java).setup().get()
-        assertEquals("YES", activity.findViewById<TextView>(R.id.badgeAllAlarm).text.toString())
+        assertEquals("ON", activity.findViewById<TextView>(R.id.badgeAllAlarm).text.toString())
         activity.findViewById<Button>(R.id.btnDone).performClick()
         assertTrue(activity.isFinishing)
         assertEquals(Prefs.MATRIX_NO, app.matrixAllLoc)
+    }
+
+    @Test fun unavailableLocationStaysVisibleAndPreservesRules() {
+        val controller = Robolectric.buildActivity(PrivacyActivity::class.java).setup()
+        val activity = controller.get()
+        for (id in listOf(R.id.badgeAllLoc, R.id.badgeContactsLoc, R.id.badgeTrustedLoc)) {
+            val badge = activity.findViewById<TextView>(id)
+            assertEquals(View.VISIBLE, badge.visibility)
+            assertEquals("DISABLE", badge.text.toString())
+            assertFalse(badge.isEnabled)
+            badge.performClick()
+        }
+        assertEquals(Prefs.MATRIX_NO, app.matrixAllLoc)
+        enableLocation()
+        controller.pause().resume()
+        assertEquals("OFF", activity.findViewById<TextView>(R.id.badgeAllLoc).text.toString())
+        assertEquals("PIN", activity.findViewById<TextView>(R.id.badgeContactsLoc).text.toString())
+        assertEquals("ON", activity.findViewById<TextView>(R.id.badgeTrustedLoc).text.toString())
+    }
+
+    @Test fun alarmCyclesOffPinOnAndLocationCyclesOnPinOff() {
+        enableLocation()
+        val activity = Robolectric.buildActivity(PrivacyActivity::class.java).setup().get()
+        val alarm = activity.findViewById<TextView>(R.id.badgeAllAlarm)
+        for (label in listOf("OFF", "PIN", "ON")) { alarm.performClick(); assertEquals(label, alarm.text.toString()) }
+        val location = activity.findViewById<TextView>(R.id.badgeTrustedLoc)
+        for (label in listOf("PIN", "OFF", "ON")) { location.performClick(); assertEquals(label, location.text.toString()) }
     }
 
     @Test fun explicitlySavedPinRuleIsPreserved() {
