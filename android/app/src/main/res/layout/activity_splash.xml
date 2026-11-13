@@ -7,37 +7,27 @@
     android:gravity="center"
     android:padding="32dp">
 
-    <!-- Large phone emoji with "vibration" lines using text -->
-    <FrameLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="24dp">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="〜 📱 〜"
-            android:textSize="72sp"
-            android:gravity="center" />
-
-    </FrameLayout>
+    <ImageView
+        android:layout_width="120dp"
+        android:layout_height="120dp"
+        android:src="@drawable/ic_bff_mark"
+        android:contentDescription="@null"
+        android:layout_marginBottom="20dp" />
 
     <TextView
         android:id="@+id/tvAppName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="BestFoneFinder"
-        android:textSize="32sp"
-        android:textStyle="bold"
+        android:fontFamily="@font/nunito_black"
+        android:textSize="34sp"
         android:textColor="#FFFFFF"
-        android:layout_marginBottom="12dp" />
+        android:letterSpacing="-0.01"
+        android:layout_marginBottom="28dp" />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="No Fees... No Ads... No BS... Phone FOUND!"
-        android:textSize="13sp"
-        android:textColor="#777777"
-        android:gravity="center" />
+    <TextView style="@style/Tagline" android:text="No Fees" />
+    <TextView style="@style/Tagline" android:text="No Ads" />
+    <TextView style="@style/Tagline" android:text="No BS" />
+    <TextView style="@style/Tagline" android:text="Phone FOUND!" android:textColor="#00C853" />
 
 </LinearLayout>

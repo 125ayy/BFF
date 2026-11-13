@@ -1,4 +1,86 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">BestFoneFinder</string>
+    <string name="app_name" translatable="false">BestFoneFinder</string>
+    <string name="site_url" translatable="false">https://bestfonefinder.cloud</string>
+    <!-- Prominent disclosure required by Google Play before asking for background location -->
+    <string name="location_disclosure">BestFoneFinder collects location data to send this phone\'s position by SMS when someone texts BFF where, even when the app is closed or not in use.</string>
+
+    <string name="setup_heading">Set up BFF</string>
+    <string name="setup_progress">Step %1$d of %2$d</string>
+    <string name="setup_background_title">Allow location while BFF is closed</string>
+    <string name="setup_background_description">Optional. On the next screen, open Permissions → Location and choose “%1$s”. This lets BFF answer an authorized location SMS when the app is closed. You can keep approximate location. Return to BFF when finished. Skipping turns off location replies.</string>
+    <string name="setup_retry">Try again</string>
+    <string name="setup_waiting">Waiting for your choice…</string>
+    <string name="setup_open_settings">Open Settings</string>
+    <string name="setup_finish">Continue</string>
+    <string name="permissions_settings">Permissions</string>
+
+    <string name="location_waiting">BFF: getting a location fix. A final update will follow.</string>
+    <string name="location_failed">BFF: unable to obtain a recent location. Check that location services are enabled and try again.</string>
+    <string name="location_first">BFF: recent location %1$s (±%2$d m; fix %3$d seconds old).</string>
+    <string name="location_final">BFF: final location update %1$s (±%2$d m; fix %3$d seconds old).</string>
+    <string name="location_start_failed">BFF could not start location access. Open BFF to review permissions.</string>
+    <string name="history_location_requested">Location requested</string>
+    <string name="history_location_failed">Location failed</string>
+    <string name="history_sms_queued">SMS queued</string>
+    <string name="history_sms_sent">SMS sent</string>
+    <string name="history_sms_failed">SMS failed</string>
+    <string name="pin_required">Set a 4 to 8 digit PIN before enabling a PIN rule.</string>
+    <string name="share_split_link">Sharing the download link for this installation.</string>
+    <string name="share_text">Here is BFF, the app to find your phone! https://bestfonefinder.cloud</string>
+    <string name="alarm_recovery_channel">BFF alarm recovery</string>
+    <string name="alarm_recovery_message">Someone is looking for this phone. Tap to start the alarm.</string>
+    <string name="alarm_message">Someone is looking for this phone. Tap FOUND to stop.</string>
+    <string name="app_version">Version %1$s</string>
+
+    <!-- v3.11: Location lives in Settings -->
+    <string name="location_settings">Location</string>
+    <string name="location_state_on">On · replies to “BFF where”</string>
+    <string name="location_state_off">Off</string>
+    <string name="location_not_now">Not now</string>
+    <string name="location_needs_sms">Send SMS stays off. BFF needs permission to send SMS.</string>
+    <string name="location_needs_location">Location stays off. BFF needs location access.</string>
+    <string name="location_needs_background">Location stays off. BFF needs “Allow all the time” so it can answer while the phone is in a pocket.</string>
+    <string name="history_location_off">Alarm · location off</string>
+    <string name="ready_location_hint">Turn on in Settings › Location.</string>
+    <!-- v3.11.1 · Location switch tells which grant is missing; Settings routes explain themselves -->
+    <string name="location_switch_location">Location</string>
+    <string name="location_switch_sms">Send SMS</string>
+    <string name="location_state_on_short">On</string>
+    <string name="location_missing_background">Off · needs “%1$s”</string>
+    <string name="location_all_the_time">Allow all the time</string>
+    <string name="location_open_settings_description">Android no longer shows this prompt for BFF. On the next screen, open Permissions → %1$s and choose Allow. Return to BFF when finished.</string>
+    <string name="perm_group_sms">SMS</string>
+    <string name="perm_group_location">Location</string>
+
+    <!-- v3.13 · grouped setup, brand help for the SMS step, Ready test, Send SMS sheet -->
+    <string name="setup_group_a_title">Contacts and alerts</string>
+    <string name="setup_group_b_title">Ring on a locked phone</string>
+    <string name="setup_row_contacts">Contacts</string>
+    <string name="setup_row_contacts_sub">who is texting</string>
+    <string name="setup_row_notifications">Notifications</string>
+    <string name="setup_row_notifications_sub">the alarm notice</string>
+    <string name="setup_row_overlay">Display over other apps</string>
+    <string name="setup_row_overlay_sub">alarm screen</string>
+    <string name="setup_row_fullscreen">Full-screen alerts</string>
+    <string name="setup_row_fullscreen_sub">over the lock screen</string>
+    <string name="setup_row_battery">Battery</string>
+    <string name="setup_row_battery_sub">keep BFF awake</string>
+    <string name="setup_row_done">✓</string>
+    <string name="setup_row_denied">Not allowed</string>
+    <string name="setup_sms_info_title">Receive SMS</string>
+    <string name="setup_sms_info_body">BFF works by SMS. Android treats SMS access as sensitive.</string>
+    <string name="setup_sms_fail_title">SMS not allowed yet</string>
+    <string name="setup_sms_fail_body">BFF requires SMS receive to work. Please enable it in Settings.</string>
+    <string name="setup_sms_brand_google">On Pixel, Allow can be greyed out. Then: Settings → Apps → BFF → ⋮ → Allow restricted settings, and come back.</string>
+    <string name="setup_sms_brand_samsung">Tap Allow. If Samsung shows “Restricted setting”: Settings → Apps → BFF → ⋮ → Allow restricted settings, and come back.</string>
+    <string name="setup_sms_brand_motorola">Tap Allow. If Allow is greyed out: Settings → Apps → BFF → ⋮ → Allow restricted settings, and come back.</string>
+    <string name="setup_sms_brand_xiaomi">Tap Allow. If Xiaomi warns about a risky permission, tap Allow anyway. Also: Settings → Apps → Manage apps → BFF → Autostart on.</string>
+    <string name="setup_sms_brand_oneplus">Tap Allow. If blocked: Settings → Apps → BFF → ⋮ → Allow restricted settings. Also allow Auto-launch under Battery.</string>
+    <string name="setup_sms_brand_other">Tap Allow when Android asks. If Allow is greyed out: Settings → Apps → BFF → ⋮ → Allow restricted settings.</string>
+    <string name="setup_continue">CONTINUE</string>
+    <string name="ready_test">TEST</string>
+    <string name="ready_test_title">Test it</string>
+    <string name="ready_test_body">From another phone, send an SMS to this phone with the word %1$s. It rings for %2$d seconds. Add where for the location, once turned on in Settings › Location.</string>
+    <string name="location_sms_sheet">BFF sends back an SMS with the phone location. Allow Android to send SMS.</string>
 </resources>

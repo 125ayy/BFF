@@ -7,10 +7,7 @@ import org.json.JSONObject
 
 object Prefs {
     private const val PREF_NAME = "bff_prefs"
-    private const val KEY_PHONE = "phone_number"
     private const val KEY_PASSWORD = "password"
-    private const val KEY_OWNER_NAME = "owner_name"
-    private const val KEY_OWNER_EMAIL = "owner_email"
     private const val KEY_SIREN_DURATION = "siren_duration"
     private const val KEY_BLACKLIST = "blacklist"
     private const val KEY_SETUP_DONE = "setup_done"
@@ -20,30 +17,32 @@ object Prefs {
     private const val KEY_MATRIX_ALL_ALARM = "matrix_all_alarm"
     private const val KEY_MATRIX_CONTACTS_ALARM = "matrix_contacts_alarm"
     private const val KEY_MATRIX_TRUSTED_ALARM = "matrix_trusted_alarm"
+    private const val KEY_MATRIX_ALL_LOC = "matrix_all_loc"
+    private const val KEY_MATRIX_CONTACTS_LOC = "matrix_contacts_loc"
+    private const val KEY_MATRIX_TRUSTED_LOC = "matrix_trusted_loc"
+    private const val KEY_LOCATION_ENABLED = "location_enabled"
+    private const val KEY_SMS_ENABLED = "sms_enabled"
+    private const val KEY_FINDER_MESSAGE = "finder_message"
 
-    // Matrix values
     const val MATRIX_YES = "YES"
     const val MATRIX_PIN = "PIN_REQUIRED"
     const val MATRIX_NO = "NO"
 
-    private fun prefs(ctx: Context): SharedPreferences =
-        ctx.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
+    const val STATUS_SUCCESS = "Success"
+    const val STATUS_LOCATED = "Located"
+    const val STATUS_BOTH = "Success + Located"
+    const val STATUS_BLOCKED = "Blocked"
 
-    var Context.phoneNumber: String
-        get() = prefs(this).getString(KEY_PHONE, "") ?: ""
-        set(value) { prefs(this).edit().putString(KEY_PHONE, value).apply() }
+    /** Setup/migration marker: 31 = v3.1 wizard seen, 311 = v3.11 location moved to Settings. */
+    /** 313 = v3.13 grouped setup; 311 = v3.11 location out of setup. */
+    const val SETUP_VERSION = 313
 
+    private fun prefs(ctx: Context): SharedPreferences = ctx.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
+
+    /** The activation word. Default BFF. */
     var Context.password: String
         get() = prefs(this).getString(KEY_PASSWORD, "BFF") ?: "BFF"
         set(value) { prefs(this).edit().putString(KEY_PASSWORD, value).apply() }
-
-    var Context.ownerName: String
-        get() = prefs(this).getString(KEY_OWNER_NAME, "") ?: ""
-        set(value) { prefs(this).edit().putString(KEY_OWNER_NAME, value).apply() }
-
-    var Context.ownerEmail: String
-        get() = prefs(this).getString(KEY_OWNER_EMAIL, "") ?: ""
-        set(value) { prefs(this).edit().putString(KEY_OWNER_EMAIL, value).apply() }
 
     var Context.sirenDuration: Int
         get() = prefs(this).getInt(KEY_SIREN_DURATION, 30)
@@ -53,141 +52,121 @@ object Prefs {
         get() = prefs(this).getBoolean(KEY_SETUP_DONE, false)
         set(value) { prefs(this).edit().putBoolean(KEY_SETUP_DONE, value).apply() }
 
-    // PIN — empty means no PIN required beyond "BFF"
+    /** An empty PIN disables PIN-gated commands. */
     var Context.pin: String
         get() = prefs(this).getString(KEY_PIN, "") ?: ""
         set(value) { prefs(this).edit().putString(KEY_PIN, value).apply() }
 
-    // Permission matrix
+    var Context.permissionSetupVersion: Int
+        get() = prefs(this).getInt("permission_setup_version", 0)
+        set(value) { prefs(this).edit().putInt("permission_setup_version", value).apply() }
+
+    /** Settings › Location › "Location" switch. Off by default (v3.11); the Android grants are checked separately. */
+    var Context.locationEnabled: Boolean
+        get() = prefs(this).getBoolean(KEY_LOCATION_ENABLED, false)
+        set(value) { prefs(this).edit().putBoolean(KEY_LOCATION_ENABLED, value).apply() }
+
+    /** Settings › Location › "Send SMS" switch (v3.11.1). Off by default. */
+    var Context.smsEnabled: Boolean
+        get() = prefs(this).getBoolean(KEY_SMS_ENABLED, false)
+        set(value) { prefs(this).edit().putBoolean(KEY_SMS_ENABLED, value).apply() }
+
+    /** Location replies happen only when both switches are on and every grant still holds. The switches never lie. */
+    val Context.locationRepliesOn: Boolean
+        get() = locationEnabled && smsEnabled && LocationPermissions.canReply(this)
+
+    /** Shown on the alarm screen so the finder can reach the owner. */
+    var Context.finderMessage: String
+        get() = prefs(this).getString(KEY_FINDER_MESSAGE, "") ?: ""
+        set(value) { prefs(this).edit().putString(KEY_FINDER_MESSAGE, value).apply() }
+
     var Context.matrixAllAlarm: String
         get() = prefs(this).getString(KEY_MATRIX_ALL_ALARM, MATRIX_PIN) ?: MATRIX_PIN
         set(value) { prefs(this).edit().putString(KEY_MATRIX_ALL_ALARM, value).apply() }
-
     var Context.matrixContactsAlarm: String
         get() = prefs(this).getString(KEY_MATRIX_CONTACTS_ALARM, MATRIX_YES) ?: MATRIX_YES
         set(value) { prefs(this).edit().putString(KEY_MATRIX_CONTACTS_ALARM, value).apply() }
-
     var Context.matrixTrustedAlarm: String
         get() = prefs(this).getString(KEY_MATRIX_TRUSTED_ALARM, MATRIX_YES) ?: MATRIX_YES
         set(value) { prefs(this).edit().putString(KEY_MATRIX_TRUSTED_ALARM, value).apply() }
+    var Context.matrixAllLoc: String
+        get() = prefs(this).getString(KEY_MATRIX_ALL_LOC, MATRIX_NO) ?: MATRIX_NO
+        set(value) { prefs(this).edit().putString(KEY_MATRIX_ALL_LOC, value).apply() }
+    var Context.matrixContactsLoc: String
+        get() = prefs(this).getString(KEY_MATRIX_CONTACTS_LOC, MATRIX_PIN) ?: MATRIX_PIN
+        set(value) { prefs(this).edit().putString(KEY_MATRIX_CONTACTS_LOC, value).apply() }
+    var Context.matrixTrustedLoc: String
+        get() = prefs(this).getString(KEY_MATRIX_TRUSTED_LOC, MATRIX_YES) ?: MATRIX_YES
+        set(value) { prefs(this).edit().putString(KEY_MATRIX_TRUSTED_LOC, value).apply() }
 
-    // Blacklist
-    fun Context.getBlacklist(): Set<String> =
-        prefs(this).getStringSet(KEY_BLACKLIST, emptySet()) ?: emptySet()
+    fun normalizeNumber(number: String): String {
+        val stripped = number.replace(Regex("[^0-9+]"), "")
+        val country = java.util.Locale.getDefault().country
+        return if (country.isNotEmpty()) android.telephony.PhoneNumberUtils.formatNumberToE164(number, country) ?: stripped else stripped
+    }
 
+    /** Gates and their PIN become visible as one preferences update. */
+    fun Context.savePrivacy(pinValue: String, gates: Map<String, String>) {
+        prefs(this).edit().apply {
+            putString(KEY_PIN, pinValue)
+            gates.forEach { (key, value) -> putString(key, value) }
+        }.apply()
+    }
+
+    fun Context.privacyGates(): Map<String, String> = linkedMapOf(
+        KEY_MATRIX_ALL_ALARM to matrixAllAlarm, KEY_MATRIX_ALL_LOC to matrixAllLoc,
+        KEY_MATRIX_CONTACTS_ALARM to matrixContactsAlarm, KEY_MATRIX_CONTACTS_LOC to matrixContactsLoc,
+        KEY_MATRIX_TRUSTED_ALARM to matrixTrustedAlarm, KEY_MATRIX_TRUSTED_LOC to matrixTrustedLoc)
+
+
+    fun Context.getBlacklist(): List<String> = (prefs(this).getStringSet(KEY_BLACKLIST, emptySet()) ?: emptySet()).sorted()
     fun Context.addToBlacklist(number: String) {
-        val current = getBlacklist().toMutableSet()
-        current.add(number)
-        prefs(this).edit().putStringSet(KEY_BLACKLIST, current).apply()
+        val cur = getBlacklist().toMutableSet(); cur.add(number); prefs(this).edit().putStringSet(KEY_BLACKLIST, cur).apply()
     }
-
     fun Context.removeFromBlacklist(number: String) {
-        val current = getBlacklist().toMutableSet()
-        current.remove(number)
-        prefs(this).edit().putStringSet(KEY_BLACKLIST, current).apply()
+        val cur = getBlacklist().toMutableSet(); cur.remove(number); prefs(this).edit().putStringSet(KEY_BLACKLIST, cur).apply()
     }
+    fun Context.isBlacklisted(number: String): Boolean { val n = normalizeNumber(number); return getBlacklist().any { normalizeNumber(it) == n } }
 
-    fun Context.isBlacklisted(number: String): Boolean {
-        val normalized = number.replace(Regex("[^0-9+]"), "")
-        return getBlacklist().any { it.replace(Regex("[^0-9+]"), "") == normalized }
-    }
+    data class HistoryEntry(val sender: String, val name: String, val status: String, val timestamp: Long)
 
-    // History — last 10 entries as JSON array
     fun Context.addHistoryEntry(sender: String, name: String, status: String) {
-        val arr = try {
-            JSONArray(prefs(this).getString(KEY_HISTORY, "[]") ?: "[]")
-        } catch (e: Exception) { JSONArray() }
-
-        val entry = JSONObject().apply {
-            put("sender", sender)
-            put("name", name)
-            put("status", status)
-            put("timestamp", System.currentTimeMillis())
-        }
-        arr.put(entry)
-
-        // Keep only last 10
+        val arr = try { JSONArray(prefs(this).getString(KEY_HISTORY, "[]") ?: "[]") } catch (e: Exception) { JSONArray() }
+        arr.put(JSONObject().apply { put("sender", sender); put("name", name); put("status", status); put("timestamp", System.currentTimeMillis()) })
         val trimmed = JSONArray()
-        val start = maxOf(0, arr.length() - 10)
-        for (i in start until arr.length()) trimmed.put(arr.get(i))
-
+        for (i in maxOf(0, arr.length() - 10) until arr.length()) trimmed.put(arr.get(i))
         prefs(this).edit().putString(KEY_HISTORY, trimmed.toString()).apply()
     }
 
-    data class HistoryEntry(
-        val sender: String,
-        val name: String,
-        val status: String,
-        val timestamp: Long
-    )
-
     fun Context.getHistory(): List<HistoryEntry> {
-        val arr = try {
-            JSONArray(prefs(this).getString(KEY_HISTORY, "[]") ?: "[]")
-        } catch (e: Exception) { return emptyList() }
+        val arr = try { JSONArray(prefs(this).getString(KEY_HISTORY, "[]") ?: "[]") } catch (e: Exception) { return emptyList() }
         val list = mutableListOf<HistoryEntry>()
         for (i in arr.length() - 1 downTo 0) {
-            val obj = arr.getJSONObject(i)
-            list.add(HistoryEntry(
-                sender = obj.optString("sender", ""),
-                name = obj.optString("name", "Unknown"),
-                status = obj.optString("status", "Success"),
-                timestamp = obj.optLong("timestamp", 0L)
-            ))
+            val o = arr.getJSONObject(i)
+            list.add(HistoryEntry(o.optString("sender", ""), o.optString("name", "Unknown"), o.optString("status", STATUS_SUCCESS), o.optLong("timestamp", 0L)))
         }
         return list
     }
 
-    // Trusted contacts — JSON array of {name, number}
     data class TrustedContact(val name: String, val number: String)
 
     fun Context.getTrustedContacts(): List<TrustedContact> {
-        val arr = try {
-            JSONArray(prefs(this).getString(KEY_TRUSTED_CONTACTS, "[]") ?: "[]")
-        } catch (e: Exception) { return emptyList() }
+        val arr = try { JSONArray(prefs(this).getString(KEY_TRUSTED_CONTACTS, "[]") ?: "[]") } catch (e: Exception) { return emptyList() }
         val list = mutableListOf<TrustedContact>()
-        for (i in 0 until arr.length()) {
-            val obj = arr.getJSONObject(i)
-            list.add(TrustedContact(
-                name = obj.optString("name", ""),
-                number = obj.optString("number", "")
-            ))
-        }
+        for (i in 0 until arr.length()) { val o = arr.getJSONObject(i); list.add(TrustedContact(o.optString("name", ""), o.optString("number", ""))) }
         return list
     }
-
     fun Context.addTrustedContact(name: String, number: String) {
-        val arr = try {
-            JSONArray(prefs(this).getString(KEY_TRUSTED_CONTACTS, "[]") ?: "[]")
-        } catch (e: Exception) { JSONArray() }
-        // Avoid duplicates
-        for (i in 0 until arr.length()) {
-            if (arr.getJSONObject(i).optString("number") == number) return
-        }
+        val arr = try { JSONArray(prefs(this).getString(KEY_TRUSTED_CONTACTS, "[]") ?: "[]") } catch (e: Exception) { JSONArray() }
+        for (i in 0 until arr.length()) if (normalizeNumber(arr.getJSONObject(i).optString("number")) == normalizeNumber(number)) return
         arr.put(JSONObject().apply { put("name", name); put("number", number) })
         prefs(this).edit().putString(KEY_TRUSTED_CONTACTS, arr.toString()).apply()
     }
-
     fun Context.removeTrustedContact(number: String) {
-        val arr = try {
-            JSONArray(prefs(this).getString(KEY_TRUSTED_CONTACTS, "[]") ?: "[]")
-        } catch (e: Exception) { JSONArray() }
-        val newArr = JSONArray()
-        for (i in 0 until arr.length()) {
-            val obj = arr.getJSONObject(i)
-            if (obj.optString("number") != number) newArr.put(obj)
-        }
-        prefs(this).edit().putString(KEY_TRUSTED_CONTACTS, newArr.toString()).apply()
+        val arr = try { JSONArray(prefs(this).getString(KEY_TRUSTED_CONTACTS, "[]") ?: "[]") } catch (e: Exception) { JSONArray() }
+        val out = JSONArray()
+        for (i in 0 until arr.length()) { val o = arr.getJSONObject(i); if (o.optString("number") != number) out.put(o) }
+        prefs(this).edit().putString(KEY_TRUSTED_CONTACTS, out.toString()).apply()
     }
-
-    fun Context.resetToDefaults() {
-        val phone = phoneNumber
-        val pass = password
-        val done = setupDone
-        prefs(this).edit().clear().apply()
-        phoneNumber = phone
-        password = pass
-        setupDone = done
-        sirenDuration = 30
-    }
+    fun Context.isTrusted(number: String): Boolean { val n = normalizeNumber(number); return getTrustedContacts().any { normalizeNumber(it.number) == n } }
 }

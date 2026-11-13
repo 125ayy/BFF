@@ -1,284 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:background="#000000"
-    android:padding="24dp">
-
-    <!-- Header -->
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="📱"
-        android:textSize="56sp"
-        android:gravity="center"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="16dp"
-        android:layout_marginBottom="8dp" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="BestFoneFinder"
-        android:textSize="24sp"
-        android:textStyle="bold"
-        android:textColor="#FFFFFF"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginBottom="4dp" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Grant permissions to get started"
-        android:textSize="13sp"
-        android:textColor="#777777"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginBottom="28dp" />
-
-    <!-- Permission rows -->
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:background="@drawable/card_bg"
-        android:padding="8dp"
-        android:layout_marginBottom="16dp">
-
-        <!-- SMS -->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="64dp"
-            android:orientation="horizontal"
-            android:gravity="center_vertical"
-            android:paddingStart="12dp"
-            android:paddingEnd="12dp">
-
-            <FrameLayout
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:background="@drawable/icon_circle_green"
-                android:layout_marginEnd="14dp">
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:text="📩"
-                    android:textSize="18sp" />
-            </FrameLayout>
-
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:orientation="vertical">
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="SMS Access"
-                    android:textColor="#FFFFFF"
-                    android:textSize="14sp"
-                    android:textStyle="bold" />
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Required — to detect the activation message"
-                    android:textColor="#777777"
-                    android:textSize="12sp" />
-            </LinearLayout>
-
-            <ImageView
-                android:id="@+id/imgSmsStatus"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:src="@drawable/ic_circle_empty" />
-
+    android:layout_width="match_parent" android:layout_height="match_parent"
+    android:orientation="vertical" android:background="#000000">
+  <ScrollView android:layout_width="match_parent" android:layout_height="0dp" android:layout_weight="1" android:fillViewport="true">
+    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:orientation="vertical" android:paddingStart="24dp" android:paddingEnd="24dp" android:paddingTop="8dp" android:paddingBottom="8dp">
+        <ImageView android:layout_width="72dp" android:layout_height="72dp"
+            android:src="@drawable/ic_bff_mark" android:contentDescription="@null"
+            android:layout_gravity="center_horizontal" android:layout_marginTop="16dp" android:layout_marginBottom="16dp" />
+        <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:text="@string/setup_heading" android:textColor="#FFFFFF" android:textSize="26sp"
+            android:textStyle="bold" android:gravity="center" />
+        <TextView android:id="@+id/tvSetupProgress" android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:textColor="#00C853" android:gravity="center" android:layout_marginTop="8dp" android:layout_marginBottom="20dp" />
+        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:orientation="vertical" android:background="@drawable/card_bg" android:padding="20dp">
+            <TextView android:id="@+id/tvSetupTitle" android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:textColor="#FFFFFF" android:textStyle="bold" android:textSize="22sp" android:accessibilityLiveRegion="polite" />
+            <TextView android:id="@+id/tvSetupDescription" android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:textColor="#CCCCCC" android:textSize="16sp" android:layout_marginTop="12dp" android:lineSpacingExtra="4dp" android:visibility="gone" />
+            <LinearLayout android:id="@+id/rowsContainer" android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:orientation="vertical" android:layout_marginTop="8dp" />
+            <TextView android:id="@+id/tvSetupBrand" android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:textColor="#FFFFFF" android:textSize="15sp" android:layout_marginTop="16dp" android:lineSpacingExtra="4dp"
+                android:accessibilityLiveRegion="polite" android:visibility="gone" />
         </LinearLayout>
-
-        <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#2A2A2A" />
-
-        <!-- Contacts -->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="64dp"
-            android:orientation="horizontal"
-            android:gravity="center_vertical"
-            android:paddingStart="12dp"
-            android:paddingEnd="12dp">
-
-            <FrameLayout
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:background="@drawable/icon_circle_green"
-                android:layout_marginEnd="14dp">
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:text="👥"
-                    android:textSize="18sp" />
-            </FrameLayout>
-
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:orientation="vertical">
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Contacts"
-                    android:textColor="#FFFFFF"
-                    android:textSize="14sp"
-                    android:textStyle="bold" />
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="To identify who&#39;s finding your phone"
-                    android:textColor="#777777"
-                    android:textSize="12sp" />
-            </LinearLayout>
-
-            <ImageView
-                android:id="@+id/imgContactsStatus"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:src="@drawable/ic_circle_empty" />
-
-        </LinearLayout>
-
-        <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#2A2A2A" />
-
-        <!-- Notifications -->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="64dp"
-            android:orientation="horizontal"
-            android:gravity="center_vertical"
-            android:paddingStart="12dp"
-            android:paddingEnd="12dp">
-
-            <FrameLayout
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:background="@drawable/icon_circle_green"
-                android:layout_marginEnd="14dp">
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:text="🔔"
-                    android:textSize="18sp" />
-            </FrameLayout>
-
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:orientation="vertical">
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Notifications"
-                    android:textColor="#FFFFFF"
-                    android:textSize="14sp"
-                    android:textStyle="bold" />
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="To alert you when phone is found"
-                    android:textColor="#777777"
-                    android:textSize="12sp" />
-            </LinearLayout>
-
-            <ImageView
-                android:id="@+id/imgNotifStatus"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:src="@drawable/ic_circle_empty" />
-
-        </LinearLayout>
-
-        <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#2A2A2A" />
-
-        <!-- Audio Control -->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="64dp"
-            android:orientation="horizontal"
-            android:gravity="center_vertical"
-            android:paddingStart="12dp"
-            android:paddingEnd="12dp">
-
-            <FrameLayout
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:background="@drawable/icon_circle_green"
-                android:layout_marginEnd="14dp">
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:text="🔊"
-                    android:textSize="18sp" />
-            </FrameLayout>
-
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:orientation="vertical">
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Audio Control"
-                    android:textColor="#FFFFFF"
-                    android:textSize="14sp"
-                    android:textStyle="bold" />
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="To override silent mode"
-                    android:textColor="#777777"
-                    android:textSize="12sp" />
-            </LinearLayout>
-
-            <ImageView
-                android:id="@+id/imgAudioStatus"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:src="@drawable/ic_circle_empty" />
-
-        </LinearLayout>
-
     </LinearLayout>
-
-    <!-- Error banner — shown when a required permission is denied -->
-    <TextView
-        android:id="@+id/tvPermissionError"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@drawable/card_bg"
-        android:padding="16dp"
-        android:textColor="#FF5252"
-        android:textSize="13sp"
-        android:lineSpacingExtra="3dp"
-        android:layout_marginBottom="16dp"
-        android:visibility="gone" />
-
-    <!-- Spacer -->
-    <View android:layout_width="match_parent" android:layout_height="0dp" android:layout_weight="1" />
-
-    <!-- Grant Permissions button -->
-    <Button
-        android:id="@+id/btnContinue"
-        android:layout_width="match_parent"
-        android:layout_height="52dp"
-        android:text="GRANT PERMISSIONS"
-        android:textColor="#000000"
-        android:background="@drawable/btn_green"
-        android:textStyle="bold"
-        android:textSize="15sp"
-        android:stateListAnimator="@null" />
-
+  </ScrollView>
+  <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical"
+      android:paddingStart="24dp" android:paddingEnd="24dp" android:paddingTop="12dp" android:paddingBottom="24dp">
+    <Button android:id="@+id/btnContinue" style="@style/PrimaryButton" android:text="@string/setup_continue" />
+    <Button android:id="@+id/btnSecondary" style="@style/SecondaryButton" android:layout_marginTop="12dp" android:textColor="#FFFFFF"
+        android:text="@string/setup_open_settings" android:visibility="gone" />
+  </LinearLayout>
 </LinearLayout>

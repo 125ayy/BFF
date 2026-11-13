@@ -8,6 +8,26 @@
         <item name="colorOnSecondary">@color/black</item>
         <item name="android:colorBackground">@color/black</item>
         <item name="android:textColorPrimary">@color/white</item>
+        <item name="android:textColorHint">@color/text_hint</item>
         <item name="android:windowBackground">@color/black</item>
+        <!-- The Material theme inflates every <Button> as a MaterialButton, which ignores
+             android:background and paints colorPrimary (green) over it. That is why dark
+             secondary buttons rendered green. Route all buttons through a style that keeps
+             the declared drawable instead. -->
+        <item name="materialButtonStyle">@style/Widget.BFF.Button</item>
+        <item name="buttonStyle">@style/Widget.BFF.Button</item>
+    </style>
+
+    <style name="Widget.BFF.Button" parent="Widget.MaterialComponents.Button">
+        <item name="backgroundTint">@null</item>
+        <item name="android:insetTop">0dp</item>
+        <item name="android:insetBottom">0dp</item>
+        <item name="android:insetLeft">0dp</item>
+        <item name="android:insetRight">0dp</item>
+        <item name="android:minHeight">48dp</item>
+        <item name="android:stateListAnimator">@null</item>
+        <item name="rippleColor">#33FFFFFF</item>
+        <item name="iconPadding">0dp</item>
+        <item name="android:letterSpacing">0.02</item>
     </style>
 </resources>

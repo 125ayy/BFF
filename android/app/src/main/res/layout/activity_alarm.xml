@@ -1,12 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/alarmRoot"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     android:background="#00C853"
+    android:fillViewport="true">
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
     android:gravity="center"
-    android:padding="32dp">
+    android:padding="24dp">
 
     <!-- Bell in dark semi-transparent circle -->
     <FrameLayout
@@ -26,10 +30,11 @@
     </FrameLayout>
 
     <TextView
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:gravity="center"
         android:text="ALARM ACTIVE"
-        android:textSize="36sp"
+        android:textSize="32sp"
         android:textStyle="bold"
         android:textColor="#000000"
         android:letterSpacing="0.05"
@@ -37,23 +42,31 @@
 
     <TextView
         android:id="@+id/tvTriggeredBy"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Triggered by Unknown"
         android:textSize="16sp"
         android:textColor="#1A1A1A"
-        android:layout_marginBottom="48dp" />
+        android:textColorLink="#000000"
+        android:gravity="center"
+        android:autoLink="email|phone|web"
+        android:layout_marginBottom="32dp" />
 
     <Button
         android:id="@+id/btnFound"
-        android:layout_width="240dp"
-        android:layout_height="64dp"
+        style="@style/Widget.BFF.Button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:minHeight="64dp"
+        android:paddingStart="24dp"
+        android:paddingEnd="24dp"
+        android:paddingTop="14dp"
+        android:paddingBottom="14dp"
         android:text="FOUND!"
         android:textColor="#000000"
         android:background="@drawable/btn_white_rounded"
         android:textStyle="bold"
         android:textSize="20sp"
-        android:stateListAnimator="@null"
         android:layout_marginBottom="16dp" />
 
     <TextView
@@ -64,3 +77,4 @@
         android:textColor="#1A1A1A" />
 
 </LinearLayout>
+</ScrollView>

@@ -1,39 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- BFF launcher icon v3 (2026-11-07): ring 30 dp inside the 66 dp safe zone, "BFF" in Nunito Black converted to paths, smile. Source: Paper file bff-v2.1 › Icon › I0 final. -->
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
     android:width="108dp"
     android:height="108dp"
     android:viewportWidth="108"
     android:viewportHeight="108">
 
-    <!-- Green circle outline -->
+    <!-- Ring -->
     <path
         android:strokeColor="#00C853"
-        android:strokeWidth="5"
+        android:strokeWidth="4"
         android:fillColor="#00000000"
-        android:pathData="M54,20 A34,34 0 0,1 88,54 A34,34 0 0,1 54,88 A34,34 0 0,1 20,54 A34,34 0 0,1 54,20 Z" />
+        android:pathData="M24,54 A30,30 0 1,1 84,54 A30,30 0 1,1 24,54 Z" />
 
-    <!-- BFF text rendered as paths — B -->
+    <!-- BFF · Nunito Black, 21.6 dp, outlined -->
     <path
         android:fillColor="#00C853"
-        android:pathData="M30,40 L30,68 L37,68 Q44,68 44,61 Q44,57 41,55.5 Q44,54 44,50 Q44,40 37,40 Z
-                          M36,43 Q41,43 41,49 Q41,54 36,54 L33,54 L33,43 Z
-                          M36,57 Q41,57 41,62 Q41,65 36,65 L33,65 L33,57 Z" />
+        android:pathData="M37.03 55.51Q36.03 55.51 35.5 54.98Q34.97 54.45 34.97 53.45V42.35Q34.97 41.35 35.5 40.82Q36.03 40.29 37.03 40.29H42.31Q43.95 40.29 45.1 40.77Q46.25 41.25 46.86 42.14Q47.47 43.02 47.47 44.22Q47.47 45.57 46.71 46.52Q45.94 47.47 44.63 47.8V47.45Q46.18 47.75 47.03 48.71Q47.87 49.68 47.87 51.19Q47.87 53.19 46.44 54.35Q45.01 55.51 42.52 55.51ZM38.76 52.6H41.98Q43.1 52.6 43.6 52.18Q44.11 51.76 44.11 50.92Q44.11 50.07 43.6 49.66Q43.1 49.24 41.98 49.24H38.76ZM38.76 46.33H41.59Q42.68 46.33 43.19 45.95Q43.69 45.56 43.69 44.76Q43.69 43.95 43.19 43.57Q42.68 43.19 41.59 43.19H38.76Z M51.92 55.71Q50.96 55.71 50.44 55.18Q49.92 54.65 49.92 53.65V42.35Q49.92 41.35 50.45 40.82Q50.98 40.29 51.98 40.29H59.19Q59.96 40.29 60.35 40.68Q60.74 41.07 60.74 41.81Q60.74 42.55 60.35 42.95Q59.96 43.34 59.19 43.34H53.88V46.42H58.71Q59.47 46.42 59.86 46.81Q60.26 47.2 60.26 47.94Q60.26 48.68 59.86 49.08Q59.47 49.47 58.71 49.47H53.88V53.65Q53.88 55.71 51.92 55.71Z M64.21 55.71Q63.25 55.71 62.73 55.18Q62.21 54.65 62.21 53.65V42.35Q62.21 41.35 62.74 40.82Q63.27 40.29 64.27 40.29H71.48Q72.25 40.29 72.64 40.68Q73.03 41.07 73.03 41.81Q73.03 42.55 72.64 42.95Q72.25 43.34 71.48 43.34H66.17V46.42H71Q71.76 46.42 72.15 46.81Q72.55 47.2 72.55 47.94Q72.55 48.68 72.15 49.08Q71.76 49.47 71 49.47H66.17V53.65Q66.17 55.71 64.21 55.71Z" />
 
-    <!-- F (first) -->
-    <path
-        android:fillColor="#00C853"
-        android:pathData="M48,40 L48,68 L51,68 L51,56 L59,56 L59,53 L51,53 L51,43 L60,43 L60,40 Z" />
-
-    <!-- F (second) -->
-    <path
-        android:fillColor="#00C853"
-        android:pathData="M63,40 L63,68 L66,68 L66,56 L74,56 L74,53 L66,53 L66,43 L75,43 L75,40 Z" />
-
-    <!-- Smile arc below text -->
+    <!-- Smile -->
     <path
         android:strokeColor="#00C853"
-        android:strokeWidth="3"
+        android:strokeWidth="3.6"
+        android:strokeLineCap="round"
         android:fillColor="#00000000"
-        android:pathData="M38,74 Q54,84 70,74" />
+        android:pathData="M41,67 Q54,76 67,67" />
 
 </vector>

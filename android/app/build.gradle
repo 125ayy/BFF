@@ -5,14 +5,14 @@ plugins {
 
 android {
     namespace 'com.fcapps.bff'
-    compileSdk 34
+    compileSdk 36
 
     defaultConfig {
         applicationId "com.fcapps.bff"
         minSdk 26
-        targetSdk 28
-        versionCode 7
-        versionName "2.1"
+        targetSdk 36
+        versionCode 13
+        versionName "3.13"
     }
 
     def buildDate = new Date().format('yyyyMMdd')
@@ -37,6 +37,16 @@ android {
     kotlinOptions {
         jvmTarget = '17'
     }
+    testOptions {
+        unitTests.includeAndroidResources = true
+        unitTests.all { test ->
+            test.systemProperty 'screens.dir', "${project.buildDir}/reports/screens"
+            test.systemProperty 'robolectric.graphicsMode', 'NATIVE'
+        }
+    }
+    buildFeatures {
+        buildConfig true
+    }
 }
 
 dependencies {
@@ -44,4 +54,8 @@ dependencies {
     implementation 'androidx.appcompat:appcompat:1.6.1'
     implementation 'com.google.android.material:material:1.11.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
+    implementation 'androidx.activity:activity-ktx:1.10.1'
+    testImplementation 'junit:junit:4.13.2'
+    testImplementation 'org.robolectric:robolectric:4.14.1'
+    testImplementation 'androidx.test:core:1.6.1'
 }

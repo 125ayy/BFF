@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="#1A1A1A"
+    android:padding="20dp">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Share BFF"
+        android:textSize="15sp"
+        android:textStyle="bold"
+        android:textColor="#FFFFFF"
+        android:layout_marginBottom="12dp" />
+
+    <LinearLayout android:id="@+id/optWhatsApp" style="@style/ShareRow">
+        <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:orientation="vertical">
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="WhatsApp" android:textColor="#FFFFFF" android:textSize="15sp" android:textStyle="bold" />
+            <TextView android:id="@+id/tvWhatsAppSub" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Sends the app (APK) + link" android:textColor="#9E9E9E" android:textSize="12sp" />
+        </LinearLayout>
+        <TextView style="@style/MenuChevron" />
+    </LinearLayout>
+
+    <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#2A2A2A" />
+
+    <LinearLayout android:id="@+id/optOther" style="@style/ShareRow">
+        <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:orientation="vertical">
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Other apps" android:textColor="#FFFFFF" android:textSize="15sp" android:textStyle="bold" />
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Link only · bestfonefinder.cloud" android:textColor="#9E9E9E" android:textSize="12sp" />
+        </LinearLayout>
+        <TextView style="@style/MenuChevron" />
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/btnCancel"
+        style="@style/SecondaryButton"
+        android:textColor="#FFFFFF"
+        android:layout_marginTop="12dp"
+        android:text="Cancel" />
+
+</LinearLayout>

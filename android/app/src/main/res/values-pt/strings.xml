@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="share_text">Aqui está o BFF, o app para achar seu celular! https://bestfonefinder.cloud</string>
+    <string name="location_disclosure">O BestFoneFinder coleta dados de localização para enviar a posição deste celular por SMS quando alguém envia o comando BFF where, mesmo quando o app está fechado ou não está em uso. A posição é enviada apenas conforme suas regras de privacidade.</string>
+    <string name="setup_heading">Configurar o BFF</string>
+    <string name="setup_progress">Etapa %1$d de %2$d</string>
+    <string name="setup_background_title">Permitir localização com o BFF fechado</string>
+    <string name="setup_background_description">Opcional. Na próxima tela, abra Permissões → Localização e escolha “%1$s”. Assim o BFF pode responder a um SMS de localização autorizado com o app fechado. Você pode manter a localização aproximada. Volte ao BFF ao terminar. Pular desativa as respostas de localização.</string>
+    <string name="setup_retry">Tentar novamente</string>
+    <string name="setup_waiting">Aguardando sua escolha…</string>
+    <string name="setup_open_settings">Abrir Configurações</string>
+    <string name="setup_finish">Continuar</string>
+    <string name="permissions_settings">Permissões</string>
+    <string name="location_waiting">BFF: buscando a localização. Uma atualização final será enviada.</string>
+    <string name="location_failed">BFF: não foi possível obter uma localização recente. Verifique se os serviços de localização estão ativados e tente novamente.</string>
+    <string name="location_first">BFF: localização recente %1$s (±%2$d m; obtida há %3$d segundos).</string>
+    <string name="location_final">BFF: atualização final de localização %1$s (±%2$d m; obtida há %3$d segundos).</string>
+    <string name="location_start_failed">O BFF não conseguiu iniciar a localização. Abra o BFF para revisar as permissões.</string>
+    <string name="history_location_requested">Localização solicitada</string>
+    <string name="history_location_failed">Falha na localização</string>
+    <string name="history_sms_queued">SMS na fila</string>
+    <string name="history_sms_sent">SMS enviado</string>
+    <string name="history_sms_failed">Falha no SMS</string>
+    <string name="pin_required">Defina um PIN de 4 a 8 dígitos antes de ativar uma regra com PIN.</string>
+    <string name="share_split_link">Compartilhando o link de download desta instalação.</string>
+    <string name="alarm_recovery_channel">Recuperação de alarme BFF</string>
+    <string name="alarm_recovery_message">Alguém está procurando este celular. Toque para iniciar o alarme.</string>
+    <string name="alarm_message">Alguém está procurando este celular. Toque em ACHEI para parar.</string>
+    <string name="app_version">Versão %1$s</string>
+
+    <!-- v3.11: Localização nas Configurações -->
+    <string name="location_settings">Localização</string>
+    <string name="location_state_on">Ligado · responde a “BFF where”</string>
+    <string name="location_state_off">Desligado</string>
+    <string name="location_not_now">Agora não</string>
+    <string name="location_needs_sms">Enviar SMS continua desligado. O BFF precisa de permissão para enviar SMS.</string>
+    <string name="location_needs_location">Localização continua desligada. O BFF precisa de acesso à localização.</string>
+    <string name="location_needs_background">Localização continua desligada. O BFF precisa de “Permitir o tempo todo” para responder com o celular no bolso.</string>
+    <string name="history_location_off">Alarme · localização desligada</string>
+    <string name="ready_location_hint">Ative em Configurações › Localização.</string>
+    <string name="location_switch_location">Localização</string>
+    <string name="location_switch_sms">Enviar SMS</string>
+    <string name="location_state_on_short">Ligado</string>
+    <string name="location_missing_background">Desligado · falta “%1$s”</string>
+    <string name="location_all_the_time">Permitir o tempo todo</string>
+    <string name="location_open_settings_description">O Android não mostra mais este pedido para o BFF. Na próxima tela, abra Permissões → %1$s e escolha Permitir. Volte ao BFF ao terminar.</string>
+    <string name="perm_group_sms">SMS</string>
+    <string name="perm_group_location">Localização</string>
+
+    <!-- v3.13 · grouped setup, brand help for the SMS step, Ready test, Send SMS sheet -->
+    <string name="setup_group_a_title">Contatos e alertas</string>
+    <string name="setup_group_b_title">Tocar com o celular bloqueado</string>
+    <string name="setup_row_contacts">Contatos</string>
+    <string name="setup_row_contacts_sub">quem está mandando SMS</string>
+    <string name="setup_row_notifications">Notificações</string>
+    <string name="setup_row_notifications_sub">o aviso do alarme</string>
+    <string name="setup_row_overlay">Exibir sobre outros apps</string>
+    <string name="setup_row_overlay_sub">tela do alarme</string>
+    <string name="setup_row_fullscreen">Alertas em tela cheia</string>
+    <string name="setup_row_fullscreen_sub">sobre a tela de bloqueio</string>
+    <string name="setup_row_battery">Bateria</string>
+    <string name="setup_row_battery_sub">manter o BFF acordado</string>
+    <string name="setup_row_done">✓</string>
+    <string name="setup_row_denied">Não permitido</string>
+    <string name="setup_sms_info_title">Receber SMS</string>
+    <string name="setup_sms_info_body">O BFF funciona por SMS. O Android trata o acesso a SMS como sensível.</string>
+    <string name="setup_sms_fail_title">SMS ainda não permitido</string>
+    <string name="setup_sms_fail_body">O BFF precisa receber SMS para funcionar. Ative em Configurações.</string>
+    <string name="setup_sms_brand_google">No Pixel, o botão Permitir pode aparecer desativado. Então: Configurações → Apps → BFF → ⋮ → Permitir configurações restritas, e volte.</string>
+    <string name="setup_sms_brand_samsung">Toque em Permitir. Se a Samsung mostrar “Configuração restrita”: Configurações → Apps → BFF → ⋮ → Permitir configurações restritas, e volte.</string>
+    <string name="setup_sms_brand_motorola">Toque em Permitir. Se Permitir aparecer desativado: Configurações → Apps → BFF → ⋮ → Permitir configurações restritas, e volte.</string>
+    <string name="setup_sms_brand_xiaomi">Toque em Permitir. Se a Xiaomi avisar sobre permissão de risco, toque em Permitir mesmo assim. Também: Configurações → Apps → Gerenciar apps → BFF → Início automático ligado.</string>
+    <string name="setup_sms_brand_oneplus">Toque em Permitir. Se bloqueado: Configurações → Apps → BFF → ⋮ → Permitir configurações restritas. Também permita Início automático em Bateria.</string>
+    <string name="setup_sms_brand_other">Toque em Permitir quando o Android pedir. Se Permitir aparecer desativado: Configurações → Apps → BFF → ⋮ → Permitir configurações restritas.</string>
+    <string name="setup_continue">CONTINUAR</string>
+    <string name="ready_test">TESTAR</string>
+    <string name="ready_test_title">Teste</string>
+    <string name="ready_test_body">De outro celular, envie um SMS para este celular com a palavra %1$s. Ele toca por %2$d segundos. Acrescente where para a localização, depois de ativar em Configurações › Localização.</string>
+    <string name="location_sms_sheet">O BFF responde com um SMS com a localização do celular. Permita que o Android envie SMS.</string>
+</resources>

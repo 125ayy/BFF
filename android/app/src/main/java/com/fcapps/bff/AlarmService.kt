@@ -12,7 +12,6 @@ import android.os.PowerManager
 import android.os.VibrationEffect
 import android.os.Vibrator
 import android.os.VibratorManager
-import androidx.core.app.NotificationCompat
 import com.fcapps.bff.Prefs.sirenDuration
 
 class AlarmService : Service() {
@@ -21,8 +20,9 @@ class AlarmService : Service() {
         const val ACTION_STOP = "com.fcapps.bff.ACTION_STOP_ALARM"
         const val EXTRA_SENDER_NAME = "sender_name"
         const val EXTRA_SENDER_NUMBER = "sender_number"
-        private const val CHANNEL_ID = "bff_alarm_channel"
-        private const val NOTIF_ID = 1001
+        private const val NOTIF_ID = Notifier.ID_ALARM
+        @Volatile var running = false
+            private set
     }
 
     private val siren = SirenPlayer()
@@ -38,36 +38,49 @@ class AlarmService : Service() {
 
     override fun onCreate() {
         super.onCreate()
-        createNotificationChannel()
+        Notifier.ensureChannels(this)
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         if (intent?.action == ACTION_STOP) {
             stopAlarm()
+            getSystemService(NotificationManager::class.java).cancel(Notifier.ID_ALARM_FALLBACK)
             stopSelf()
             return START_NOT_STICKY
         }
 
+        if (running) return START_NOT_STICKY   // receiver and activity may both ask; keep the first timer
         senderName = intent?.getStringExtra(EXTRA_SENDER_NAME) ?: ""
         senderNumber = intent?.getStringExtra(EXTRA_SENDER_NUMBER) ?: ""
 
         // Must call startForeground immediately (within 5s on Android 8+)
-        startForeground(NOTIF_ID, buildNotification())
-        acquireWakeLock()
-        startAlarm()
+        try {
+            startForeground(NOTIF_ID, buildNotification())
+            running = true
+            getSystemService(NotificationManager::class.java).cancel(Notifier.ID_ALARM_FALLBACK)
+            acquireWakeLock()
+            startAlarm()
+        } catch (e: RuntimeException) {
+            android.util.Log.w("BFF", "Alarm could not start", e)
+            stopAlarm()
+            runCatching { getSystemService(NotificationManager::class.java).notify(Notifier.ID_ALARM_FALLBACK,
+                Notifier.alarm(this, senderName, senderNumber, fallback = true)) }
+            stopSelf()
+            return START_NOT_STICKY
+        }
 
         val duration = sirenDuration * 1000L
         stopRunnable = Runnable { stopAlarm(); stopSelf() }
         handler.postDelayed(stopRunnable!!, duration)
 
-        return START_STICKY
+        return START_NOT_STICKY
     }
 
     private fun acquireWakeLock() {
         val pm = getSystemService(Context.POWER_SERVICE) as PowerManager
         @Suppress("DEPRECATION")
         wakeLock = pm.newWakeLock(
-            PowerManager.PARTIAL_WAKE_LOCK or PowerManager.ACQUIRE_CAUSES_WAKEUP,
+            PowerManager.PARTIAL_WAKE_LOCK,
             "bff:alarm"
         )
         wakeLock?.acquire(sirenDuration * 1000L + 5000L)
@@ -100,15 +113,15 @@ class AlarmService : Service() {
             }
         }
 
-        // Show AlarmActivity over the lock screen via full-screen notification intent
-        val nm = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-        nm.notify(NOTIF_ID, buildNotification())
     }
 
     private fun stopAlarm() {
+        running = false
         stopRunnable?.let { handler.removeCallbacks(it) }
+        stopRunnable = null
         siren.stop()
         audioManager?.setStreamVolume(AudioManager.STREAM_ALARM, originalVolume, 0)
+        audioManager = null
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
             (getSystemService(Context.VIBRATOR_MANAGER_SERVICE) as VibratorManager).defaultVibrator.cancel()
         } else {
@@ -116,6 +129,8 @@ class AlarmService : Service() {
             (getSystemService(Context.VIBRATOR_SERVICE) as Vibrator).cancel()
         }
         wakeLock?.let { if (it.isHeld) it.release() }
+        wakeLock = null
+        stopForeground(STOP_FOREGROUND_REMOVE)
     }
 
     override fun onDestroy() {
@@ -123,49 +138,6 @@ class AlarmService : Service() {
         super.onDestroy()
     }
 
-    private fun createNotificationChannel() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val channel = NotificationChannel(
-                CHANNEL_ID,
-                "BFF Alarm",
-                NotificationManager.IMPORTANCE_HIGH
-            ).apply {
-                description = "BestFoneFinder alarm"
-                lockscreenVisibility = Notification.VISIBILITY_PUBLIC
-            }
-            val nm = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-            nm.createNotificationChannel(channel)
-        }
-    }
 
-    private fun buildNotification(): Notification {
-        val fullScreenIntent = Intent(this, AlarmActivity::class.java).apply {
-            addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP)
-            putExtra(AlarmActivity.EXTRA_SENDER_NAME, senderName)
-            putExtra(AlarmActivity.EXTRA_SENDER_NUMBER, senderNumber)
-        }
-        val fullScreenPendingIntent = PendingIntent.getActivity(
-            this, 0, fullScreenIntent,
-            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
-        )
-
-        val stopIntent = Intent(this, AlarmService::class.java).apply { action = ACTION_STOP }
-        val stopPendingIntent = PendingIntent.getService(
-            this, 1, stopIntent,
-            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
-        )
-
-        return NotificationCompat.Builder(this, CHANNEL_ID)
-            .setContentTitle("BestFoneFinder — ALARM")
-            .setContentText("Your phone is ringing! Tap FOUND to stop.")
-            .setSmallIcon(android.R.drawable.ic_lock_idle_alarm)
-            .setPriority(NotificationCompat.PRIORITY_MAX)
-            .setCategory(NotificationCompat.CATEGORY_ALARM)
-            .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
-            .setFullScreenIntent(fullScreenPendingIntent, true)
-            .addAction(android.R.drawable.ic_menu_close_clear_cancel, "FOUND", stopPendingIntent)
-            .setOngoing(true)
-            .setAutoCancel(false)
-            .build()
-    }
+    private fun buildNotification(): Notification = Notifier.alarm(this, senderName, senderNumber)
 }

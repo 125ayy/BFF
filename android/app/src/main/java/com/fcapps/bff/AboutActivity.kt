@@ -5,16 +5,15 @@ import android.net.Uri
 import android.os.Bundle
 import android.widget.Button
 import android.widget.TextView
-import androidx.appcompat.app.AppCompatActivity
 
-class AboutActivity : AppCompatActivity() {
+class AboutActivity : BffActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_about)
 
         val tvVersion = findViewById<TextView>(R.id.tvVersion)
-        tvVersion.text = "Version 1.0.0"
+        tvVersion.text = getString(R.string.app_version, BuildConfig.VERSION_NAME)
 
         val tvPrivacy = findViewById<TextView>(R.id.tvPrivacy)
         tvPrivacy.text = "Privacy: BestFoneFinder does not collect or transmit any personal data to external servers. " +

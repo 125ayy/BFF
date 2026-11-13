@@ -7,71 +7,45 @@ import android.os.Looper
 import android.text.SpannableString
 import android.text.style.ForegroundColorSpan
 import android.widget.TextView
-import androidx.appcompat.app.AppCompatActivity
 import com.fcapps.bff.Prefs.setupDone
+import com.fcapps.bff.Prefs.permissionSetupVersion
+import com.fcapps.bff.Prefs.locationEnabled
+import com.fcapps.bff.Prefs.smsEnabled
 
-class SplashActivity : AppCompatActivity() {
+class SplashActivity : BffActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_splash)
+        styleAppName(R.id.tvAppName)
 
-        // Style BFF letters in app name (both splash and home share the same layout)
-        val appNameView = findViewById<TextView>(R.id.tvAppName)
-        if (appNameView != null) {
-            val fullName = "BestFoneFinder"
-            val spannable = SpannableString(fullName)
-            val green = 0xFF00C853.toInt()
-            spannable.setSpan(ForegroundColorSpan(green), 0, 1, 0)  // B
-            spannable.setSpan(ForegroundColorSpan(green), 4, 5, 0)  // F
-            spannable.setSpan(ForegroundColorSpan(green), 8, 9, 0)  // F
-            appNameView.text = spannable
-        }
+        // v3.11: location moved out of setup and is off by default for everyone, once.
+        if (permissionSetupVersion < 311) { locationEnabled = false; smsEnabled = false }
 
-        // Determine if this is the initial splash (no home buttons shown yet)
-        // We check setupDone after 2 seconds
+        // Below the current setup version the grouped setup runs once; groups already granted are skipped.
+        val needsSetup = !setupDone || permissionSetupVersion < Prefs.SETUP_VERSION
         Handler(Looper.getMainLooper()).postDelayed({
-            if (!setupDone) {
-                startActivity(Intent(this, SetupActivity::class.java))
-                finish()
-                return@postDelayed
-            }
-            // Show home UI
-            showHomeUI()
-        }, 2000L)
+            if (needsSetup) { startActivity(Intent(this, SetupActivity::class.java)); finish() }
+            else showHome()
+        }, 1500L)
     }
 
-    private fun showHomeUI() {
+    private fun showHome() {
         setContentView(R.layout.activity_home)
+        styleAppName(R.id.tvAppName)
+        findViewById<android.view.View>(R.id.btnSettings).setOnClickListener { startActivity(Intent(this, SettingsActivity::class.java)) }
+        findViewById<android.view.View>(R.id.btnHistory).setOnClickListener { startActivity(Intent(this, HistoryActivity::class.java)) }
+        findViewById<android.view.View>(R.id.btnShare).setOnClickListener { Share.open(this) }
+        findViewById<android.view.View>(R.id.btnAbout).setOnClickListener { startActivity(Intent(this, AboutActivity::class.java)) }
+    }
 
-        val appNameView = findViewById<TextView>(R.id.tvAppName)
-        val fullName = "BestFoneFinder"
-        val spannable = SpannableString(fullName)
+    private fun styleAppName(id: Int) {
+        val v = findViewById<TextView>(id) ?: return
         val green = 0xFF00C853.toInt()
-        spannable.setSpan(ForegroundColorSpan(green), 0, 1, 0)  // B
-        spannable.setSpan(ForegroundColorSpan(green), 4, 5, 0)  // F
-        spannable.setSpan(ForegroundColorSpan(green), 8, 9, 0)  // F
-        appNameView.text = spannable
-
-        findViewById<android.view.View>(R.id.btnSettings).setOnClickListener {
-            startActivity(Intent(this, SettingsActivity::class.java))
-        }
-        findViewById<android.view.View>(R.id.btnHistory).setOnClickListener {
-            startActivity(Intent(this, HistoryActivity::class.java))
-        }
-        findViewById<android.view.View>(R.id.btnFound).setOnClickListener {
-            startActivity(Intent(this, FoundActivity::class.java))
-        }
-        findViewById<android.view.View>(R.id.btnShare).setOnClickListener {
-            val shareIntent = Intent(Intent.ACTION_SEND).apply {
-                type = "text/plain"
-                putExtra(Intent.EXTRA_SUBJECT, "BestFoneFinder App")
-                putExtra(Intent.EXTRA_TEXT, "Check out BestFoneFinder - find your lost phone via SMS!\nPackage: com.fcapps.bff")
-            }
-            startActivity(Intent.createChooser(shareIntent, "Share BFF via"))
-        }
-        findViewById<android.view.View>(R.id.btnAbout).setOnClickListener {
-            startActivity(Intent(this, AboutActivity::class.java))
+        v.text = SpannableString("BestFoneFinder").apply {
+            setSpan(ForegroundColorSpan(green), 0, 1, 0)   // B
+            setSpan(ForegroundColorSpan(green), 4, 5, 0)   // F
+            setSpan(ForegroundColorSpan(green), 8, 9, 0)   // F
         }
     }
 }
