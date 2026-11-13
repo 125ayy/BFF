@@ -100,4 +100,22 @@ class SmsRulesTest {
         assertTrue(d.alarm); assertFalse(d.location); assertTrue(d.whereRequested)
         assertFalse(SmsRules.decide("BFF", "BFF", "", Prefs.MATRIX_YES, Prefs.MATRIX_YES, false).whereRequested)
     }
+    @Test fun diagnosticReasonsDescribeTheActualAlarmDecision() {
+        assertEquals(SmsRules.AlarmBlock.NONE, SmsRules.decide("BFF", "BFF", "", Y, N, false).alarmBlock)
+        assertEquals(SmsRules.AlarmBlock.SILENT, SmsRules.decide("BFF silent", "BFF", "", Y, N, false).alarmBlock)
+        assertEquals(SmsRules.AlarmBlock.RULE, SmsRules.decide("BFF", "BFF", "", N, N, false).alarmBlock)
+        assertEquals(SmsRules.AlarmBlock.PIN, SmsRules.decide("BFF", "BFF", "1234", P, N, false).alarmBlock)
+        assertEquals(SmsRules.AlarmBlock.NO_MATCH, SmsRules.decide("hello", "BFF", "", Y, N, false).alarmBlock)
+    }
+
+    @Test fun automaticAnswersNeverBecomeCommands() {
+        for (body in listOf("BFF-Answer: BFF where", "  bFf-aNsWeR: BFF1234 where silent", "\nBFF-Answer: location failed")) {
+            assertFalse(SmsRules.matchesActivation(body, "BFF", "1234"))
+            val decision = SmsRules.decide(body, "BFF", "1234", Y, Y, true)
+            assertFalse(decision.alarm)
+            assertFalse(decision.location)
+        }
+        assertTrue(SmsRules.decide("bff where silent", "BFF", "", Y, Y, true).location)
+    }
+
 }

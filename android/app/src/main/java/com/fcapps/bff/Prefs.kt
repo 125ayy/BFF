@@ -81,7 +81,7 @@ object Prefs {
         set(value) { prefs(this).edit().putString(KEY_FINDER_MESSAGE, value).apply() }
 
     var Context.matrixAllAlarm: String
-        get() = prefs(this).getString(KEY_MATRIX_ALL_ALARM, MATRIX_PIN) ?: MATRIX_PIN
+        get() = prefs(this).getString(KEY_MATRIX_ALL_ALARM, MATRIX_YES) ?: MATRIX_YES
         set(value) { prefs(this).edit().putString(KEY_MATRIX_ALL_ALARM, value).apply() }
     var Context.matrixContactsAlarm: String
         get() = prefs(this).getString(KEY_MATRIX_CONTACTS_ALARM, MATRIX_YES) ?: MATRIX_YES

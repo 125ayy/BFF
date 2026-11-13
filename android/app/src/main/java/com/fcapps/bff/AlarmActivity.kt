@@ -22,6 +22,7 @@ class AlarmActivity : BffActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        Diagnostics.record(this, Diagnostics.Event.ALARM_SCREEN_OPENED)
 
         // Show over lock screen and wake the display
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1) {
@@ -55,10 +56,10 @@ class AlarmActivity : BffActivity() {
         // The receiver may not have been allowed to start the siren from the background;
         // now that a screen is visible, make sure it runs.
         if (!AlarmService.running) {
-            startForegroundService(Intent(this, AlarmService::class.java).apply {
+            try { startForegroundService(Intent(this, AlarmService::class.java).apply {
                 putExtra(AlarmService.EXTRA_SENDER_NAME, senderName)
                 putExtra(AlarmService.EXTRA_SENDER_NUMBER, senderNumber)
-            })
+            }) } catch (e: RuntimeException) { Diagnostics.record(this, Diagnostics.Event.SERVICE_REQUEST_FAILED, e) }
         }
 
         // Bell shake animation — translate left/right repeatedly

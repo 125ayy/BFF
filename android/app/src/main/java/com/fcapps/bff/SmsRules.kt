@@ -3,7 +3,12 @@ package com.fcapps.bff
 /** Decides what an incoming text asks for. No Android dependencies, so it is unit-testable. */
 object SmsRules {
 
-    data class Decision(val matched: Boolean, val alarm: Boolean, val location: Boolean, val whereRequested: Boolean = false) {
+    const val ANSWER_PREFIX = "BFF-Answer:"
+    fun isAnswer(body: String) = body.trimStart().startsWith(ANSWER_PREFIX, ignoreCase = true)
+
+    enum class AlarmBlock { NONE, NO_MATCH, SILENT, RULE, PIN }
+
+    data class Decision(val matched: Boolean, val alarm: Boolean, val location: Boolean, val whereRequested: Boolean = false, val alarmBlock: AlarmBlock = AlarmBlock.NO_MATCH) {
         val status: String get() = when {
             alarm && location -> Prefs.STATUS_BOTH
             alarm -> Prefs.STATUS_SUCCESS
@@ -18,7 +23,7 @@ object SmsRules {
     private fun token(text: String) = Regex("(?<![\\p{L}\\p{N}_])${Regex.escape(text)}(?![\\p{L}\\p{N}_])", RegexOption.IGNORE_CASE)
 
     fun matchesActivation(body: String, word: String, pin: String): Boolean =
-        word.isNotBlank() && (token(word).containsMatchIn(body) ||
+        !isAnswer(body) && word.isNotBlank() && (token(word).containsMatchIn(body) ||
             (pin.isNotEmpty() && token(word + pin).containsMatchIn(body)))
 
     /** PIN is a complete field immediately after the activation word; legacy BFF1234 is accepted. */
@@ -31,6 +36,12 @@ object SmsRules {
         fun pass(gate: String) = gate == Prefs.MATRIX_YES || (gate == Prefs.MATRIX_PIN && pinOk)
         val alarm = !SILENT.containsMatchIn(body) && pass(alarmGate)
         val location = hasWhere && locationEnabled && pass(locGate)
-        return Decision(true, alarm, location, hasWhere)
+        val block = when {
+            alarm -> AlarmBlock.NONE
+            SILENT.containsMatchIn(body) -> AlarmBlock.SILENT
+            alarmGate == Prefs.MATRIX_PIN -> AlarmBlock.PIN
+            else -> AlarmBlock.RULE
+        }
+        return Decision(true, alarm, location, hasWhere, block)
     }
 }

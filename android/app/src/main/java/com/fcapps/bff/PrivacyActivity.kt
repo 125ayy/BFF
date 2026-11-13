@@ -45,7 +45,8 @@ class PrivacyActivity : BffActivity() {
         }
     }
 
-    private val order = listOf(MATRIX_YES, MATRIX_PIN, MATRIX_NO)
+    private val alarmOrder = listOf(MATRIX_NO, MATRIX_PIN, MATRIX_YES)
+    private val locationOrder = listOf(MATRIX_YES, MATRIX_PIN, MATRIX_NO)
     private var fromSetup = false
     private lateinit var draftGates: MutableMap<String, String>
 
@@ -63,11 +64,8 @@ class PrivacyActivity : BffActivity() {
         val badges = listOf(R.id.badgeAllAlarm, R.id.badgeAllLoc,
             R.id.badgeContactsAlarm, R.id.badgeContactsLoc, R.id.badgeTrustedAlarm, R.id.badgeTrustedLoc)
         draftGates.keys.toList().zip(badges).forEach { (key, id) ->
-            bindBadge(id, { draftGates.getValue(key) }, { draftGates[key] = it })
+            bindBadge(id, key.endsWith("_loc"), { draftGates.getValue(key) }, { draftGates[key] = it })
         }
-        // Location column exists only while Settings › Location is on (v3.11 ruling).
-        val locVisible = if (locationRepliesOn) View.VISIBLE else View.GONE
-        for (id in listOf(R.id.tvLocHeader, R.id.badgeAllLoc, R.id.badgeContactsLoc, R.id.badgeTrustedLoc)) findViewById<View>(id).visibility = locVisible
 
         findViewById<View>(R.id.btnAddTrusted).setOnClickListener {
             contactPicker.launch(Intent(Intent.ACTION_PICK, ContactsContract.CommonDataKinds.Phone.CONTENT_URI))
@@ -107,17 +105,36 @@ class PrivacyActivity : BffActivity() {
         finish()
     }
 
-    private fun bindBadge(id: Int, get: () -> String, set: (String) -> Unit) {
-        val v = findViewById<TextView>(id)
-        paint(v, get())
-        v.setOnClickListener { val next = order[(order.indexOf(get()) + 1) % 3]; set(next); paint(v, next) }
+    override fun onResume() {
+        super.onResume()
+        if (::draftGates.isInitialized) {
+            val ids = listOf(R.id.badgeAllLoc, R.id.badgeContactsLoc, R.id.badgeTrustedLoc)
+            draftGates.filterKeys { it.endsWith("_loc") }.keys.zip(ids).forEach { (key, id) ->
+                paint(findViewById(id), draftGates.getValue(key), true)
+            }
+        }
     }
 
-    private fun paint(v: TextView, value: String) {
-        when (value) {
-            MATRIX_YES -> { v.text = "YES"; v.setBackgroundResource(R.drawable.badge_green); v.setTextColor(0xFF000000.toInt()) }
-            MATRIX_PIN -> { v.text = "PIN"; v.setBackgroundResource(R.drawable.badge_amber); v.setTextColor(0xFF000000.toInt()) }
-            else -> { v.text = "NO"; v.setBackgroundResource(R.drawable.badge_gray); v.setTextColor(0xFFFFFFFF.toInt()) }
+    private fun bindBadge(id: Int, location: Boolean, get: () -> String, set: (String) -> Unit) {
+        val v = findViewById<TextView>(id)
+        paint(v, get(), location)
+        v.setOnClickListener {
+            if (location && !locationRepliesOn) return@setOnClickListener
+            val order = if (location) locationOrder else alarmOrder
+            val next = order[(order.indexOf(get()) + 1) % order.size]
+            set(next)
+            paint(v, next, location)
+        }
+    }
+
+    private fun paint(v: TextView, value: String, location: Boolean) {
+        val disabled = location && !locationRepliesOn
+        v.isEnabled = !disabled
+        when {
+            disabled -> { v.text = "DISABLE"; v.setBackgroundResource(R.drawable.badge_gray); v.setTextColor(0xFFBBBBBB.toInt()) }
+            value == MATRIX_YES -> { v.text = "ON"; v.setBackgroundResource(R.drawable.badge_green); v.setTextColor(0xFF000000.toInt()) }
+            value == MATRIX_PIN -> { v.text = "PIN"; v.setBackgroundResource(R.drawable.badge_amber); v.setTextColor(0xFF000000.toInt()) }
+            else -> { v.text = "OFF"; v.setBackgroundResource(R.drawable.badge_gray); v.setTextColor(0xFFFFFFFF.toInt()) }
         }
     }
 

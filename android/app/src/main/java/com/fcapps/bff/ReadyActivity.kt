@@ -16,12 +16,13 @@ class ReadyActivity : BffActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_ready)
+        findViewById<android.view.View>(R.id.btnHelp).setOnClickListener { Help.open(this) }
         val word = password
         val green = 0xFF00C853.toInt()
 
         findViewById<TextView>(R.id.tvSubtitle).text = bold("Send ", word, " via SMS to find phone.", 0xFFFFFFFF.toInt())
         findViewById<TextView>(R.id.tvLine1).text = bold("Someone texts ", word, " → this phone screams.", green)
-        findViewById<TextView>(R.id.tvLine2).text = bold("Add ", "where", " → it sends its location.", green)
+        findViewById<TextView>(R.id.tvLine2).text = bold("Optional: ", "location replies", " in Settings → Location.", green)
 
         findViewById<android.view.View>(R.id.btnTest).setOnClickListener {
             android.app.AlertDialog.Builder(this)
