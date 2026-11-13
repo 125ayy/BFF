@@ -15,11 +15,11 @@
     <string name="setup_finish">Continue</string>
     <string name="permissions_settings">Permissions</string>
 
-    <string name="location_waiting">BFF: getting a location fix. A final update will follow.</string>
-    <string name="location_failed">BFF: unable to obtain a recent location. Check that location services are enabled and try again.</string>
-    <string name="location_first">BFF: recent location %1$s (±%2$d m; fix %3$d seconds old).</string>
-    <string name="location_final">BFF: final location update %1$s (±%2$d m; fix %3$d seconds old).</string>
-    <string name="location_start_failed">BFF could not start location access. Open BFF to review permissions.</string>
+    <string name="location_waiting">BFF-Answer: getting a location fix. A final update will follow.</string>
+    <string name="location_failed">BFF-Answer: unable to obtain a recent location. Check that location services are enabled and try again.</string>
+    <string name="location_first">BFF-Answer: recent location %1$s (±%2$d m; fix %3$d seconds old).</string>
+    <string name="location_final">BFF-Answer: final location update %1$s (±%2$d m; fix %3$d seconds old).</string>
+    <string name="location_start_failed">BFF-Answer: Could not start location access. Open BFF to review permissions.</string>
     <string name="history_location_requested">Location requested</string>
     <string name="history_location_failed">Location failed</string>
     <string name="history_sms_queued">SMS queued</string>
@@ -88,4 +88,21 @@
     <string name="setup_later">CONTINUE TO TEST</string>
     <string name="setup_complete">Setup complete — test your phone</string>
     <string name="setup_ringing_optional">These settings can help BFF ring while locked. Enable them now, or continue and test your phone. If the test fails, return to Settings → Permissions.</string>
+    <string name="diag_title">Diagnostics</string>
+    <string name="diag_back">Back</string>
+    <string name="diag_instructions">Start recording, lock this phone, then send one test SMS from another phone. Return here and tap Refresh, then copy or share the report. Recording stops after 30 minutes and keeps only 150 events. Starting again replaces the previous trace. No message text, phone numbers, PINs or location are recorded. The local siren test checks audio while this app is open; it does not test SMS delivery or locked-phone behavior.</string>
+    <string name="diag_record_start">Start recording (30 minutes)</string>
+    <string name="diag_record_stop">Stop recording</string>
+    <string name="diag_test">Test siren for 5 seconds</string>
+    <string name="diag_test_warning">This plays a loud siren at maximum alarm volume for five seconds. Keep the phone away from your ears. Your previous alarm volume will be restored.</string>
+    <string name="diag_test_start">Play siren</string>
+    <string name="diag_stop_alarm">Stop siren now</string>
+    <string name="diag_heard">I heard the test siren</string>
+    <string name="diag_not_heard">I did not hear the test siren</string>
+    <string name="diag_refresh">Refresh report</string>
+    <string name="diag_copy">Copy report</string>
+    <string name="diag_share">Share report</string>
+    <string name="diag_clear">Clear report and stop recording</string>
+    <string name="diag_copied">Diagnostic report copied</string>
+    <string name="diag_share_unavailable">No app is available to share. Use Copy report instead.</string>
 </resources>

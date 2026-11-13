@@ -6,7 +6,7 @@ V2.1 targeted API 28; v3.13 and v3.14 target API 36. Re-test background behavior
 
 | Family | Exact device / OS | v3.14 physical result |
 |---|---|---|
-| Samsung | To record | Not yet tested |
+| Samsung | Galaxy S24 SM-S921B / reports Android 17 API 37 | v3.15 in-place install and Diagnostics recording verified; SMS received and matched; Privacy blocked OTHER sender because PIN is required but unset. Authorized-command ringing test pending |
 | Pixel | To record | Not yet tested |
 | Motorola | To record | Not yet tested |
 | Xiaomi / Redmi / Poco | To record | Not yet tested |

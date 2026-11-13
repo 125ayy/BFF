@@ -59,3 +59,15 @@ Phone model, Android version, manufacturer software version (for example One UI 
 V2.1 has user-reported successful ringing across their tested Android models; the exact model list is not recorded here. V3.14 needs fresh physical-device testing because it targets newer Android behavior. Automated checks cannot certify OEM battery behavior, SMS delivery, or locked-screen ringing.
 
 See [the release testing matrix](COMPATIBILITY.md) for the current evidence.
+
+## Capture a failure with Diagnostics (v3.15+)
+
+1. Open **Settings → Diagnostics → Start recording**. This replaces the previous trace and records locally for up to 30 minutes.
+2. Lock the phone and send one real SMS command from another phone. Note whether the siren was audible.
+3. Reopen Diagnostics and tap **Refresh report**. Use **Copy report** or **Share report** to send it to the person helping you. Nothing is uploaded automatically.
+4. Separately, use **Test siren for 5 seconds**. This is loud. Confirm the prompt and record **I heard the test siren** or **I did not hear the test siren**. **Stop siren now** is available at any time. A successful local test does not prove that SMS or background execution works.
+5. Choose **Clear report and stop recording** when finished.
+
+The report includes phone model, Android build, current permission/battery/audio settings, and up to 150 timestamped events. It excludes SMS content, phone numbers, contact names, the activation word, PIN and location. Error categories exclude exception messages.
+
+Event landmarks: `SMS_RECEIVED` means Android called BFF; `ACTIVATION_NOT_MATCHED` means the command was not recognized; `ALARM_BLOCKED_PIN` or `ALARM_BLOCKED_RULE` points to Privacy settings; `SERVICE_REQUEST_FAILED` or `SERVICE_START_FAILED` indicates an alarm startup failure. `AUDIO_PLAYING` means Android accepted playback, not proof that sound was heard. No receiver event alone does not distinguish an SMS permission problem from RCS, force-stop or another delivery problem.

@@ -17,6 +17,7 @@ import com.fcapps.bff.Prefs.sirenDuration
 class AlarmService : Service() {
 
     companion object {
+        const val EXTRA_DIAGNOSTIC_TEST = "diagnostic_test"
         const val ACTION_STOP = "com.fcapps.bff.ACTION_STOP_ALARM"
         const val EXTRA_SENDER_NAME = "sender_name"
         const val EXTRA_SENDER_NUMBER = "sender_number"
@@ -25,7 +26,8 @@ class AlarmService : Service() {
             private set
     }
 
-    private val siren = SirenPlayer()
+    private val siren = SirenPlayer { event, error -> Diagnostics.record(this, event, error) }
+    private var durationSeconds = 30
     private var originalVolume: Int = 0
     private var audioManager: AudioManager? = null
     private var wakeLock: PowerManager.WakeLock? = null
@@ -49,7 +51,9 @@ class AlarmService : Service() {
             return START_NOT_STICKY
         }
 
-        if (running) return START_NOT_STICKY   // receiver and activity may both ask; keep the first timer
+        Diagnostics.record(this, Diagnostics.Event.SERVICE_ENTERED)
+        if (running) { Diagnostics.record(this, Diagnostics.Event.SERVICE_ALREADY_RUNNING); return START_NOT_STICKY }   // receiver and activity may both ask; keep the first timer
+        durationSeconds = if (intent?.getBooleanExtra(EXTRA_DIAGNOSTIC_TEST, false) == true) 5 else sirenDuration
         senderName = intent?.getStringExtra(EXTRA_SENDER_NAME) ?: ""
         senderNumber = intent?.getStringExtra(EXTRA_SENDER_NUMBER) ?: ""
 
@@ -57,19 +61,23 @@ class AlarmService : Service() {
         try {
             startForeground(NOTIF_ID, buildNotification())
             running = true
+            Diagnostics.record(this, Diagnostics.Event.FOREGROUND_STARTED)
             getSystemService(NotificationManager::class.java).cancel(Notifier.ID_ALARM_FALLBACK)
             acquireWakeLock()
             startAlarm()
         } catch (e: RuntimeException) {
+            Diagnostics.record(this, Diagnostics.Event.SERVICE_START_FAILED, e)
             android.util.Log.w("BFF", "Alarm could not start", e)
             stopAlarm()
             runCatching { getSystemService(NotificationManager::class.java).notify(Notifier.ID_ALARM_FALLBACK,
                 Notifier.alarm(this, senderName, senderNumber, fallback = true)) }
+                .onSuccess { Diagnostics.record(this, Diagnostics.Event.FALLBACK_POSTED) }
+                .onFailure { Diagnostics.record(this, Diagnostics.Event.FALLBACK_FAILED, it) }
             stopSelf()
             return START_NOT_STICKY
         }
 
-        val duration = sirenDuration * 1000L
+        val duration = durationSeconds * 1000L
         stopRunnable = Runnable { stopAlarm(); stopSelf() }
         handler.postDelayed(stopRunnable!!, duration)
 
@@ -83,7 +91,7 @@ class AlarmService : Service() {
             PowerManager.PARTIAL_WAKE_LOCK,
             "bff:alarm"
         )
-        wakeLock?.acquire(sirenDuration * 1000L + 5000L)
+        wakeLock?.acquire(durationSeconds * 1000L + 5000L)
     }
 
     private fun startAlarm() {
@@ -95,6 +103,7 @@ class AlarmService : Service() {
         audioManager!!.setStreamVolume(AudioManager.STREAM_ALARM, maxVolume, 0)
 
         // Start wailing siren
+        Diagnostics.record(this, Diagnostics.Event.AUDIO_REQUESTED)
         siren.start()
 
         // Vibrate: 800ms on / 400ms off, repeat
@@ -116,6 +125,7 @@ class AlarmService : Service() {
     }
 
     private fun stopAlarm() {
+        if (running) Diagnostics.record(this, Diagnostics.Event.ALARM_STOPPED)
         running = false
         stopRunnable?.let { handler.removeCallbacks(it) }
         stopRunnable = null

@@ -11,8 +11,8 @@ android {
         applicationId "com.fcapps.bff"
         minSdk 26
         targetSdk 36
-        versionCode 14
-        versionName "3.14"
+        versionCode 19
+        versionName "3.19"
     }
 
     def buildDate = new Date().format('yyyyMMdd')
